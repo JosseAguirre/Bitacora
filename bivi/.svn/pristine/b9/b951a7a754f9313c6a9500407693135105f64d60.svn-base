@@ -1,0 +1,70 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
+
+
+/**
+ * The persistent class for the bov_tipo_validacion database table.
+ * 
+ */
+@Entity
+@Table(name="bov_tipo_validacion", schema="java")
+@NamedQuery(name="BovTipoValidacion.findAll", query="SELECT b FROM BovTipoValidacion b")
+public class BovTipoValidacion implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_tipo_validacion", unique=true, nullable=false)
+	private Integer idTipoValidacion;
+
+	@Column(length=30)
+	private String nombre;
+
+	//bi-directional many-to-one association to BovBovedaValidacion
+	@OneToMany(mappedBy="idtipovalidacion")
+	private List<BovBovedaValidacion> idtipovalidacion_bovboveda_validacion;
+
+	public BovTipoValidacion() {
+	}
+
+	public Integer getIdTipoValidacion() {
+		return this.idTipoValidacion;
+	}
+
+	public void setIdTipoValidacion(Integer idTipoValidacion) {
+		this.idTipoValidacion = idTipoValidacion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<BovBovedaValidacion> getIdtipovalidacion_bovboveda_validacion() {
+		return this.idtipovalidacion_bovboveda_validacion;
+	}
+
+	public void setIdtipovalidacion_bovboveda_validacion(List<BovBovedaValidacion> idtipovalidacion_bovboveda_validacion) {
+		this.idtipovalidacion_bovboveda_validacion = idtipovalidacion_bovboveda_validacion;
+	}
+
+	public BovBovedaValidacion addIdtipovalidacion_bovboveda_validacion(BovBovedaValidacion idtipovalidacion_bovboveda_validacion) {
+		getIdtipovalidacion_bovboveda_validacion().add(idtipovalidacion_bovboveda_validacion);
+		idtipovalidacion_bovboveda_validacion.setIdtipovalidacion(this);
+
+		return idtipovalidacion_bovboveda_validacion;
+	}
+
+	public BovBovedaValidacion removeIdtipovalidacion_bovboveda_validacion(BovBovedaValidacion idtipovalidacion_bovboveda_validacion) {
+		getIdtipovalidacion_bovboveda_validacion().remove(idtipovalidacion_bovboveda_validacion);
+		idtipovalidacion_bovboveda_validacion.setIdtipovalidacion(null);
+
+		return idtipovalidacion_bovboveda_validacion;
+	}
+
+}

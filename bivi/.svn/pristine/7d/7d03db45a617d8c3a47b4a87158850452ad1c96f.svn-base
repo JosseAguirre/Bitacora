@@ -1,0 +1,65 @@
+package com.scm.servicio.boveda;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.preboveda.BovTransferencia;
+
+@Stateless
+public class ServicioBovTransferencia {
+
+	@PersistenceContext
+	private EntityManager em;
+	public void create(BovTransferencia bovtransferencia) {
+		em.persist(bovtransferencia);
+	}
+	
+	public void delete(BovTransferencia bovtransferencia) {
+		em.remove(em.merge(bovtransferencia));
+	}
+	
+	public void update(BovTransferencia bovtransferencia){
+	
+		em.merge(bovtransferencia);
+	}
+	
+ 
+	@SuppressWarnings("unchecked")
+	public List<BovTransferencia> findAll() {
+		Query q = em.createQuery("select f from BovTransferencia f ");
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<BovTransferencia> findcpc() {
+		Query q = em.createQuery("select f from BovTransferencia f  where f.idTransferencia = ");
+		return q.getResultList();
+	}
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from BovTransferencia ");
+		codigo = (Integer) q.getSingleResult(); 
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public BovTransferencia findOne(Integer bovtransferencia){
+		Query q = em.createQuery("select f from BovTransferencia f where f.idTransferencia = " + bovtransferencia);
+		return (BovTransferencia) q.getSingleResult();
+	}
+	
+	public List<BovTransferencia> pornombresemejante(String nombre) {
+		return em.createQuery("select f from BovTransferencia f where c.nombres like :nombres", BovTransferencia.class)
+				.setParameter("nombres", "%" + nombre + "%")
+				.getResultList();
+	}
+	
+}

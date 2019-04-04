@@ -1,0 +1,2088 @@
+package com.scm.bean.preboveda;
+
+import java.io.Serializable;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admempleado;
+import com.scm.modelo.centroefectivo.CeEspecie;
+import com.scm.modelo.centroefectivo.CeTipoTransferencia;
+import com.scm.modelo.preboveda.BovBovedaCliente;
+import com.scm.modelo.preboveda.BovCabezeratransferencia;
+import com.scm.modelo.preboveda.BovContadorBoveda;
+import com.scm.modelo.preboveda.BovDetalleTransferencia;
+import com.scm.modelo.preboveda.BovTipoTransaccion;
+import com.scm.modelo.preboveda.BovTransferencia;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+import com.scm.servicio.administracion.ServicioAdmEmpleado;
+import com.scm.servicio.boveda.ServicioBovBovedaCliente;
+import com.scm.servicio.boveda.ServicioBovCabezeratransferencia;
+import com.scm.servicio.boveda.ServicioBovContadorBoveda;
+import com.scm.servicio.boveda.ServicioBovDetalleTransferencia;
+import com.scm.servicio.boveda.ServicioBovTipoTransaccion;
+import com.scm.servicio.boveda.ServicioBovTransferencia;
+import com.scm.servicio.centroefectivo.ServicioCeEspecie;
+import com.scm.servicio.centroefectivo.ServicioCeTipoTransferencia;
+
+@ManagedBean
+@ViewScoped
+public class BovTransferenciaBean implements Interface, Serializable {
+
+	private static final long serialVersionUID = 1L;
+	// creo clases y listas para traer la información que necesito
+	private BovCabezeratransferencia bovcabezeratransferencia;
+	private List<BovCabezeratransferencia> listacabezeratransferencia;
+	private List<BovCabezeratransferencia> listacabezeratransferenciaint;
+	private List<BovCabezeratransferencia> listacabezeratransferenciaout;
+	private List<BovCabezeratransferencia> listacabezeratransferenciaintcpc;
+	private List<Admdetallecatalogo> listaestadotransferencia;
+	private List<BovTransferencia> listatransferenciafiltrado;
+	private BovContadorBoveda bovcontadorboveda;
+	private BovBovedaCliente bovbovedacliente;
+	private List<BovBovedaCliente> listabovedacliente1;
+	private List<BovBovedaCliente> listabovedacliente;
+	private BovTipoTransaccion bovtipotransaccion;
+	private CeTipoTransferencia cetipotransferencia;
+	private BovTransferencia bovtransferencia;
+	private List<BovTransferencia> listatransferencia;
+	private List<BovTransferencia> listatransferenciacpc;
+	private Admdetallecatalogo admdetallecatalogo;
+	private List<Admdetallecatalogo> listadetallecatalogo;
+	private Admempleado admempleado;
+	private BovDetalleTransferencia bovdetalletransferencia;
+	private CeEspecie ceespecie;
+	private List<CeEspecie> listaEspecie;
+	private List<BovDetalleTransferencia> listaDetalleTransferencia;
+	private Integer cantidad;
+	private Integer validarGuardar;
+
+	// establece conección a los servicios por medio de los EJB
+	@EJB
+	ServicioBovTransferencia serviciotransferencia;
+	@EJB
+	ServicioBovDetalleTransferencia serviciodetalletransferencia;
+	@EJB
+	ServicioBovContadorBoveda serviciocontadorboveda;
+	@EJB
+	ServicioBovBovedaCliente serviciobovbovedacliente;
+	@EJB
+	ServicioBovTipoTransaccion serviciobovtipotransaccion;
+	@EJB
+	ServicioCeTipoTransferencia serviciocetipotransferencia;
+	@EJB
+	ServicioBovCabezeratransferencia serviciobovcabezeratransferencia;
+	@EJB
+	ServicioAdmEmpleado servicioadmempleado;
+	@EJB
+	ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+	@EJB
+	ServicioCeEspecie servicioceespecie;
+
+	// creo variables que usare
+	private Date date;
+	private Time time;
+	private Integer idestado;
+	private Integer bandera;
+	private Integer idempleado;
+	private Integer idempleadodestino;
+	private Integer idestadotransferencia;
+	private Integer idcontadorboveda;
+	private double valorcantidad = 0;
+	private double suma = 0;
+	private Integer idtipotransaccion;
+	private Integer idtipotransferencia;
+	private Integer idCabezeratransferencia;
+	private Integer idespecie;
+	private Integer id_boveda_clienteorigen;
+	private Integer id_boveda_clientedestino;
+	private Integer id_boveda_clienteorigen1;
+	private Integer id_boveda_clientedestino1;
+	// variables para calcular balas
+	private double cienbalas = 0;
+	private double cincuentabalas = 0;
+	private double veintebalas = 0;
+	private double diezbalas = 0;
+	private double cincobalas = 0;
+	private double unobalas = 0;
+	//variables para calcular fundas
+	private double undolarfundas = 0;
+	private double cincuentactvfundas = 0;
+	private double venteycincoctvfundas = 0;
+	private double diezctvfundas = 0;
+	private double cincoctvfundas = 0;
+	private double unctvfundas = 0;
+
+	// variables para calcular Fajos
+	private double subtotalfajos = 0;
+	private double cienfajos = 0;
+	private double cincuentafajos = 0;
+	private double veintefajos = 0;
+	private double diezfajos = 0;
+	private double cincofajos = 0;
+	private double unofajos = 0;
+	//variables para calcular cartuchos
+	private double undolarcartuchos = 0;
+	private double cincuentactvcartuchos = 0;
+	private double venteycincoctvcartuchos = 0;
+	private double diezctvcartuchos = 0;
+	private double cincoctvcartuchos = 0;
+	private double unctvcartuchos = 0;
+	// variables para calcular el picos
+	private double subtotalpicos = 0;
+	private double cienpicos = 0;
+	private double cincuentapicos = 0;
+	private double veintepicos = 0;
+	private double diezpicos = 0; 
+	private double cincopicos = 0;
+	private double unopicos = 0;
+	
+	private double undolarpicos = 0;
+	private double cincuentactvpicos = 0;
+	private double venteycincoctvpicos = 0;
+	private double diezctvpicos = 0;
+	private double cincoctvpicos = 0;
+	private double unctvpicos = 0;
+	// variables para calcular el subtotal
+	private double subtotal;
+	private double cien;
+	private double cincuenta;
+	private double veinte;
+	private double diez;
+	private double cinco;
+	private double uno;
+
+	// variables para calcular el subtotal monedas
+	private double undolar;
+	private double cincuentactv;
+	private double venteycincoctv;
+	private double diezctv;
+	private double cincoctv;
+	private double unctv;
+	private double total;
+	// variables para calcular el fundas monedas
+	private double undolar1;
+	private double cincuentactv1;
+	private double venteycincoctv1;
+	private double diezctv1;
+	private double cincoctv1;
+	private double unctv1;
+	private double total1;
+	// variables para calcular los cartuchos monedas
+	private double undolar2;
+	private double cincuentactv2;
+	private double venteycincoctv2;
+	private double diezctv2;
+	private double cincoctv2;
+	private double unctv2;
+	private double total2;
+	// variables para calcular las balas
+	private double cien1;
+	private double cincuenta1;
+	private double veinte1;
+	private double diez1;
+	private double cinco1;
+	private double uno1;
+	// variables para calcular las balas
+	private double cien2;
+	private double cincuenta2;
+	private double veinte2;
+	private double diez2;
+	private double cinco2;
+	private double uno2;
+	private int idDenominacion = 0;
+	Calendar Time = Calendar.getInstance();
+	int hora = Time.get(Calendar.HOUR_OF_DAY);
+	int minuto = Time.get(Calendar.MINUTE);
+	int segundo = Time.get(Calendar.SECOND);
+
+	// variables para calcula
+	// metodo que inicia todo el proceso
+
+	@Override
+	@PostConstruct
+	public void init() {
+
+		date = new Date();
+		time = new Time(hora, minuto, segundo);
+		listaDetalleTransferencia = new ArrayList<>();
+		listaDetalleTransferencia = new ArrayList<>();
+		bovtransferencia = new BovTransferencia();
+		bovdetalletransferencia = new BovDetalleTransferencia();
+		bovcabezeratransferencia = new BovCabezeratransferencia();
+		admdetallecatalogo = new Admdetallecatalogo();
+
+		cancelar();
+	}
+
+	@Override
+	public void cancelar() {
+
+		date = new Date();
+		time = new Time(hora, minuto, segundo);
+		listaDetalleTransferencia = new ArrayList<>();
+		bovdetalletransferencia = new BovDetalleTransferencia();
+		bovcabezeratransferencia = new BovCabezeratransferencia();
+		admdetallecatalogo = new Admdetallecatalogo();
+		consultar();
+		bandera = 0;
+		cantidad = null;
+		validarGuardar = 0;
+	}
+
+	// metodo para guardar la transferencia
+	@Override
+	public void guardar() {
+
+	}
+
+	public void guardarINT() { // Guarada la cabecera
+		cetipotransferencia = serviciocetipotransferencia.findOne(1);
+		bovtipotransaccion = serviciobovtipotransaccion.findOne(1);
+		admdetallecatalogo = serviciodetallecatalogo.findOne(304);
+		bovcabezeratransferencia.setIdCabezeratransferencia(serviciobovcabezeratransferencia.getPK());
+		bovcabezeratransferencia.setIdtipotransferencia(cetipotransferencia);
+		bovcabezeratransferencia.setNumeroticket(serviciobovcabezeratransferencia.getnumerotiket());
+		bovcabezeratransferencia.setId_estadotrasferencia(admdetallecatalogo);
+		bovcabezeratransferencia.setFecha(date);
+		bovcabezeratransferencia.setHora(time);
+		buscaIdCombosInt();
+		serviciobovcabezeratransferencia.create(bovcabezeratransferencia);
+		guardardetalletransferenciain();
+
+		guardarOUT();
+
+		// mensaje al crear transferencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se creo la  Transferencia: " + bovcabezeratransferencia.getNumeroticket()));
+		// guardardetalletransferencia();
+
+		cancelar();
+
+	}
+
+	public void guardarOUT() { // Guarada la cabecera
+		cetipotransferencia = serviciocetipotransferencia.findOne(2);
+		bovtipotransaccion = serviciobovtipotransaccion.findOne(1);
+		admdetallecatalogo = serviciodetallecatalogo.findOne(304);
+		bovcabezeratransferencia.setIdCabezeratransferencia(serviciobovcabezeratransferencia.getPK());
+		bovcabezeratransferencia.setIdtipotransferencia(cetipotransferencia);
+		bovcabezeratransferencia.setNumeroticket(serviciobovcabezeratransferencia.findnt());
+		bovcabezeratransferencia.setId_estadotrasferencia(admdetallecatalogo);
+		bovcabezeratransferencia.setFecha(date);
+		bovcabezeratransferencia.setHora(time);
+		buscaIdCombosOut();
+		serviciobovcabezeratransferencia.create(bovcabezeratransferencia);
+		guardardetalletransferenciaout();
+
+		// mensaje al crear transferencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se creo la  Transferencia: " + bovcabezeratransferencia.getNumeroticket()));
+
+		cancelar();
+
+	}
+
+	public void guardarINT1() { // Guarada la cabecera
+		cetipotransferencia = serviciocetipotransferencia.findOne(1);
+		bovtipotransaccion = serviciobovtipotransaccion.findOne(1);
+		admdetallecatalogo = serviciodetallecatalogo.findOne(304);
+		bovcabezeratransferencia.setIdCabezeratransferencia(serviciobovcabezeratransferencia.getPK());
+		bovcabezeratransferencia.setIdtipotransferencia(cetipotransferencia);
+		bovcabezeratransferencia.setNumeroticket(serviciobovcabezeratransferencia.getnumerotiket());
+		bovcabezeratransferencia.setId_estadotrasferencia(admdetallecatalogo);
+		bovcabezeratransferencia.setFecha(date);
+		bovcabezeratransferencia.setHora(time);
+		buscaIdCombosInt1();
+		serviciobovcabezeratransferencia.create(bovcabezeratransferencia);
+		guardardetalletransferenciain();
+
+		guardarOUT1();
+
+		// mensaje al crear transferencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se creo la  Transferencia: " + bovcabezeratransferencia.getNumeroticket()));
+		// guardardetalletransferencia();
+		guardardetalletransferencia1();
+		cancelar();
+
+	}
+
+	public void guardarOUT1() { // Guarada la cabecera
+		cetipotransferencia = serviciocetipotransferencia.findOne(2);
+		bovtipotransaccion = serviciobovtipotransaccion.findOne(1);
+		admdetallecatalogo = serviciodetallecatalogo.findOne(304);
+		bovcabezeratransferencia.setIdCabezeratransferencia(serviciobovcabezeratransferencia.getPK());
+		bovcabezeratransferencia.setIdtipotransferencia(cetipotransferencia);
+		bovcabezeratransferencia.setNumeroticket(serviciobovcabezeratransferencia.findnt());
+		bovcabezeratransferencia.setId_estadotrasferencia(admdetallecatalogo);
+		bovcabezeratransferencia.setFecha(date);
+		bovcabezeratransferencia.setHora(time);
+		buscaIdCombosOut1();
+		serviciobovcabezeratransferencia.create(bovcabezeratransferencia);
+		guardardetalletransferenciaout();
+
+		// mensaje al crear transferencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se creo la  Transferencia: " + bovcabezeratransferencia.getNumeroticket()));
+		guardardetalletransferencia1();
+
+		cancelar();
+
+	}
+
+	public void guardarINTtransferencia() { // Guarada la cabecera
+		cetipotransferencia = serviciocetipotransferencia.findOne(1);
+		bovtipotransaccion = serviciobovtipotransaccion.findOne(1);
+		admdetallecatalogo = serviciodetallecatalogo.findOne(304);
+		bovcabezeratransferencia.setIdCabezeratransferencia(serviciobovcabezeratransferencia.getPK());
+		bovcabezeratransferencia.setIdtipotransferencia(cetipotransferencia);
+		bovcabezeratransferencia.setNumeroticket(serviciobovcabezeratransferencia.getnumerotiket());
+		bovcabezeratransferencia.setId_estadotrasferencia(admdetallecatalogo);
+		bovcabezeratransferencia.setFecha(date);
+		bovcabezeratransferencia.setHora(time);
+		buscaIdCombosInt();
+		serviciobovcabezeratransferencia.create(bovcabezeratransferencia);
+		guardardetalletransferenciain();
+
+		guardarOUTtransferencia();
+
+		// mensaje al crear transferencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se creo la  Transferencia: " + bovcabezeratransferencia.getNumeroticket()));
+
+		cancelar();
+
+	}
+
+	public void guardarOUTtransferencia() { // Guarada la cabecera
+
+		cetipotransferencia = serviciocetipotransferencia.findOne(2);
+		bovtipotransaccion = serviciobovtipotransaccion.findOne(1);
+		admdetallecatalogo = serviciodetallecatalogo.findOne(304);
+		bovcabezeratransferencia.setIdCabezeratransferencia(serviciobovcabezeratransferencia.getPK());
+		bovcabezeratransferencia.setIdtipotransferencia(cetipotransferencia);
+		bovcabezeratransferencia.setNumeroticket(serviciobovcabezeratransferencia.findnt());
+		bovcabezeratransferencia.setId_estadotrasferencia(admdetallecatalogo);
+		bovcabezeratransferencia.setFecha(date);
+		bovcabezeratransferencia.setHora(time);
+		buscaIdCombosOut();
+		serviciobovcabezeratransferencia.create(bovcabezeratransferencia);
+		guardardetalletransferenciaout();
+		// mensaje al crear transferencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se creo la  Transferencia: " + bovcabezeratransferencia.getNumeroticket()));
+
+		cancelar();
+	}
+
+	public void guardardetalletransferenciain() {
+		BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+
+		for (BovDetalleTransferencia detalleTransferecia : listaDetalleTransferencia) {
+			bovdetalletransferencia.setIdDetalleTransferencia(serviciodetalletransferencia.getPK());
+			bovdetalletransferencia.setIdbovtransferencia(bovcabezeratransferencia);
+			bovdetalletransferencia.setCantidad(detalleTransferecia.getCantidad());
+			bovdetalletransferencia.setSubtotal(detalleTransferecia.getSubtotal());
+			bovdetalletransferencia.setIdespecie(detalleTransferecia.getIdespecie());
+
+			serviciodetalletransferencia.create(bovdetalletransferencia);
+		}
+	}
+
+	public void guardardetalletransferenciaout() {
+		BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+
+		for (BovDetalleTransferencia detalleTransferecia : listaDetalleTransferencia) {
+			bovdetalletransferencia.setIdDetalleTransferencia(serviciodetalletransferencia.getPK());
+			bovdetalletransferencia.setIdbovtransferencia(bovcabezeratransferencia);
+			bovdetalletransferencia.setCantidad(detalleTransferecia.getCantidad());
+			bovdetalletransferencia.setSubtotal(detalleTransferecia.getSubtotal());
+			bovdetalletransferencia.setIdespecie(detalleTransferecia.getIdespecie());
+
+			serviciodetalletransferencia.create(bovdetalletransferencia);
+		}
+		cancelar();
+	}
+
+	public void guardardetalletransferencia1() {
+		BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+
+		for (BovDetalleTransferencia detalleTransferecia : listaDetalleTransferencia) {
+			bovdetalletransferencia.setIdDetalleTransferencia(serviciodetalletransferencia.getPK());
+			bovdetalletransferencia.setIdbovtransferencia(bovcabezeratransferencia);
+			bovdetalletransferencia.setCantidad(detalleTransferecia.getCantidad());
+			bovdetalletransferencia.setSubtotal(detalleTransferecia.getSubtotal());
+			bovdetalletransferencia.setIdespecie(detalleTransferecia.getIdespecie());
+
+			serviciodetalletransferencia.create(bovdetalletransferencia);
+		}
+
+		cancelar();
+
+	}
+
+	// metodo que busca la información para guardar
+	public void buscaIdCombosInt() {
+
+		admempleado = servicioadmempleado.findempleado();
+		bovcabezeratransferencia.setIdempleado(admempleado);
+
+		bovbovedacliente = serviciobovbovedacliente.findOne(id_boveda_clienteorigen);
+		bovcabezeratransferencia.setIdobvsaliente(bovbovedacliente);
+
+		bovbovedacliente = serviciobovbovedacliente.findOne(id_boveda_clientedestino);
+		bovcabezeratransferencia.setIdboventrante(bovbovedacliente);
+
+	}
+
+	public void buscaIdCombosOut() {
+
+		admempleado = servicioadmempleado.findempleado();
+		bovcabezeratransferencia.setIdempleado(admempleado);
+
+		bovbovedacliente = serviciobovbovedacliente.findOne(id_boveda_clienteorigen);
+		bovcabezeratransferencia.setIdboventrante(bovbovedacliente);
+
+		bovbovedacliente = serviciobovbovedacliente.findOne(id_boveda_clientedestino);
+		bovcabezeratransferencia.setIdobvsaliente(bovbovedacliente);
+	}
+
+	public void buscaIdCombosInt1() {
+
+		admempleado = servicioadmempleado.findempleado();
+		bovcabezeratransferencia.setIdempleado(admempleado);
+
+		bovbovedacliente = serviciobovbovedacliente.findOne(id_boveda_clienteorigen1);
+		bovcabezeratransferencia.setIdobvsaliente(bovbovedacliente);
+
+		bovbovedacliente = serviciobovbovedacliente.findOne(id_boveda_clientedestino1);
+		bovcabezeratransferencia.setIdboventrante(bovbovedacliente);
+	}
+
+	public void buscaIdCombosOut1() {
+
+		admempleado = servicioadmempleado.findempleado();
+		bovcabezeratransferencia.setIdempleado(admempleado);
+
+		bovbovedacliente = serviciobovbovedacliente.findOne(id_boveda_clienteorigen1);
+		bovcabezeratransferencia.setIdboventrante(bovbovedacliente);
+
+		bovbovedacliente = serviciobovbovedacliente.findOne(id_boveda_clientedestino1);
+		bovcabezeratransferencia.setIdobvsaliente(bovbovedacliente);
+	}
+
+	public void buscaIdCombosdetalletransferencia() {
+
+		bovcabezeratransferencia = serviciobovcabezeratransferencia.findOne(idCabezeratransferencia);
+		bovdetalletransferencia.setIdbovtransferencia(bovcabezeratransferencia);
+	}
+
+	// metodo para eliminar la transferencia
+	@Override
+	public void eliminar() {
+
+		serviciobovcabezeratransferencia.create(bovcabezeratransferencia);
+
+		buscaIdCombosInt();
+		// mensaje al eliminar bovtransferencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se eliminó la  Transferencia: " + bovcabezeratransferencia.getIdCabezeratransferencia()));
+
+		cancelar();
+		admdetallecatalogo = serviciodetallecatalogo.findOne(305);
+		cetipotransferencia = serviciocetipotransferencia.findOne(1);
+		bovtipotransaccion = serviciobovtipotransaccion.findOne(2);
+		bovcabezeratransferencia.setIdtipotransferencia(cetipotransferencia);
+		bovcabezeratransferencia.setIdtipotransaccion(bovtipotransaccion);
+		bovcabezeratransferencia.setNumeroticket(serviciobovcabezeratransferencia.getnumerotiket());
+		bovcabezeratransferencia.setId_estadotrasferencia(admdetallecatalogo);
+		bovcabezeratransferencia.setFecha(date);
+		bovcabezeratransferencia.setHora(time);
+		buscaIdCombosInt();
+		serviciobovcabezeratransferencia.create(bovcabezeratransferencia);
+
+	}
+
+	public void onRowSelectBovedaCliente(SelectEvent event) {
+
+		bovcabezeratransferencia = (BovCabezeratransferencia) event.getObject();
+		idtipotransferencia = cetipotransferencia.getIdTipoTransferencia();
+		idtipotransaccion = bovtipotransaccion.getIdTipoTransaccion();
+		id_boveda_clienteorigen = bovbovedacliente.getIdBovedaCliente();
+		id_boveda_clientedestino = bovbovedacliente.getIdBovedaCliente();
+		idempleado = admempleado.getIdempleado();
+		idestadotransferencia = admdetallecatalogo.getIddetallecatalogo();
+
+		bandera = 1;
+	}
+
+	public void buscaIdCombostransferencia() {
+
+	}
+
+	// metodo para actualizar la transferencia
+	@Override
+	public void actualizar() {
+
+	}
+
+	public void actualizarINIT() {
+		buscaIdCombostransferencia();
+
+		serviciotransferencia.create(bovtransferencia);
+		// mensaje al actualizar bovtransferencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se actualizo la  Transferencia: " + bovcabezeratransferencia.getIdCabezeratransferencia()));
+		cancelar();
+
+	}
+
+	// metodo para consultar los datos que necesito
+	@Override
+	public void consultar() {
+		listacabezeratransferencia = new ArrayList<>();
+		listacabezeratransferencia = serviciobovcabezeratransferencia.findAll();
+
+		listacabezeratransferenciaint = new ArrayList<>();
+		listacabezeratransferenciaint = serviciobovcabezeratransferencia.findAllint();
+
+		listacabezeratransferenciaintcpc = new ArrayList<>();
+		listacabezeratransferenciaintcpc = serviciobovcabezeratransferencia.findAllcpc();
+
+		listacabezeratransferenciaout = new ArrayList<>();
+		listacabezeratransferenciaout = serviciobovcabezeratransferencia.findAllaout();
+
+		listatransferencia = new ArrayList<>();
+		listatransferencia = serviciotransferencia.findAll();
+
+		listatransferenciacpc = new ArrayList<>();
+		listatransferenciacpc = serviciotransferencia.findAll();
+
+		listaestadotransferencia = new ArrayList<>();
+		listaestadotransferencia = serviciodetallecatalogo.estadotransf();
+
+		listabovedacliente = new ArrayList<>();
+		listabovedacliente = serviciobovbovedacliente.findAll();
+
+		listabovedacliente1 = new ArrayList<>();
+		listabovedacliente1 = serviciobovbovedacliente.findboveda();
+
+		listaEspecie = new ArrayList<>();
+		listaEspecie = servicioceespecie.findAll();
+
+	}
+
+	public void getIdEspecie() {
+
+		for (CeEspecie especie : listaEspecie) {
+
+			if (especie.getIdEspecie().equals(idDenominacion)) {
+				bovdetalletransferencia.setIdespecie(especie);
+
+			}
+
+		}
+
+	}
+	
+	public void sumaSutotal() {
+
+		for (BovDetalleTransferencia detalleTransferecia : listaDetalleTransferencia) { 
+
+			valorcantidad = cantidad;
+			
+			suma =   valorcantidad + suma;
+		
+
+		}
+	}
+
+	// Listener cantidades denominacion
+	public void especieCienNUevo(AjaxBehaviorEvent event) {
+		BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+		cien = cantidad * 100;
+
+		idDenominacion = 12;
+		getIdEspecie();
+
+		bovdetalletransferencia.setCantidad(cantidad);
+		bovdetalletransferencia.setSubtotal(cien);
+		bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+		listaDetalleTransferencia.add(bovdetalletransferencia);
+
+		setCienbalas(cantidad / 1000);
+		setCienfajos( cantidad / 100); 	
+		if (cienfajos <= 99) {
+		setCienpicos(cantidad % 100);
+		
+//		sumaSutotal
+
+		}
+		
+		cantidad = null;
+	}
+
+	public void especieCiencunentaNuevo(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			cincuenta = cantidad * 50;
+			idDenominacion = 11;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(cincuenta);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+
+			setCincuentabalas(cantidad / 1000);
+			setCincuentafajos(cantidad / 100); 
+			if (cincuentafajos <= 99) {
+			setCincuentapicos(cantidad % 100);
+
+			}
+			cantidad = null;
+		}
+
+	}
+
+	public void especieVeinteNuevo(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			veinte = cantidad * 20;
+			idDenominacion = 10;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(veinte);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setVeintebalas(cantidad / 1000);
+			setVeintefajos ( cantidad / 100);
+			if (veintefajos <= 99) {
+			setVeintepicos(cantidad % 100);
+			}
+			cantidad = null;
+		}
+
+	}
+
+	public void especieDiezNuevo(AjaxBehaviorEvent event) {
+
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			diez = cantidad * 10;
+			idDenominacion = 9;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(diez);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setDiezbalas(cantidad / 1000);
+			setDiezfajos(cantidad / 100);
+			if (diezfajos <= 99) {
+			setDiezpicos(cantidad % 100);
+			}
+			cantidad = null;
+		}
+
+	}
+
+	public void especieCincoNuevo(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			cinco = cantidad * 5;
+			idDenominacion = 8;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(cinco);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setCincobalas(cantidad / 1000);
+			setCincofajos(cantidad / 100);
+			if (cincofajos <= 99) {
+			setCincopicos(cantidad % 100);
+			}
+			cantidad = null;
+		}
+	}
+
+	public void especieUnoNuevo(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			uno = cantidad * 1;
+			idDenominacion = 7;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(uno);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setUnobalas(cantidad / 1000);
+			setUnofajos(cantidad / 100);
+			if (unofajos <= 99) {
+			setUnopicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void especieCienMutilado(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			cien = cantidad * 100;
+			idDenominacion = 13;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(cien);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setCienbalas (cantidad / 1000); 
+			setCienfajos (cantidad / 100);
+			if (cienfajos <= 99) {
+			setCienpicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void especieCiencunentaMutilado(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			cincuenta = cantidad * 50;
+			idDenominacion = 14;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(cincuenta);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setCincuentabalas(cantidad / 1000);
+			setCincuentafajos (cantidad / 100);
+			if (cincuentafajos <= 99) {
+			setCincuentapicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void especieVeinteMutilado(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			veinte = cantidad * 20;
+			idDenominacion = 15;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(veinte);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setVeintebalas(cantidad / 1000);
+			setVeintefajos(cantidad / 100);
+			if (veintefajos <= 99) {
+			setVeintepicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void especieDiezMutilado(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			diez = cantidad * 10;
+			idDenominacion = 16;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(diez);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setDiezbalas(cantidad / 1000);
+			setDiezfajos ( cantidad / 100);
+			if ( diezfajos<= 99) {
+			setDiezpicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void especieCincoMutilado(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			cinco = cantidad * 5;
+			idDenominacion = 17;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(cinco);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setCincobalas(cantidad / 1000);
+			setCincofajos (cantidad / 100);
+			if (cincofajos <= 99) {
+			setCincopicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void especieUnoMutilado(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			uno = cantidad * 1;
+			idDenominacion = 18;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(uno);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setUnobalas(cantidad / 1000);
+			setUnofajos (cantidad / 100);
+			if (unofajos <= 99) {
+			setUnopicos(cantidad % 100);
+		}
+			
+			cantidad = null;
+		}
+	}
+
+	// acabar
+	public void monedaUno(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			undolar = cantidad * 1;
+			idDenominacion = 6;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(uno);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setUndolarfundas(cantidad / 1000);
+			setUndolarcartuchos (cantidad / 100);
+			if (undolarcartuchos <= 99) {
+			setUndolarpicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void monedaCincuenta(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			cincuentactv = cantidad * 0.50;
+			idDenominacion = 5;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(cincuentactv);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setCincuentactvfundas(cantidad / 1000);
+			setCincuentactvcartuchos(cantidad / 100);
+			if (cincuentactvcartuchos <= 99) {
+			setCincuentactvpicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+
+	}
+
+	public void monedaVeinticinco(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			venteycincoctv = cantidad * 0.25;
+			idDenominacion = 4;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(venteycincoctv);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setVenteycincoctvfundas(cantidad / 1000);
+			setVenteycincoctvcartuchos (cantidad / 100);
+			if (venteycincoctvcartuchos <= 99) {
+			setVenteycincoctvpicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void monedaDiez(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			diezctv = cantidad * 0.10;
+			idDenominacion = 3;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(diezctv);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setDiezctvfundas(cantidad / 1000);
+			setDiezctvcartuchos(cantidad / 100);
+			if (diezctvcartuchos <= 99) {
+			setDiezctvpicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void monedaCinco(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			cincoctv = cantidad * 0.05;
+			idDenominacion = 2;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(cincoctv);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setCincoctvfundas(cantidad / 1000);
+			setCincoctvcartuchos ( cantidad / 100);
+			if (cincoctvcartuchos <= 99) {
+			setCincoctvpicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	public void monedaUnoCent(AjaxBehaviorEvent event) {
+		if (cantidad != null) {
+			BovDetalleTransferencia bovdetalletransferencia = new BovDetalleTransferencia();
+			unctv = cantidad * 0.01;
+			idDenominacion = 1;
+			getIdEspecie();
+
+			bovdetalletransferencia.setCantidad(cantidad);
+			bovdetalletransferencia.setSubtotal(unctv);
+			bovdetalletransferencia.setIdespecie(this.bovdetalletransferencia.getIdespecie());
+			listaDetalleTransferencia.add(bovdetalletransferencia);
+			
+			setUnctvfundas(cantidad / 1000);
+			setUnctvcartuchos(cantidad / 100);
+			if (unctvcartuchos <= 99) {
+			setUnctvpicos(cantidad % 100);
+		}
+			cantidad = null;
+		}
+	}
+
+	// metodo para diferenciar entre guardar y actualizar
+	public void persitir() {
+		if (bandera == 1) {
+
+			actualizarINIT();
+
+		} else {
+			guardarINT();
+		}
+	}
+
+	// Metodo para seleccionar y llenar la información el catálogo al momento de
+	// dar un click sobre la fila
+	public void onRowSelect(SelectEvent event) {
+		bovtransferencia = (BovTransferencia) event.getObject();
+
+		idempleado = bovcabezeratransferencia.getIdempleado().getIdempleado();
+		// id_boveda_cliente =
+		// bovcabezeratransferencia.getIdbovedacliente().getIdBovedaCliente();
+		idtipotransaccion = bovcabezeratransferencia.getIdtipotransaccion().getIdTipoTransaccion();
+		idtipotransferencia = bovcabezeratransferencia.getIdtipotransferencia().getIdTipoTransferencia();
+		bandera = 1;
+	}
+
+	public BovCabezeratransferencia getBovcabezeratransferencia() {
+		return bovcabezeratransferencia;
+	}
+
+	public void setBovcabezeratransferencia(BovCabezeratransferencia bovcabezeratransferencia) {
+		this.bovcabezeratransferencia = bovcabezeratransferencia;
+	}
+
+	public List<BovCabezeratransferencia> getListacabezeratransferencia() {
+		return listacabezeratransferencia;
+	}
+
+	public void setListacabezeratransferencia(List<BovCabezeratransferencia> listacabezeratransferencia) {
+		this.listacabezeratransferencia = listacabezeratransferencia;
+	}
+
+	public List<Admdetallecatalogo> getListaestadotransferencia() {
+		return listaestadotransferencia;
+	}
+
+	public void setListaestadotransferencia(List<Admdetallecatalogo> listaestadotransferencia) {
+		this.listaestadotransferencia = listaestadotransferencia;
+	}
+
+	public List<BovTransferencia> getListatransferenciafiltrado() {
+		return listatransferenciafiltrado;
+	}
+
+	public void setListatransferenciafiltrado(List<BovTransferencia> listatransferenciafiltrado) {
+		this.listatransferenciafiltrado = listatransferenciafiltrado;
+	}
+
+	public BovContadorBoveda getBovcontadorboveda() {
+		return bovcontadorboveda;
+	}
+
+	public void setBovcontadorboveda(BovContadorBoveda bovcontadorboveda) {
+		this.bovcontadorboveda = bovcontadorboveda;
+	}
+
+	public BovBovedaCliente getBovbovedacliente() {
+		return bovbovedacliente;
+	}
+
+	public void setBovbovedacliente(BovBovedaCliente bovbovedacliente) {
+		this.bovbovedacliente = bovbovedacliente;
+	}
+
+	public List<BovBovedaCliente> getListabovedacliente() {
+		return listabovedacliente;
+	}
+
+	public void setListabovedacliente(List<BovBovedaCliente> listabovedacliente) {
+		this.listabovedacliente = listabovedacliente;
+	}
+
+	public BovTipoTransaccion getBovtipotransaccion() {
+		return bovtipotransaccion;
+	}
+
+	public void setBovtipotransaccion(BovTipoTransaccion bovtipotransaccion) {
+		this.bovtipotransaccion = bovtipotransaccion;
+	}
+
+	public CeTipoTransferencia getCetipotransferencia() {
+		return cetipotransferencia;
+	}
+
+	public void setCetipotransferencia(CeTipoTransferencia cetipotransferencia) {
+		this.cetipotransferencia = cetipotransferencia;
+	}
+
+	public BovTransferencia getBovtransferencia() {
+		return bovtransferencia;
+	}
+
+	public void setBovtransferencia(BovTransferencia bovtransferencia) {
+		this.bovtransferencia = bovtransferencia;
+	}
+
+	public List<BovTransferencia> getListatransferencia() {
+		return listatransferencia;
+	}
+
+	public void setListatransferencia(List<BovTransferencia> listatransferencia) {
+		this.listatransferencia = listatransferencia;
+	}
+
+	public Admdetallecatalogo getAdmdetallecatalogo() {
+		return admdetallecatalogo;
+	}
+
+	public void setAdmdetallecatalogo(Admdetallecatalogo admdetallecatalogo) {
+		this.admdetallecatalogo = admdetallecatalogo;
+	}
+
+	public List<Admdetallecatalogo> getListadetallecatalogo() {
+		return listadetallecatalogo;
+	}
+
+	public void setListadetallecatalogo(List<Admdetallecatalogo> listadetallecatalogo) {
+		this.listadetallecatalogo = listadetallecatalogo;
+	}
+
+	public Admempleado getAdmempleado() {
+		return admempleado;
+	}
+
+	public void setAdmempleado(Admempleado admempleado) {
+		this.admempleado = admempleado;
+	}
+
+	public BovDetalleTransferencia getBovdetalletransferencia() {
+		return bovdetalletransferencia;
+	}
+
+	public void setBovdetalletransferencia(BovDetalleTransferencia bovdetalletransferencia) {
+		this.bovdetalletransferencia = bovdetalletransferencia;
+	}
+
+	public ServicioBovTransferencia getServiciotransferencia() {
+		return serviciotransferencia;
+	}
+
+	public void setServiciotransferencia(ServicioBovTransferencia serviciotransferencia) {
+		this.serviciotransferencia = serviciotransferencia;
+	}
+
+	public ServicioBovContadorBoveda getServiciocontadorboveda() {
+		return serviciocontadorboveda;
+	}
+
+	public void setServiciocontadorboveda(ServicioBovContadorBoveda serviciocontadorboveda) {
+		this.serviciocontadorboveda = serviciocontadorboveda;
+	}
+
+	public ServicioBovBovedaCliente getServiciobovbovedacliente() {
+		return serviciobovbovedacliente;
+	}
+
+	public void setServiciobovbovedacliente(ServicioBovBovedaCliente serviciobovbovedacliente) {
+		this.serviciobovbovedacliente = serviciobovbovedacliente;
+	}
+
+	public ServicioBovTipoTransaccion getServiciobovtipotransaccion() {
+		return serviciobovtipotransaccion;
+	}
+
+	public void setServiciobovtipotransaccion(ServicioBovTipoTransaccion serviciobovtipotransaccion) {
+		this.serviciobovtipotransaccion = serviciobovtipotransaccion;
+	}
+
+	public ServicioCeTipoTransferencia getServiciocetipotransferencia() {
+		return serviciocetipotransferencia;
+	}
+
+	public void setServiciocetipotransferencia(ServicioCeTipoTransferencia serviciocetipotransferencia) {
+		this.serviciocetipotransferencia = serviciocetipotransferencia;
+	}
+
+	public ServicioBovCabezeratransferencia getServiciobovcabezeratransferencia() {
+		return serviciobovcabezeratransferencia;
+	}
+
+	public void setServiciobovcabezeratransferencia(ServicioBovCabezeratransferencia serviciobovcabezeratransferencia) {
+		this.serviciobovcabezeratransferencia = serviciobovcabezeratransferencia;
+	}
+
+	public ServicioAdmEmpleado getServicioadmempleado() {
+		return servicioadmempleado;
+	}
+
+	public void setServicioadmempleado(ServicioAdmEmpleado servicioadmempleado) {
+		this.servicioadmempleado = servicioadmempleado;
+	}
+
+	public ServicioAdmDetalleCatalogo getServiciodetallecatalogo() {
+		return serviciodetallecatalogo;
+	}
+
+	public void setServiciodetallecatalogo(ServicioAdmDetalleCatalogo serviciodetallecatalogo) {
+		this.serviciodetallecatalogo = serviciodetallecatalogo;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Time getTime() {
+		return time;
+	}
+
+	public void setTime(Time time) {
+		this.time = time;
+	}
+
+	public int getIdestado() {
+		return idestado;
+	}
+
+	public void setIdestado(int idestado) {
+		this.idestado = idestado;
+	}
+
+	public Integer getBandera() {
+		return bandera;
+	}
+
+	public void setBandera(Integer bandera) {
+		this.bandera = bandera;
+	}
+
+	public Integer getIdempleado() {
+		return idempleado;
+	}
+
+	public void setIdempleado(Integer idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public Integer getIdempleadodestino() {
+		return idempleadodestino;
+	}
+
+	public void setIdempleadodestino(Integer idempleadodestino) {
+		this.idempleadodestino = idempleadodestino;
+	}
+
+	public Integer getIdestadotransferencia() {
+		return idestadotransferencia;
+	}
+
+	public void setIdestadotransferencia(Integer idestadotransferencia) {
+		this.idestadotransferencia = idestadotransferencia;
+	}
+
+	public Integer getIdcontadorboveda() {
+		return idcontadorboveda;
+	}
+
+	public void setIdcontadorboveda(Integer idcontadorboveda) {
+		this.idcontadorboveda = idcontadorboveda;
+	}
+
+	public Integer getIdtipotransaccion() {
+		return idtipotransaccion;
+	}
+
+	public void setIdtipotransaccion(Integer idtipotransaccion) {
+		this.idtipotransaccion = idtipotransaccion;
+	}
+
+	public Integer getIdtipotransferencia() {
+		return idtipotransferencia;
+	}
+
+	public void setIdtipotransferencia(Integer idtipotransferencia) {
+		this.idtipotransferencia = idtipotransferencia;
+	}
+
+	public double getSubtotal() {
+		return subtotal;
+	}
+
+	public void setSubtotal(double subtotal) {
+		this.subtotal = subtotal;
+	}
+
+	public double getCien() {
+		return cien;
+	}
+
+	public void setCien(double cien) {
+		this.cien = cien;
+	}
+
+	public CeEspecie getCeespecie() {
+		return ceespecie;
+	}
+
+	public void setCeespecie(CeEspecie ceespecie) {
+		this.ceespecie = ceespecie;
+	}
+
+	public ServicioBovDetalleTransferencia getServiciodetalletransferencia() {
+		return serviciodetalletransferencia;
+	}
+
+	public void setServiciodetalletransferencia(ServicioBovDetalleTransferencia serviciodetalletransferencia) {
+		this.serviciodetalletransferencia = serviciodetalletransferencia;
+	}
+
+	public ServicioCeEspecie getServicioceespecie() {
+		return servicioceespecie;
+	}
+
+	public void setServicioceespecie(ServicioCeEspecie servicioceespecie) {
+		this.servicioceespecie = servicioceespecie;
+	}
+
+	public Integer getIdCabezeratransferencia() {
+		return idCabezeratransferencia;
+	}
+
+	public void setIdCabezeratransferencia(Integer idCabezeratransferencia) {
+		this.idCabezeratransferencia = idCabezeratransferencia;
+	}
+
+	public Integer getIdespecie() {
+		return idespecie;
+	}
+
+	public void setIdespecie(Integer idespecie) {
+		this.idespecie = idespecie;
+	}
+
+	public double getCincuenta() {
+		return cincuenta;
+	}
+
+	public void setCincuenta(double cincuenta) {
+		this.cincuenta = cincuenta;
+	}
+
+	public double getVeinte() {
+		return veinte;
+	}
+
+	public void setVeinte(double veinte) {
+		this.veinte = veinte;
+	}
+
+	public double getDiez() {
+		return diez;
+	}
+
+	public void setDiez(double diez) {
+		this.diez = diez;
+	}
+
+	public double getCinco() {
+		return cinco;
+	}
+
+	public void setCinco(double cinco) {
+		this.cinco = cinco;
+	}
+
+	public double getUno() {
+		return uno;
+	}
+
+	public void setUno(double uno) {
+		this.uno = uno;
+	}
+
+	public double getUndolar() {
+		return undolar;
+	}
+
+	public void setUndolar(double undolar) {
+		this.undolar = undolar;
+	}
+
+	public double getCincuentactv() {
+		return cincuentactv;
+	}
+
+	public void setCincuentactv(double cincuentactv) {
+		this.cincuentactv = cincuentactv;
+	}
+
+	public double getVenteycincoctv() {
+		return venteycincoctv;
+	}
+
+	public void setVenteycincoctv(double venteycincoctv) {
+		this.venteycincoctv = venteycincoctv;
+	}
+
+	public double getDiezctv() {
+		return diezctv;
+	}
+
+	public void setDiezctv(double diezctv) {
+		this.diezctv = diezctv;
+	}
+
+	public double getCincoctv() {
+		return cincoctv;
+	}
+
+	public void setCincoctv(double cincoctv) {
+		this.cincoctv = cincoctv;
+	}
+
+	public double getUnctv() {
+		return unctv;
+	}
+
+	public void setUnctv(double unctv) {
+		this.unctv = unctv;
+	}
+
+	public void setIdestado(Integer idestado) {
+		this.idestado = idestado;
+	}
+
+	public double getCien1() {
+		return cien1;
+	}
+
+	public void setCien1(double cien1) {
+		this.cien1 = cien1;
+	}
+
+	public double veintebalas() {
+		return cincuenta1;
+	}
+
+	public void setCincuenta1(double cincuenta1) {
+		this.cincuenta1 = cincuenta1;
+	}
+
+	public double getVeinte1() {
+		return veinte1;
+	}
+
+	public void setVeinte1(double veinte1) {
+		this.veinte1 = veinte1;
+	}
+
+	public double getDiez1() {
+		return diez1;
+	}
+
+	public void setDiez1(double diez1) {
+		this.diez1 = diez1;
+	}
+
+	public double getCinco1() {
+		return cinco1;
+	}
+
+	public void setCinco1(double cinco1) {
+		this.cinco1 = cinco1;
+	}
+
+	public double getUno1() {
+		return uno1;
+	}
+
+	public void setUno1(double uno1) {
+		this.uno1 = uno1;
+	}
+
+	public double getCien2() {
+		return cien2;
+	}
+
+	public void setCien2(double cien2) {
+		this.cien2 = cien2;
+	}
+
+	public double getCincuenta2() {
+		return cincuenta2;
+	}
+
+	public void setCincuenta2(double cincuenta2) {
+		this.cincuenta2 = cincuenta2;
+	}
+
+	public double getVeinte2() {
+		return veinte2;
+	}
+
+	public void setVeinte2(double veinte2) {
+		this.veinte2 = veinte2;
+	}
+
+	public double getDiez2() {
+		return diez2;
+	}
+
+	public void setDiez2(double diez2) {
+		this.diez2 = diez2;
+	}
+
+	public double getCinco2() {
+		return cinco2;
+	}
+
+	public void setCinco2(double cinco2) {
+		this.cinco2 = cinco2;
+	}
+
+	public double getUno2() {
+		return uno2;
+	}
+
+	public void setUno2(double uno2) {
+		this.uno2 = uno2;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+
+	public double getUndolar1() {
+		return undolar1;
+	}
+
+	public void setUndolar1(double undolar1) {
+		this.undolar1 = undolar1;
+	}
+
+	public double getCincuentactv1() {
+		return cincuentactv1;
+	}
+
+	public void setCincuentactv1(double cincuentactv1) {
+		this.cincuentactv1 = cincuentactv1;
+	}
+
+	public double getVenteycincoctv1() {
+		return venteycincoctv1;
+	}
+
+	public void setVenteycincoctv1(double venteycincoctv1) {
+		this.venteycincoctv1 = venteycincoctv1;
+	}
+
+	public double getDiezctv1() {
+		return diezctv1;
+	}
+
+	public void setDiezctv1(double diezctv1) {
+		this.diezctv1 = diezctv1;
+	}
+
+	public double getCincoctv1() {
+		return cincoctv1;
+	}
+
+	public void setCincoctv1(double cincoctv1) {
+		this.cincoctv1 = cincoctv1;
+	}
+
+	public double getUnctv1() {
+		return unctv1;
+	}
+
+	public void setUnctv1(double unctv1) {
+		this.unctv1 = unctv1;
+	}
+
+	public double getTotal1() {
+		return total1;
+	}
+
+	public void setTotal1(double total1) {
+		this.total1 = total1;
+	}
+
+	public double getUndolar2() {
+		return undolar2;
+	}
+
+	public void setUndolar2(double undolar2) {
+		this.undolar2 = undolar2;
+	}
+
+	public double getCincuentactv2() {
+		return cincuentactv2;
+	}
+
+	public void setCincuentactv2(double cincuentactv2) {
+		this.cincuentactv2 = cincuentactv2;
+	}
+
+	public double getVenteycincoctv2() {
+		return venteycincoctv2;
+	}
+
+	public void setVenteycincoctv2(double venteycincoctv2) {
+		this.venteycincoctv2 = venteycincoctv2;
+	}
+
+	public double getDiezctv2() {
+		return diezctv2;
+	}
+
+	public void setDiezctv2(double diezctv2) {
+		this.diezctv2 = diezctv2;
+	}
+
+	public double getCincoctv2() {
+		return cincoctv2;
+	}
+
+	public void setCincoctv2(double cincoctv2) {
+		this.cincoctv2 = cincoctv2;
+	}
+
+	public double getUnctv2() {
+		return unctv2;
+	}
+
+	public void setUnctv2(double unctv2) {
+		this.unctv2 = unctv2;
+	}
+
+	public double getTotal2() {
+		return total2;
+	}
+
+	public void setTotal2(double total2) {
+		this.total2 = total2;
+	}
+
+	public Integer getId_boveda_clienteorigen() {
+		return id_boveda_clienteorigen;
+	}
+
+	public void setId_boveda_clienteorigen(Integer id_boveda_clienteorigen) {
+		this.id_boveda_clienteorigen = id_boveda_clienteorigen;
+	}
+
+	public Integer getId_boveda_clientedestino() {
+		return id_boveda_clientedestino;
+	}
+
+	public void setId_boveda_clientedestino(Integer id_boveda_clientedestino) {
+		this.id_boveda_clientedestino = id_boveda_clientedestino;
+	}
+
+	public Integer getId_boveda_clienteorigen1() {
+		return id_boveda_clienteorigen1;
+	}
+
+	public void setId_boveda_clienteorigen1(Integer id_boveda_clienteorigen1) {
+		this.id_boveda_clienteorigen1 = id_boveda_clienteorigen1;
+	}
+
+	public Integer getId_boveda_clientedestino1() {
+		return id_boveda_clientedestino1;
+	}
+
+	public void setId_boveda_clientedestino1(Integer id_boveda_clientedestino1) {
+		this.id_boveda_clientedestino1 = id_boveda_clientedestino1;
+	}
+
+	public List<BovBovedaCliente> getListabovedacliente1() {
+		return listabovedacliente1;
+	}
+
+	public void setListabovedacliente1(List<BovBovedaCliente> listabovedacliente1) {
+		this.listabovedacliente1 = listabovedacliente1;
+	}
+
+	public List<BovDetalleTransferencia> getListaDetalleTransferencia() {
+		return listaDetalleTransferencia;
+	}
+
+	public void setListaDetalleTransferencia(List<BovDetalleTransferencia> listaDetalleTransferencia) {
+		this.listaDetalleTransferencia = listaDetalleTransferencia;
+	}
+
+	public Integer getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public List<CeEspecie> getListaEspecie() {
+		return listaEspecie;
+	}
+
+	public void setListaEspecie(List<CeEspecie> listaEspecie) {
+		this.listaEspecie = listaEspecie;
+	}
+
+	public int getIdDenominacion() {
+		return idDenominacion;
+	}
+
+	public void setIdDenominacion(int idDenominacion) {
+		this.idDenominacion = idDenominacion;
+	}
+
+	public List<BovTransferencia> getListatransferenciacpc() {
+		return listatransferenciacpc;
+	}
+
+	public void setListatransferenciacpc(List<BovTransferencia> listatransferenciacpc) {
+		this.listatransferenciacpc = listatransferenciacpc;
+	}
+
+	public List<BovCabezeratransferencia> getListacabezeratransferenciaint() {
+		return listacabezeratransferenciaint;
+	}
+
+	public void setListacabezeratransferenciaint(List<BovCabezeratransferencia> listacabezeratransferenciaint) {
+		this.listacabezeratransferenciaint = listacabezeratransferenciaint;
+	}
+
+	public List<BovCabezeratransferencia> getListacabezeratransferenciaout() {
+		return listacabezeratransferenciaout;
+	}
+
+	public void setListacabezeratransferenciaout(List<BovCabezeratransferencia> listacabezeratransferenciaout) {
+		this.listacabezeratransferenciaout = listacabezeratransferenciaout;
+	}
+
+	public List<BovCabezeratransferencia> getListacabezeratransferenciaintcpc() {
+		return listacabezeratransferenciaintcpc;
+	}
+
+	public void setListacabezeratransferenciaintcpc(List<BovCabezeratransferencia> listacabezeratransferenciaintcpc) {
+		this.listacabezeratransferenciaintcpc = listacabezeratransferenciaintcpc;
+	}
+
+	public double getCienbalas() {
+		return cienbalas;
+	}
+
+	public void setCienbalas(double cienbalas) {
+		this.cienbalas = cienbalas;
+	}
+
+	public double getCincuentabalas() {
+		return cincuentabalas;
+	}
+
+	public void setCincuentabalas(double cincuentabalas) {
+		this.cincuentabalas = cincuentabalas;
+	}
+
+	public double getVeintebalas() {
+		return veintebalas;
+	}
+
+	public void setVeintebalas(double veintebalas) {
+		this.veintebalas = veintebalas;
+	}
+
+	public double getDiezbalas() {
+		return diezbalas;
+	}
+
+	public void setDiezbalas(double diezbalas) {
+		this.diezbalas = diezbalas;
+	}
+
+	public double getCincobalas() {
+		return cincobalas;
+	}
+
+	public void setCincobalas(double cincobalas) {
+		this.cincobalas = cincobalas;
+	}
+
+	public double getUnobalas() {
+		return unobalas;
+	}
+
+	public void setUnobalas(double unobalas) {
+		this.unobalas = unobalas;
+	}
+
+	public double getUndolarfundas() {
+		return undolarfundas;
+	}
+
+	public void setUndolarfundas(double undolarfundas) {
+		this.undolarfundas = undolarfundas;
+	}
+
+	public double getCincuentactvfundas() {
+		return cincuentactvfundas;
+	}
+
+	public void setCincuentactvfundas(double cincuentactvfundas) {
+		this.cincuentactvfundas = cincuentactvfundas;
+	}
+
+	public double getVenteycincoctvfundas() {
+		return venteycincoctvfundas;
+	}
+
+	public void setVenteycincoctvfundas(double venteycincoctvfundas) {
+		this.venteycincoctvfundas = venteycincoctvfundas;
+	}
+
+	public double getDiezctvfundas() {
+		return diezctvfundas;
+	}
+
+	public void setDiezctvfundas(double diezctvfundas) {
+		this.diezctvfundas = diezctvfundas;
+	}
+
+	public double getCincoctvfundas() {
+		return cincoctvfundas;
+	}
+
+	public void setCincoctvfundas(double cincoctvfundas) {
+		this.cincoctvfundas = cincoctvfundas;
+	}
+
+	public double getUnctvfundas() {
+		return unctvfundas;
+	}
+
+	public void setUnctvfundas(double unctvfundas) {
+		this.unctvfundas = unctvfundas;
+	}
+
+	public double getCienpicos() {
+		return cienpicos;
+	}
+
+	public void setCienpicos(double cienpicos) {
+		this.cienpicos = cienpicos;
+	}
+
+	public double getCienfajos() {
+		return cienfajos;
+	}
+
+	public void setCienfajos(double cienfajos) {
+		this.cienfajos = cienfajos;
+	}
+
+	public double getCincuentapicos() {
+		return cincuentapicos;
+	}
+
+	public void setCincuentapicos(double cincuentapicos) {
+		this.cincuentapicos = cincuentapicos;
+	}
+
+	public double getVeintepicos() {
+		return veintepicos;
+	}
+
+	public void setVeintepicos(double veintepicos) {
+		this.veintepicos = veintepicos;
+	}
+
+	public double getDiezpicos() {
+		return diezpicos;
+	}
+
+	public void setDiezpicos(double diezpicos) {
+		this.diezpicos = diezpicos;
+	}
+
+	public double getCincopicos() {
+		return cincopicos;
+	}
+
+	public void setCincopicos(double cincopicos) {
+		this.cincopicos = cincopicos;
+	}
+
+	public double getSubtotalpicos() {
+		return subtotalpicos;
+	}
+
+	public void setSubtotalpicos(double subtotalpicos) {
+		this.subtotalpicos = subtotalpicos;
+	}
+
+	public double getUnopicos() {
+		return unopicos;
+	}
+
+	public void setUnopicos(double unopicos) {
+		this.unopicos = unopicos;
+	}
+
+	public double getUndolarpicos() {
+		return undolarpicos;
+	}
+
+	public void setUndolarpicos(double undolarpicos) {
+		this.undolarpicos = undolarpicos;
+	}
+
+	public double getCincuentactvpicos() {
+		return cincuentactvpicos;
+	}
+
+	public void setCincuentactvpicos(double cincuentactvpicos) {
+		this.cincuentactvpicos = cincuentactvpicos;
+	}
+
+	public double getVenteycincoctvpicos() {
+		return venteycincoctvpicos;
+	}
+
+	public void setVenteycincoctvpicos(double venteycincoctvpicos) {
+		this.venteycincoctvpicos = venteycincoctvpicos;
+	}
+
+	public double getDiezctvpicos() {
+		return diezctvpicos;
+	}
+
+	public void setDiezctvpicos(double diezctvpicos) {
+		this.diezctvpicos = diezctvpicos;
+	}
+
+	public double getCincoctvpicos() {
+		return cincoctvpicos;
+	}
+
+	public void setCincoctvpicos(double cincoctvpicos) {
+		this.cincoctvpicos = cincoctvpicos;
+	}
+
+	public double getUnctvpicos() {
+		return unctvpicos;
+	}
+
+	public void setUnctvpicos(double unctvpicos) {
+		this.unctvpicos = unctvpicos;
+	}
+
+	public Integer getValidarGuardar() {
+		return validarGuardar;
+	}
+
+	public void setValidarGuardar(Integer validarGuardar) {
+		this.validarGuardar = validarGuardar;
+	}
+
+	public double getSubtotalfajos() {
+		return subtotalfajos;
+	}
+
+	public void setSubtotalfajos(double subtotalfajos) {
+		this.subtotalfajos = subtotalfajos;
+	}
+
+	public double getCincuentafajos() {
+		return cincuentafajos;
+	}
+
+	public void setCincuentafajos(double cincuentafajos) {
+		this.cincuentafajos = cincuentafajos;
+	}
+
+	public double getVeintefajos() {
+		return veintefajos;
+	}
+
+	public void setVeintefajos(double veintefajos) {
+		this.veintefajos = veintefajos;
+	}
+
+	public double getDiezfajos() {
+		return diezfajos;
+	}
+
+	public void setDiezfajos(double diezfajos) {
+		this.diezfajos = diezfajos;
+	}
+
+	public double getCincofajos() {
+		return cincofajos;
+	}
+
+	public void setCincofajos(double cincofajos) {
+		this.cincofajos = cincofajos;
+	}
+
+	public double veintepicos() {
+		return unofajos;
+	}
+
+	public void setUnofajos(double unofajos) {
+		this.unofajos = unofajos;
+	}
+
+	public double getUndolarcartuchos() {
+		return undolarcartuchos;
+	}
+
+	public void setUndolarcartuchos(double undolarcartuchos) {
+		this.undolarcartuchos = undolarcartuchos;
+	}
+
+	public double getCincuentactvcartuchos() {
+		return cincuentactvcartuchos;
+	}
+
+	public void setCincuentactvcartuchos(double cincuentactvcartuchos) {
+		this.cincuentactvcartuchos = cincuentactvcartuchos;
+	}
+
+	public double getVenteycincoctvcartuchos() {
+		return venteycincoctvcartuchos;
+	}
+
+	public void setVenteycincoctvcartuchos(double venteycincoctvcartuchos) {
+		this.venteycincoctvcartuchos = venteycincoctvcartuchos;
+	}
+
+	public double getDiezctvcartuchos() {
+		return diezctvcartuchos;
+	}
+
+	public void setDiezctvcartuchos(double diezctvcartuchos) {
+		this.diezctvcartuchos = diezctvcartuchos;
+	}
+
+	public double getCincoctvcartuchos() {
+		return cincoctvcartuchos;
+	}
+
+	public void setCincoctvcartuchos(double cincoctvcartuchos) {
+		this.cincoctvcartuchos = cincoctvcartuchos;
+	}
+
+	public double getUnctvcartuchos() {
+		return unctvcartuchos;
+	}
+
+	public void setUnctvcartuchos(double unctvcartuchos) {
+		this.unctvcartuchos = unctvcartuchos;
+	}
+
+	public double getValorcantidad() {
+		return valorcantidad;
+	}
+
+	public void setValorcantidad(double valorcantidad) {
+		this.valorcantidad = valorcantidad;
+	}
+
+	public double getSuma() {
+		return suma;
+	}
+
+	public void setSuma(double suma) {
+		this.suma = suma;
+	}
+
+
+}

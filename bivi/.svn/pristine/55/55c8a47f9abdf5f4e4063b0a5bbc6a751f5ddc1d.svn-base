@@ -1,0 +1,102 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import com.scm.modelo.administracion.Admmenu;
+import com.scm.modelo.administracion.Admrol;
+import com.scm.modelo.administracion.Admrolmenu;
+import com.scm.modelo.administracion.Admrolusuario;
+import com.scm.modelo.administracion.Admusuario;
+
+
+
+@Stateless
+public class ServicioAdmRolMenu {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(Admrolmenu admrolmenu) {
+		em.persist(admrolmenu);
+	}
+	
+	public void delete(Admrolmenu admrolmenu) {
+		em.remove(em.merge(admrolmenu));
+	}
+	
+	public void update(Admrolmenu admrolmenu){
+	
+		em.merge(admrolmenu);
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Admrolmenu> menuesAsignados(Admrol us) {
+		System.out.println("El rol traido es  "+us.getIdrol());
+		Query q = em.createQuery("select c from Admrolmenu c where c.idrol = "+us.getIdrol());
+		return q.getResultList();
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Admrolmenu> findAll() {
+		/*CriteriaBuilder cb = em.getCriteriaBuilder();
+
+		 CriteriaQuery<Admrolmenu> q = cb.createQuery(Admrolmenu.class);
+		  Root<Admrolmenu> c = q.from(Admrolmenu.class);
+		  q.select(c.get("admmenu")).distinct(true);
+	  
+
+	    return q.getResultList();*/
+		
+		Query q = em.createQuery("select distinct c.admmenu.idmenu from Admrolmenu c where c.admrol in (select a.admrol from Admrolusuario a where a.admusuario = 1)  "); 
+		return  q.getResultList();
+		
+		//Query q = em.createQuery("select distinct c.admmenu.idmenu from Admrolmenu c  where c.admrol in (select a.admrol from Admrolusuario a where a.admusuario = "+idusuario+") group by c.admmenu.idmenu ");
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Admrolmenu> menuAsignados(Admrol rol) {
+		Query q = em.createQuery("select c from Admrolmenu c where c.admrol = "+rol.getIdrol());
+		return q.getResultList();
+	}
+	
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admrolmenu ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public Admrolmenu findOne(Integer codigorolmmenu){
+		Query q = em.createQuery("select c from Admrolmenu c where c.idrolmenu = " + codigorolmmenu);
+		return (Admrolmenu) q.getSingleResult();
+	}
+	
+	public List<Admmenu> pornombresemejante(String nombre) {
+		return em.createQuery("select c from Admmenu c where c.nombres like :nombres", Admmenu.class)
+				.setParameter("nombres", "%" + nombre + "%")
+				.getResultList();
+	}
+
+	
+	
+
+
+}

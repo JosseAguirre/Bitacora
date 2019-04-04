@@ -1,0 +1,662 @@
+package com.scm.bean.preboveda;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.SelectEvent;
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.AdmSucursal;
+import com.scm.modelo.administracion.Admcliente;
+import com.scm.modelo.preboveda.BovBoveda;
+import com.scm.modelo.preboveda.BovBovedaBovedaCliente;
+import com.scm.modelo.preboveda.BovBovedaCliente;
+import com.scm.modelo.preboveda.BovDetalleBoveda;
+import com.scm.modelo.preboveda.BovDetalleBovedaCliente;
+import com.scm.servicio.administracion.ServicioAdmCliente;
+import com.scm.servicio.administracion.ServicioAdmSucursal;
+import com.scm.servicio.boveda.ServicioBovBoveda;
+import com.scm.servicio.boveda.ServicioBovBovedaBovedaCliente;
+import com.scm.servicio.boveda.ServicioBovBovedaCliente;
+import com.scm.servicio.boveda.ServicioBovDetalleBoveda;
+import com.scm.servicio.boveda.ServicioBovDetalleBovedaCliente;
+
+@ManagedBean
+@ViewScoped
+public class BovBovedaBean implements Interface, Serializable {
+
+	private static final long serialVersionUID = 1L;
+	// Creo las variables y listas que necesitaremos para las consultas
+	private BovBoveda bovboveda;
+	private BovDetalleBoveda bovdetalleboveda;
+	private List<BovBoveda> listaboveda;
+	private List<BovBoveda> bovedafiltrado;
+	private List<BovDetalleBoveda> listadetalleboveda;
+
+	private BovBovedaCliente bovbovedacliente;
+	private List<BovBovedaCliente> listabovedacliente;
+	private List<BovBovedaCliente> bovedaclientefiltrado;
+	private BovDetalleBovedaCliente bovdetallebovedacliente;
+	private List<BovDetalleBovedaCliente> listadetallebovedacliente;
+	private List<BovDetalleBovedaCliente> detallebovedaclientefiltrado;
+	private List<BovDetalleBovedaCliente> listatotal;
+	private BovBovedaBovedaCliente bovbovedabovedacliente;
+	private List<BovBovedaBovedaCliente> listabovedabovedacliente;
+	private List<BovBovedaBovedaCliente> listabovedabovedacliente1;
+	private List<BovBovedaBovedaCliente> listabovbovclien;
+	private AdmSucursal admsucursalempresa;
+	private List<AdmSucursal> listasucursalempresa;
+	private Admcliente admcliente;
+	private List<Admcliente> listacliente;
+	private List<Admcliente> clientefilrado;
+
+	// Creo las variables que usare
+	private int id_boveda;
+	private int idcliente;
+	private Integer idcliente_bovboveda_cliente;
+	private BigDecimal total;
+	private BigDecimal altura;
+	private BigDecimal ancho;
+	private BigDecimal largo;
+	private Integer idsucursalempresa;
+	private int id_espacio_boveda;
+	private int id_boveda_cliente;
+	private Integer bandera;
+	private int fajos = 1 ;// 100 billetes de la misma denominación
+	private int bala = 1;// 10 fajos de la misma denominación
+	private String valoractual;
+	private double sum;
+	private Integer Picos = 1;
+	private Integer x;
+
+
+	// creo un metodo que me permitira calcular el valor total
+	public double getAllTotal() {
+
+		for (BovDetalleBovedaCliente b : listadetallebovedacliente) {
+			sum = b.getTotal();
+		}
+
+		return sum;
+	}
+
+	
+	// creo los EJB para establecer la comunicacion con los servicios de los
+	// respectivos modelos
+	@EJB
+	private ServicioBovBoveda serviciobovboveda;
+	@EJB
+	private ServicioBovDetalleBoveda serviciobovdetalleboveda;
+	@EJB
+	private ServicioBovBovedaCliente serviciobovbovedacliente;
+	@EJB
+	private ServicioBovDetalleBovedaCliente serviciobovdetallebovedacliente;
+	@EJB
+	private ServicioBovBovedaBovedaCliente serviciobovbovedabovedacliente;
+	@EJB
+	private ServicioAdmSucursal servicioadmsucursal;
+	@EJB
+	private ServicioAdmCliente serviciocliente;
+
+	// el primer metodo que se ejecuta
+	@Override
+	@PostConstruct
+	public void init() {
+		
+		
+		//admcliente = new Admcliente();
+		cancelar();
+	}
+
+	// Metodo que permite guardar la bóveda
+	@Override
+	public void guardar() {
+		bovboveda.setIdBoveda(serviciobovboveda.getPK());
+		buscaIdCombos();	
+		serviciobovboveda.create(bovboveda);
+		// Mensaje que se muestra al crear una bóveda
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se registró la Bóveda: " + bovboveda.getNombre()));
+		cancelar();
+	}
+	
+
+	// Metodo que permite guardar la boveda cliente
+	public void guardar1() {
+
+		bovbovedacliente.setIdBovedaCliente(serviciobovbovedacliente.getPK());
+		buscaIdCombos1();
+		serviciobovbovedacliente.create(bovbovedacliente);
+		//mensaje mostrado al guardar
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se registró la Bóveda del Cliente: " + bovbovedacliente.getNombre()));
+		cancelar1();
+	}
+
+	// busca la información en los diferentes modelos para la tabla bovBoveda
+	public void buscaIdCombos() {
+
+		admsucursalempresa = servicioadmsucursal.findOne(idsucursalempresa);
+		bovboveda.setIdsucursal(admsucursalempresa);
+
+	}
+
+	// busca la información en los diferentes modelos para la tabla
+	// bovBovedacliente
+	public void buscaIdCombos1() {
+		
+		admcliente = serviciocliente.findOne(idcliente);
+		bovbovedacliente.setIdcliente(admcliente);
+	}
+
+	// es el primer metodo que se ejecuta para la bóveda
+	public void persitir() {
+		if (bandera == 1) {
+			actualizar();
+		} else {
+			guardar();
+		}
+	}
+
+	// es el primer metodo que se ejecuta para la bóveda cliente
+	public void persitir1() {
+		if (bandera == 1) {
+			actualizar1();
+		} else {
+			guardar1();
+		}
+	}
+
+	// Metodo consultar en los modelos
+	@Override
+	public void consultar() {
+
+		listaboveda = new ArrayList<>();
+		listaboveda = serviciobovboveda.findAll();
+
+		listadetalleboveda = new ArrayList<>();
+		listadetalleboveda = serviciobovdetalleboveda.findAll();
+
+		listabovedacliente = new ArrayList<>(); 
+		listabovedacliente = serviciobovbovedacliente.findAll();
+
+		listadetallebovedacliente = new ArrayList<>();
+		listadetallebovedacliente = serviciobovdetallebovedacliente.findAll();
+
+		listabovedabovedacliente = new ArrayList<>();
+		listabovedabovedacliente = serviciobovbovedabovedacliente.findAll();
+		
+		/*listabovedabovedacliente1 = new ArrayList<>();
+		listabovedabovedacliente1 = serviciobovbovedabovedacliente.findBovCliente();*/
+		
+		listasucursalempresa = new ArrayList<>();
+		listasucursalempresa = servicioadmsucursal.findAll();
+
+		listacliente = new ArrayList<>();
+		listacliente = serviciocliente.findcli();
+
+		setListatotal(new ArrayList<>());
+		setListatotal(serviciobovdetallebovedacliente.findtotal());
+		
+		/*BovBovedaBovedaCliente bbc = new BovBovedaBovedaCliente();
+		bbc = serviciobovbovedabovedacliente.findOne(id_boveda);
+		listabovbovclien = new ArrayList<>();
+		listabovbovclien = serviciobovbovedabovedacliente.findbbc(bbc);*/
+
+	}
+	
+
+	// Creo el metodo para cancelar bóveda
+	@Override
+	public void cancelar() {
+		bovbovedacliente = new BovBovedaCliente();
+		bovboveda = new BovBoveda();
+		admsucursalempresa = new AdmSucursal();
+		admcliente = new Admcliente();
+		id_boveda = -1;// paara volver el id al valor anterior
+		bandera = 0;
+		consultar();
+		
+	}
+
+	// Creo el metodo para cancelar bóveda cliente
+	public void cancelar1() {
+		bovbovedacliente = new BovBovedaCliente();
+		admcliente = new Admcliente();
+		id_boveda_cliente = -1;// paara volver el id al valor anterior
+		bandera = 0;
+		consultar();
+		
+	}
+
+	// creo el metodo eliminar para la bóveda
+	@Override
+	public void eliminar() {
+		serviciobovboveda.delete(bovboveda);
+		// mensaje que se muestra al eliminar una bóveda
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se eliminó la Bóveda: " + bovboveda.getNombre()));
+		cancelar();
+	}
+
+	// Creo el metodo eliminar para la bóveda cliente
+	public void eliminar1() {
+		serviciobovbovedacliente.delete(bovbovedacliente);
+		// mensaje mostrado al eliminar una bóveda cliente
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se eliminó la Bóveda Cliente: " + bovbovedacliente.getNombre()));
+		cancelar();
+	}
+
+	// Creo el metodo actualizar la bóveda
+	@Override
+	public void actualizar() {
+
+		buscaIdCombos();
+
+		serviciobovboveda.update(bovboveda);
+		// mensaje que se muestra al actualizar bóveda
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se actualizó la Bóveda: " + bovboveda.getNombre()));
+		cancelar();
+	}
+
+	// Creo el metodo para actualizar bóveda
+	public void actualizar1() {
+
+		buscaIdCombos();
+
+		serviciobovbovedacliente.update(bovbovedacliente);
+		// mensaje mostrado al actualizar bóveda cliente
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se actualizó la Bóveda Cliente: " + bovbovedacliente.getNombre()));
+		cancelar1();
+	}
+
+	// Creo el metodo que me permite llenar los campos segun la fila
+	// seleccionada en la tabla Bóveda
+	public void onRowSelectBoveda(SelectEvent event) {
+		bovboveda = (BovBoveda) event.getObject();
+
+		idsucursalempresa = bovboveda.getIdsucursal().getIdsucursal();
+		bandera = 1;
+	}
+
+	// C reo el metodo que permite llenar los campos segun la fila seleccionada
+	// en la tabla Bóveda Cliente
+	public void onRowSelectBovedaCliente(SelectEvent event) {
+		bovbovedacliente = (BovBovedaCliente) event.getObject();
+		
+		idcliente_bovboveda_cliente = bovbovedacliente.getIdcliente().getIdcliente();
+		bandera = 1;
+	}
+
+	public BovBoveda getBovboveda() {
+		return bovboveda;
+	}
+
+	public void setBovboveda(BovBoveda bovboveda) {
+		this.bovboveda = bovboveda;
+	}
+
+	public BovDetalleBoveda getBovdetalleboveda() {
+		return bovdetalleboveda;
+	}
+
+	public void setBovdetalleboveda(BovDetalleBoveda bovdetalleboveda) {
+		this.bovdetalleboveda = bovdetalleboveda;
+	}
+
+	public List<BovBoveda> getListaboveda() {
+		return listaboveda;
+	}
+
+	public void setListaboveda(List<BovBoveda> listaboveda) {
+		this.listaboveda = listaboveda;
+	}
+
+	public List<BovBoveda> getBovedafiltrado() {
+		return bovedafiltrado;
+	}
+
+	public void setBovedafiltrado(List<BovBoveda> bovedafiltrado) {
+		this.bovedafiltrado = bovedafiltrado;
+	}
+
+	public List<BovDetalleBoveda> getListadetalleboveda() {
+		return listadetalleboveda;
+	}
+
+	public void setListadetalleboveda(List<BovDetalleBoveda> listadetalleboveda) {
+		this.listadetalleboveda = listadetalleboveda;
+	}
+
+	public BovBovedaCliente getBovbovedacliente() {
+		return bovbovedacliente;
+	}
+
+	public void setBovbovedacliente(BovBovedaCliente bovbovedacliente) {
+		this.bovbovedacliente = bovbovedacliente;
+	}
+
+	public List<BovBovedaCliente> getListabovedacliente() {
+		return listabovedacliente;
+	}
+
+	public void setListabovedacliente(List<BovBovedaCliente> listabovedacliente) {
+		this.listabovedacliente = listabovedacliente;
+	}
+
+	public List<BovBovedaCliente> getBovedaclientefiltrado() {
+		return bovedaclientefiltrado;
+	}
+
+	public void setBovedaclientefiltrado(List<BovBovedaCliente> bovedaclientefiltrado) {
+		this.bovedaclientefiltrado = bovedaclientefiltrado;
+	}
+
+	public BovDetalleBovedaCliente getBovdetallebovedacliente() {
+		return bovdetallebovedacliente;
+	}
+
+	public void setBovdetallebovedacliente(BovDetalleBovedaCliente bovdetallebovedacliente) {
+		this.bovdetallebovedacliente = bovdetallebovedacliente;
+	}
+
+	public List<BovDetalleBovedaCliente> getListadetallebovedacliente() {
+		return listadetallebovedacliente;
+	}
+
+	public void setListadetallebovedacliente(List<BovDetalleBovedaCliente> listadetallebovedacliente) {
+		this.listadetallebovedacliente = listadetallebovedacliente;
+	}
+
+	public List<BovDetalleBovedaCliente> getDetallebovedaclientefiltrado() {
+		return detallebovedaclientefiltrado;
+	}
+
+	public void setDetallebovedaclientefiltrado(List<BovDetalleBovedaCliente> detallebovedaclientefiltrado) {
+		this.detallebovedaclientefiltrado = detallebovedaclientefiltrado;
+	}
+
+	public List<BovDetalleBovedaCliente> getListatotal() {
+		return listatotal;
+	}
+
+	public void setListatotal(List<BovDetalleBovedaCliente> listatotal) {
+		this.listatotal = listatotal;
+	}
+
+	public BovBovedaBovedaCliente getBovbovedabovedacliente() {
+		return bovbovedabovedacliente;
+	}
+
+	public void setBovbovedabovedacliente(BovBovedaBovedaCliente bovbovedabovedacliente) {
+		this.bovbovedabovedacliente = bovbovedabovedacliente;
+	}
+
+	public List<BovBovedaBovedaCliente> getListabovedabovedacliente() {
+		return listabovedabovedacliente;
+	}
+
+	public void setListabovedabovedacliente(List<BovBovedaBovedaCliente> listabovedabovedacliente) {
+		this.listabovedabovedacliente = listabovedabovedacliente;
+	}
+
+	public List<BovBovedaBovedaCliente> getListabovbovclien() {
+		return listabovbovclien;
+	}
+
+	public void setListabovbovclien(List<BovBovedaBovedaCliente> listabovbovclien) {
+		this.listabovbovclien = listabovbovclien;
+	}
+
+	public AdmSucursal getAdmsucursalempresa() {
+		return admsucursalempresa;
+	}
+
+	public void setAdmsucursalempresa(AdmSucursal admsucursalempresa) {
+		this.admsucursalempresa = admsucursalempresa;
+	}
+
+	public List<AdmSucursal> getListasucursalempresa() {
+		return listasucursalempresa;
+	}
+
+	public void setListasucursalempresa(List<AdmSucursal> listasucursalempresa) {
+		this.listasucursalempresa = listasucursalempresa;
+	}
+
+	public Admcliente getAdmcliente() {
+		return admcliente;
+	}
+
+	public void setAdmcliente(Admcliente admcliente) {
+		this.admcliente = admcliente;
+	}
+
+	public List<Admcliente> getListacliente() {
+		return listacliente;
+	}
+
+	public void setListacliente(List<Admcliente> listacliente) {
+		this.listacliente = listacliente;
+	}
+
+	public List<Admcliente> getClientefilrado() {
+		return clientefilrado;
+	}
+
+	public void setClientefilrado(List<Admcliente> clientefilrado) {
+		this.clientefilrado = clientefilrado;
+	}
+
+	public int getId_boveda() {
+		return id_boveda;
+	}
+
+	public void setId_boveda(int id_boveda) {
+		this.id_boveda = id_boveda;
+	}
+
+	public Integer getIdcliente_bovboveda_cliente() {
+		return idcliente_bovboveda_cliente;
+	}
+
+	public void setIdcliente_bovboveda_cliente(Integer idcliente_bovboveda_cliente) {
+		this.idcliente_bovboveda_cliente = idcliente_bovboveda_cliente;
+	}
+
+	public int getIdcliente() {
+		return idcliente;
+	}
+
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
+
+	public BigDecimal getAltura() {
+		return altura;
+	}
+
+	public void setAltura(BigDecimal altura) {
+		this.altura = altura;
+	}
+
+	public BigDecimal getAncho() {
+		return ancho;
+	}
+
+	public void setAncho(BigDecimal ancho) {
+		this.ancho = ancho;
+	}
+
+	public BigDecimal getLargo() {
+		return largo;
+	}
+
+	public void setLargo(BigDecimal largo) {
+		this.largo = largo;
+	}
+
+	public Integer getIdsucursalempresa() {
+		return idsucursalempresa;
+	}
+
+	public void setIdsucursalempresa(Integer idsucursalempresa) {
+		this.idsucursalempresa = idsucursalempresa;
+	}
+
+	public int getId_espacio_boveda() {
+		return id_espacio_boveda;
+	}
+
+	public void setId_espacio_boveda(int id_espacio_boveda) {
+		this.id_espacio_boveda = id_espacio_boveda;
+	}
+
+	public int getId_boveda_cliente() {
+		return id_boveda_cliente;
+	}
+
+	public void setId_boveda_cliente(int id_boveda_cliente) {
+		this.id_boveda_cliente = id_boveda_cliente;
+	}
+
+	public Integer getBandera() {
+		return bandera;
+	}
+
+	public void setBandera(Integer bandera) {
+		this.bandera = bandera;
+	}
+
+	public int getFajos() {
+		return fajos;
+	}
+
+	public void setFajos(int fajos) {
+		this.fajos = fajos;
+	}
+
+	public int getBala() {
+		return bala;
+	}
+
+	public void setBala(int bala) {
+		this.bala = bala;
+	}
+
+	public String getValoractual() {
+		return valoractual;
+	}
+
+	public void setValoractual(String valoractual) {
+		this.valoractual = valoractual;
+	}
+
+	public double getSum() {
+		return sum;
+	}
+
+	public void setSum(double sum) {
+		this.sum = sum;
+	}
+
+	public Integer getPicos() {
+		return Picos;
+	}
+
+	public void setPicos(Integer picos) {
+		Picos = picos;
+	}
+
+	public Integer getX() {
+		return x;
+	}
+
+	public void setX(Integer x) {
+		this.x = x;
+	}
+
+	public ServicioBovBoveda getServiciobovboveda() {
+		return serviciobovboveda;
+	}
+
+	public void setServiciobovboveda(ServicioBovBoveda serviciobovboveda) {
+		this.serviciobovboveda = serviciobovboveda;
+	}
+
+	public ServicioBovDetalleBoveda getServiciobovdetalleboveda() {
+		return serviciobovdetalleboveda;
+	}
+
+	public void setServiciobovdetalleboveda(ServicioBovDetalleBoveda serviciobovdetalleboveda) {
+		this.serviciobovdetalleboveda = serviciobovdetalleboveda;
+	}
+
+	public ServicioBovBovedaCliente getServiciobovbovedacliente() {
+		return serviciobovbovedacliente;
+	}
+
+	public void setServiciobovbovedacliente(ServicioBovBovedaCliente serviciobovbovedacliente) {
+		this.serviciobovbovedacliente = serviciobovbovedacliente;
+	}
+
+	public ServicioBovDetalleBovedaCliente getServiciobovdetallebovedacliente() {
+		return serviciobovdetallebovedacliente;
+	}
+
+	public void setServiciobovdetallebovedacliente(ServicioBovDetalleBovedaCliente serviciobovdetallebovedacliente) {
+		this.serviciobovdetallebovedacliente = serviciobovdetallebovedacliente;
+	}
+
+	public ServicioBovBovedaBovedaCliente getServiciobovbovedabovedacliente() {
+		return serviciobovbovedabovedacliente;
+	}
+
+	public void setServiciobovbovedabovedacliente(ServicioBovBovedaBovedaCliente serviciobovbovedabovedacliente) {
+		this.serviciobovbovedabovedacliente = serviciobovbovedabovedacliente;
+	}
+
+	public ServicioAdmSucursal getServicioadmsucursal() {
+		return servicioadmsucursal;
+	}
+
+	public void setServicioadmsucursal(ServicioAdmSucursal servicioadmsucursal) {
+		this.servicioadmsucursal = servicioadmsucursal;
+	}
+
+	public ServicioAdmCliente getServiciocliente() {
+		return serviciocliente;
+	}
+
+	public void setServiciocliente(ServicioAdmCliente serviciocliente) {
+		this.serviciocliente = serviciocliente;
+	}
+
+	public List<BovBovedaBovedaCliente> getListabovedabovedacliente1() {
+		return listabovedabovedacliente1;
+	}
+
+	public void setListabovedabovedacliente1(List<BovBovedaBovedaCliente> listabovedabovedacliente1) {
+		this.listabovedabovedacliente1 = listabovedabovedacliente1;
+	}
+
+	public void setIdcliente(int idcliente) {
+		this.idcliente = idcliente;
+	}
+
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" >  
+
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+	<ui:define name="content">
+
+			<br/>
+			
+		
+			  <p:messages id="mensaje" autoUpdate="false"/>
+			  
+				<p:panelGrid id="pnl" columns="3"> 
+					<p:outputLabel value="Nombre" for ="nombre"/>
+					<p:inputText id ="nombre" value="#{controladorAdmCiudad.admciudad.nombre}" required="true" requiredMessage="Requerido"   >
+					  
+					</p:inputText>
+					<p:message for="nombre"/>
+				</p:panelGrid>
+				<br />
+				<p:commandButton  value="Guardar"   action="#{controladorAdmCiudad.persitir()}" update=":frm:pnl :frm:tbl" icon="ui-icon-disk" />
+				
+			
+				<br />
+				<br />
+				
+
+			<p:dataTable id="tbl"
+						 value="#{controladorAdmCiudad.listaciudad}"
+						 
+						 var="item"
+						 paginator="true" 
+						 rows="10" 
+						 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						 paginatorPosition="bottom"
+						 editable="true"
+						 
+						 
+						 
+						  
+						  
+						 >
+						 
+						
+			
+				<p:column headerText="Codigo">
+					<h:outputText value="#{item.idCiudad}" />
+				</p:column>
+				
+				<p:column headerText="NOmbre">
+					<h:outputText value="#{item.nombre}" />
+				</p:column>
+				
+				
+				<p:column headerText="Editar">
+					<p:commandButton  action="#{controladorAdmCiudad.TipoIngreso()}" process="@this" update=":frm:pnl"   icon="ui-icon-pencil">
+					<p:resetInput target=":frm:pnl" />
+				<f:setPropertyActionListener value="#{item}"  target="#{controladorAdmCiudad.admciudad}"  />
+				
+			</p:commandButton>
+			</p:column>
+				
+		      
+			</p:dataTable>
+			
+			
+			
+			<script type="text/javascript">
+function validateIfEditing()
+{
+    var isEditing = false;
+    var checkmark= $(".ui-icon-pencil");
+    jQuery.each(checkmark, function() {             
+        if ('' == this.style.display) {
+            isEditing = true;   
+        }
+    });
+    if (isEditing) {
+        $("#form\\:notImmediate").click();          
+    }
+    else {  
+        $("#form\\:immediate").click(); 
+    }
+}
+</script>
+		
+	</ui:define>
+</ui:composition> 
+</html>

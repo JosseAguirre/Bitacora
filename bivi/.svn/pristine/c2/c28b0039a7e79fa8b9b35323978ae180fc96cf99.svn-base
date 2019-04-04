@@ -1,0 +1,351 @@
+package com.scm.bean.administracion;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admempleado;
+import com.scm.modelo.administracion.Admusuario;
+import com.scm.servicio.administracion.ServicioAdmCatalogo;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+import com.scm.servicio.administracion.ServicioAdmEmpleado;
+import com.scm.servicio.administracion.ServicioAdmUsuario;
+@ManagedBean 
+@ViewScoped
+public class AdmUsuarioBean implements Interface, Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	private Admusuario admusuario;
+	private Admusuario usuarioseleccionado;
+	
+	
+	
+	private Admempleado admempleado;
+	private List <Admusuario> listausuario;
+	private List <Admusuario> usuariofiltrado;
+	private List <Admdetallecatalogo> listaestado;
+	private Admdetallecatalogo detallecatalogo;
+
+	private List <Admempleado> listaempleado;
+	private Date date;
+	
+	private int idempleado;
+	private int idestado;
+	String test;
+	
+
+	
+	
+	Integer bandera ;
+	
+	
+	@EJB
+	private ServicioAdmUsuario serviciousuario;
+	@EJB
+	private ServicioAdmEmpleado servicioempleado;
+	@EJB	
+	private ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+	
+	
+
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+	
+		setDate(new Date());
+		
+		/*
+        String strDateFormat1 = "yyyy-mm-dd";
+        DateFormat dateFormat1 = new SimpleDateFormat(strDateFormat1);
+        String formattedDate1= dateFormat1.format(date);  */
+
+	}
+	
+	
+	
+	public void onRowSelect(SelectEvent event) {
+		admusuario =(Admusuario) event.getObject();
+		idestado = admusuario.getIdestadodc().getIddetallecatalogo();
+		admempleado = servicioempleado.findOne(admusuario.getIdempleado().getIdempleado());
+		
+		admusuario.setContrasenia(null);
+		
+		bandera = 1;	
+		
+		
+		
+        
+		
+		
+    }
+	
+	public void empleadoSelecionado(SelectEvent event) {
+		admempleado = (Admempleado) event.getObject();
+		admusuario.setIdempleado(admempleado);
+		 
+		
+	}
+	
+
+	
+	 public void dataEmpleado() {
+	        Map<String,Object> options = new HashMap<String, Object>();
+	        options.put("resizable", false);
+	        options.put("draggable", true);
+	        options.put("modal", true);
+	        options.put("height","auto");
+	        
+	      // options.put("contentHeight", "auto");
+	       
+	       // options.put("responsive", true);
+	       
+
+	        RequestContext.getCurrentInstance().openDialog("seleccionempleado", options, null);
+	    }
+	
+	 
+		
+		
+		public void onRowSelectEmpleado(SelectEvent event) {
+			admempleado = (Admempleado) event.getObject();
+			RequestContext.getCurrentInstance().closeDialog((Admempleado) event.getObject());
+			
+			
+			
+			
+			
+			
+		}
+	
+	
+	
+		
+		
+
+	@Override
+	public void guardar() {	
+		
+		try {
+		admusuario.setIdusuario(serviciousuario.getPK());	
+		buscaIdCombos();
+		
+		admusuario.setContrasenia(SesionBean.encriptarSHA512(admusuario.getContrasenia()));
+		admusuario.setSysdelete(false);
+		serviciousuario.create(admusuario);		
+		cancelar();
+		} catch (Exception e) {
+			
+			System.out.println("Se ha producido un error al momento de Guardar el usuario: " + e);
+			
+		}
+		
+		
+
+	}
+	
+public void usuarioSeleccionado() {
+	
+	}
+	
+	public void persitir() {
+		
+		if(bandera == 1){  
+			
+		actualizar();
+			
+		}else{
+			guardar();
+			
+			
+		}
+	}
+	
+	
+	
+
+	@Override
+	public void eliminar() {
+		admusuario.setSysdelete(true);
+		serviciousuario.update(admusuario);
+		cancelar();
+		
+		
+
+	}
+	
+	public void buscaIdCombos (){
+		detallecatalogo = serviciodetallecatalogo.findOne(idestado);
+		admusuario.setIdestadodc(detallecatalogo);
+		
+		
+	}
+
+	@Override
+	public void actualizar() {
+		
+		buscaIdCombos();
+		admusuario.setContrasenia(SesionBean.encriptarSHA512(admusuario.getContrasenia()));
+		serviciousuario.update(admusuario);
+		cancelar();
+		
+	}
+
+	@Override
+	public void consultar() {
+		
+		listausuario = new ArrayList<>(); // Creo una lista para mostrar todo los usuarios en el datatable
+		listausuario = serviciousuario.findAll();
+		
+		listaempleado = new ArrayList<>(); // Creo una lista para mostar todos los empleado en un datatable
+		listaempleado = servicioempleado.findAll();
+		
+		listaestado  = new ArrayList<>(); // Creo una lista para mostrar los estado en el electOneMenu
+		listaestado = serviciodetallecatalogo.estadosusuario();
+		
+		
+		
+
+	}
+
+	@Override
+	public void cancelar() {
+		admusuario = new Admusuario();
+		admempleado = new Admempleado();
+		idestado= -1;
+		consultar();
+		bandera = 0;
+		
+
+	}
+
+	public List<Admusuario> getListausuario() {
+		return listausuario;
+	}
+
+	public void setListausuario(List<Admusuario> listausuario) {
+		this.listausuario = listausuario;
+	}
+
+	public List<Admempleado> getListaempleado() {
+		return listaempleado;
+	}
+
+	public void setListaempleado(List<Admempleado> listaempleado) {
+		this.listaempleado = listaempleado;
+	}
+
+	public int getIdempleado() {
+		return idempleado;
+	}
+
+	public void setIdempleado(int idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public Admusuario getAdmusuario() {
+		return admusuario;
+	}
+
+	public void setAdmusuario(Admusuario admusuario) {
+		this.admusuario = admusuario;
+	}
+
+	public Admempleado getAdmempleado() {
+		return admempleado;
+	}
+
+	public void setAdmempleado(Admempleado admempleado) {
+		this.admempleado = admempleado;
+	}
+
+	public List <Admusuario> getUsuariofiltrado() {
+		return usuariofiltrado;
+	}
+
+	public void setUsuariofiltrado(List <Admusuario> usuariofiltrado) {
+		this.usuariofiltrado = usuariofiltrado;
+	}
+
+
+	public int getIdestado() {
+		return idestado;
+	}
+
+	public void setIdestado(int idestado) {
+		this.idestado = idestado;
+	}
+
+	public List <Admdetallecatalogo> getListaestado() {
+		return listaestado;
+	}
+
+	public void setListaestado(List <Admdetallecatalogo> listaestado) {
+		this.listaestado = listaestado;
+	}
+
+
+
+
+
+
+
+
+
+	public Admdetallecatalogo getDetallecatalogo() {
+		return detallecatalogo;
+	}
+
+
+
+
+
+
+
+
+
+	public void setDetallecatalogo(Admdetallecatalogo detallecatalogo) {
+		this.detallecatalogo = detallecatalogo;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Admusuario getUsuarioseleccionado() {
+		return usuarioseleccionado;
+	}
+
+	public void setUsuarioseleccionado(Admusuario usuarioseleccionado) {
+		this.usuarioseleccionado = usuarioseleccionado;
+	}
+
+	
+
+	
+
+
+	
+	
+	
+
+}

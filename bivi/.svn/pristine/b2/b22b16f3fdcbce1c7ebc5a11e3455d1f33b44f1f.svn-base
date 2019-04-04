@@ -1,0 +1,82 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.administracion.Admmenu;
+import com.scm.modelo.administracion.Admusuario;
+@Stateless
+public class ServicioAdmMenu {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(Admmenu admmenu) {
+		em.persist(admmenu);
+	}
+	
+	public void delete(Admmenu admmenu) {
+		em.remove(em.merge(admmenu));
+	}
+	
+	public void update(Admmenu admmenu){
+	
+		em.merge(admmenu);
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Admmenu> findAll() {
+		Query q = em.createQuery("select c from Admmenu c ");
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Admmenu> buscaMenu() { // Busca los menues segun el rol del usuario logueado
+		Admusuario us = (Admusuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
+		Query q = em.createQuery("select distinct c.idmenu from Admrolmenu c where c.idrol in (select a.idrol from Admrolusuario a where a.idusuario = "+us.getIdusuario()+") ");
+		
+		return q.getResultList();
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Admmenu> findAll2() {
+		Admusuario us = (Admusuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
+		Query q = em.createQuery("select distinct c.admmenu from Admrolmenu c where c.admrol in (select a.admrol from Admrolusuario a where a.admusuario = "+us.getIdusuario()+") ");
+		
+		return q.getResultList();
+	}
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admmenu ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public Admmenu findOne(Integer codigoadmmenu){
+		Query q = em.createQuery("select c from Admmenu c where c.idempleado = " + codigoadmmenu);
+		return (Admmenu) q.getSingleResult();
+	}
+	
+	
+	public List<Admmenu> pornombresemejante(String nombre) {
+		return em.createQuery("select c from Admmenu c where c.nombres like :xxxxxxx", Admmenu.class)
+				.setParameter("xxxxxxx", "%" + nombre + "%")
+				.getResultList();
+	}
+
+	
+	
+
+}

@@ -1,0 +1,386 @@
+package com.scm.bean.administracion;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.ConverterException;
+
+import org.primefaces.event.SelectEvent;
+
+import com.scm.modelo.administracion.Admmenu;
+import com.scm.modelo.administracion.Admrol;
+import com.scm.modelo.administracion.Admrolmenu;
+import com.scm.modelo.administracion.Admrolusuario;
+import com.scm.modelo.administracion.Admusuario;
+import com.scm.servicio.administracion.ServicioAdmMenu;
+import com.scm.servicio.administracion.ServicioAdmRol;
+import com.scm.servicio.administracion.ServicioAdmRolMenu;
+import com.scm.servicio.administracion.ServicioAdmRolUsuario;
+import com.scm.servicio.administracion.ServicioAdmUsuario;
+
+@ManagedBean(name = "admPerfilBean")
+@ViewScoped
+
+public class AdmPerfilBean implements Serializable {
+	private static final long serialVersionUID = 1L;
+	public static List<Admusuario> listausuario;
+	public static  List<Admrol> listarol;
+
+	private Admusuario admusuario;
+
+	private Admrol admrol;
+	
+	private List<Admrolusuario> listarolasignado;
+	private Admrolusuario admrolusuario;
+	private List<Admrol> rolseleccionado;
+	private Admrolusuario rolusuarioselecionado;
+	private boolean activarBtnAgregarRol;
+	private boolean activarBtnAgregarMenu;
+	private List<Admusuario> usuariofiltrado;
+	private List<Admrol> rolfiltrado;
+
+	private Admmenu admmenu;
+	private List<Admmenu> listamenu;
+	private List<Admrolmenu> listamenuasignado;
+	private Admrolmenu admrolmenu;
+	private List<Admmenu> menuseleccionado;
+
+	@EJB
+	private ServicioAdmRol serviciorol;
+
+	@EJB
+	private ServicioAdmUsuario serviciousuario;
+
+	@EJB
+	private ServicioAdmRolUsuario serviciorolusuario;
+
+	@EJB
+	private ServicioAdmMenu serviciomenu;
+
+	@EJB
+	private ServicioAdmRolMenu serviciorolmenu;
+
+	@PostConstruct
+	public void init() {
+		cancelar();
+	}
+	
+	
+	
+	
+	
+	// Metodo que carga las listas 
+	public void consultar() {
+		listausuario = new ArrayList<>();
+		listausuario = serviciousuario.findAll(); // carga la lista de todos los usuarios
+
+		listarol = new ArrayList<>();
+		listarol = serviciorol.findAll(); // carga la lista de todos los roles
+
+		listamenu = new ArrayList<>();
+		listamenu = serviciomenu.findAll(); // carga la lista de todos los menues
+
+	}
+	
+	//Metodo que instancia nuevos objetos
+		public void cancelar() {
+			admrolusuario = new Admrolusuario();
+			admusuario = new Admusuario();
+			admrol = new Admrol();
+			admrolmenu = new Admrolmenu();
+			admmenu = new Admmenu();
+			activarBtnAgregarRol = true;
+			activarBtnAgregarMenu = true;
+			consultar();
+
+		}
+
+	
+	//####### CODIGOS  EN REFRENCIA A LA RELACION ROLES-USUARIOS###########
+	
+	// Metodo para guardar uno o varios roles del usuario
+	public void guardarRol() {
+		for (Admrol rol : rolseleccionado) { // Recorro la lista de los roles
+												// seleccionados en la vista
+			admrolusuario.setIdrolusuario(serviciorolusuario.getPK()); //obtengo el ultimo ID
+			admrolusuario.setIdrol(rol);
+			admrolusuario.setIdusuario(admusuario);
+			serviciorolusuario.create(admrolusuario);
+
+		}
+		rolesAsignados();
+
+	}
+	
+	// Metodo que captura el Rol seleccionado  que sera aagregado al usuario
+	public void onRowSelectRol(SelectEvent event) {
+		admrolusuario = (Admrolusuario) event.getObject();
+		rolesAsignados();
+
+	}
+	// Metodo para eliminar rol asociado a un usuario
+	public void eliminarRolusuario() {
+		serviciorolusuario.delete(admrolusuario);
+		rolesAsignados();
+
+	}
+	
+	//Metodo que limpia el contenido del Dialogo en ela seleccion de Roles
+	public void limpiaDlgRol() {
+		rolseleccionado = null;
+
+	}
+
+	// Metodo que obtiene el usuario seleccionado proveniente del autocomplete
+	public void onSelectItemUsuario(SelectEvent event) {
+		activarBtnAgregarRol = false;
+		admusuario = (Admusuario) event.getObject(); // Cast del evento al tipo Admusuario
+		rolesAsignados();
+
+	}
+
+	public void rolesAsignados() {
+		listarolasignado = new ArrayList<>();
+		listarolasignado = serviciorolusuario.rolesAsignados(admusuario);
+
+	}
+
+	// Busca en el usuario en una lista de usuarios segun las letras que digite en la vista
+	public List<Admusuario> usuarioBuscado(String query) {
+		usuariofiltrado = new ArrayList<>();
+		for (int i = 0; i < listausuario.size(); i++) {
+			Admusuario us = listausuario.get(i);
+			if (us.getNombreusuario().contains(query.toLowerCase())) { // Comparo si el nombre contiene la caadena escrita en la vista
+				usuariofiltrado.add(us);
+			}
+		}
+
+		return usuariofiltrado; // devuelve los usuarios encontrado segun lo escrito en la vista
+	}
+	
+	
+	
+	
+	//---CODIGO REFRENCIA LA LA RELACION ROLES-MENU-----
+	
+	
+	// Metodo para guardar uno o varios menu del rol
+		public void guardarMenu() {
+			for (Admmenu menu : menuseleccionado) { // Recorro la lista de los menu  seleccionados en la vista
+				admrolmenu.setIdrolmenu(serviciorolmenu.getPK()); //obtengo el ultimo ID
+				admrolmenu.setIdmenu(menu);
+				admrolmenu.setIdrol(admrol);
+				serviciorolmenu.create(admrolmenu);
+
+			}
+			menuesAsignados();
+
+		}
+		
+		// Metodo que captura el menu seleccionado  que sera aagregado al rol
+		public void onRowSelectMenu(SelectEvent event) {
+			admrolmenu = (Admrolmenu) event.getObject();
+			menuesAsignados();
+
+		}
+		// Metodo para eliminar menu asociado a un usuario
+		public void eliminarRolmenu() {
+			serviciorolmenu.delete(admrolmenu);
+			menuesAsignados();
+
+		}
+		
+		//Metodo que limpia el contenido del Dialogo en ela seleccion de menues
+		public void limpiaDlgMenu() {
+			menuseleccionado = null;
+
+		}
+
+		// Metodo que obtiene el rol seleccionado proveniente del autocomplete
+		public void onSelectItemRol(SelectEvent event) {
+			activarBtnAgregarMenu = false;
+			admrol = (Admrol) event.getObject(); // Cast del evento al tipo Admrol
+			menuesAsignados();
+
+		}
+		//Metodo que carga la lista de los menues asignadaos al rol
+		public void menuesAsignados() {
+			listamenuasignado = new ArrayList<>();
+			listamenuasignado = serviciorolmenu.menuesAsignados(admrol);
+
+		}
+
+		// Busca en el usuario en una lista de roles segun las letras que digite en la vista
+		public List<Admrol> rolBuscado(String query) {
+			rolfiltrado = new ArrayList<>();
+			for (int i = 0; i < listarol.size(); i++) {
+				Admrol rol = listarol.get(i);
+				if (rol.getNombre().contains(query.toUpperCase())) { // Comparo si el nombre contiene la caadena escrita en la vista
+					rolfiltrado.add(rol);
+				}
+			}
+
+			return rolfiltrado; // devuelve los usuarios encontrado segun lo escrito en la vista
+		}
+		
+	
+	
+	
+
+	public Admusuario getAdmusuario() {
+		return admusuario;
+	}
+
+	public void setAdmusuario(Admusuario admusuario) {
+		this.admusuario = admusuario;
+	}
+
+	public List<Admrolusuario> getListarolasignado() {
+		return listarolasignado;
+	}
+
+	public void setListarolasignado(List<Admrolusuario> listarolasignado) {
+		this.listarolasignado = listarolasignado;
+	}
+
+	public List<Admrol> getRolseleccionado() {
+		return rolseleccionado;
+	}
+
+	public void setRolseleccionado(List<Admrol> rolseleccionado) {
+		this.rolseleccionado = rolseleccionado;
+	}
+
+	public Admrolusuario getAdmrolusuario() {
+		return admrolusuario;
+	}
+
+	public void setAdmrolusuario(Admrolusuario admrolusuario) {
+		this.admrolusuario = admrolusuario;
+	}
+
+	public Admrol getAdmrol() {
+		return admrol;
+	}
+
+	public void setAdmrol(Admrol admrol) {
+		this.admrol = admrol;
+	}
+
+	public List<Admrol> getListarol() {
+		return listarol;
+	}
+
+	public void setListarol(List<Admrol> listarol) {
+		this.listarol = listarol;
+	}
+
+	public Admmenu getAdmmenu() {
+		return admmenu;
+	}
+
+	public void setAdmmenu(Admmenu admmenu) {
+		this.admmenu = admmenu;
+	}
+
+	public List<Admmenu> getListamenu() {
+		return listamenu;
+	}
+
+	public void setListamenu(List<Admmenu> listamenu) {
+		this.listamenu = listamenu;
+	}
+
+	public List<Admrolmenu> getListamenuasignado() {
+		return listamenuasignado;
+	}
+
+	public void setListamenuasignado(List<Admrolmenu> listamenuasignado) {
+		this.listamenuasignado = listamenuasignado;
+	}
+
+	public Admrolmenu getAdmrolmenu() {
+		return admrolmenu;
+	}
+
+	public void setAdmrolmenu(Admrolmenu admrolmenu) {
+		this.admrolmenu = admrolmenu;
+	}
+
+	public List<Admmenu> getMenuseleccionado() {
+		return menuseleccionado;
+	}
+
+	public void setMenuseleccionado(List<Admmenu> menuseleccionado) {
+		this.menuseleccionado = menuseleccionado;
+	}
+
+	public Admrolusuario getRolusuarioselecionado() {
+		return rolusuarioselecionado;
+	}
+
+	public void setRolusuarioselecionado(Admrolusuario rolusuarioselecionado) {
+		this.rolusuarioselecionado = rolusuarioselecionado;
+	}
+
+	public boolean isActivarBtnAgregarRol() {
+		return activarBtnAgregarRol;
+	}
+
+	public void setActivarBtnAgregarRol(boolean activarBtnAgregarRol) {
+		this.activarBtnAgregarRol = activarBtnAgregarRol;
+	}
+
+
+
+
+
+	public List<Admrol> getRolfiltrado() {
+		return rolfiltrado;
+	}
+
+
+
+
+
+	public void setRolfiltrado(List<Admrol> rolfiltrado) {
+		this.rolfiltrado = rolfiltrado;
+	}
+
+
+
+
+
+	public boolean isActivarBtnAgregarMenu() {
+		return activarBtnAgregarMenu;
+	}
+
+
+
+
+
+	public void setActivarBtnAgregarMenu(boolean activarBtnAgregarMenu) {
+		this.activarBtnAgregarMenu = activarBtnAgregarMenu;
+	}
+
+
+
+
+
+
+	
+
+}

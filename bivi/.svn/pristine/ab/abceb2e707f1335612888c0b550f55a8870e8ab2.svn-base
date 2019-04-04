@@ -1,0 +1,74 @@
+package com.scm.modelo.sac;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.AdmServicio;
+import com.scm.modelo.administracion.Admempleado;
+
+import java.util.Date;
+
+
+/**
+ * The persistent class for the sac_contador_ticket database table.
+ * 
+ */
+@Entity
+@Table(name="sac_contador_ticket", schema="java")
+@NamedQuery(name="SacContadorTicket.findAll", query="SELECT s FROM SacContadorTicket s")
+public class SacContadorTicket implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="idcont_ticket", unique=true, nullable=false)
+	private Integer idcontTicket;
+
+	@Temporal(TemporalType.DATE)
+	private Date fecha;
+
+	//bi-directional many-to-one association to AdmServicio
+	@ManyToOne
+	@JoinColumn(name="idservicio")
+	private AdmServicio idservicio;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado")
+	private Admempleado idempleado;
+
+	public SacContadorTicket() {
+	}
+
+	public Integer getIdcontTicket() {
+		return this.idcontTicket;
+	}
+
+	public void setIdcontTicket(Integer idcontTicket) {
+		this.idcontTicket = idcontTicket;
+	}
+
+	public Date getFecha() {
+		return this.fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public AdmServicio getIdservicio() {
+		return this.idservicio;
+	}
+
+	public void setIdservicio(AdmServicio idservicio) {
+		this.idservicio = idservicio;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+}

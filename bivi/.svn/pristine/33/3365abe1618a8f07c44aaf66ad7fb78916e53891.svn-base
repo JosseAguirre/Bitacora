@@ -1,0 +1,84 @@
+package com.scm.modelo.centroefectivo;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.preboveda.BovCabezeratransferencia;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the ce_tipo_transferencia database table.
+ * 
+ */
+@Entity
+@Table(name="ce_tipo_transferencia", schema="java")
+@NamedQuery(name="CeTipoTransferencia.findAll", query="SELECT c FROM CeTipoTransferencia c")
+public class CeTipoTransferencia implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_tipo_transferencia", unique=true, nullable=false)
+	private Integer idTipoTransferencia;
+
+	@Column(length=150)
+	private String estado;
+
+	@Column(length=20)
+	private String nombre;
+
+	//bi-directional many-to-one association to BovCabezeratransferencia
+	@OneToMany(mappedBy="idtipotransferencia")
+	private List<BovCabezeratransferencia> idtipotransferencia_bovCabezeratransferencias;
+
+	public CeTipoTransferencia() {
+	}
+
+	public Integer getIdTipoTransferencia() {
+		return this.idTipoTransferencia;
+	}
+
+	public void setIdTipoTransferencia(Integer idTipoTransferencia) {
+		this.idTipoTransferencia = idTipoTransferencia;
+	}
+
+	public String getEstado() {
+		return this.estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<BovCabezeratransferencia> getIdtipotransferencia_bovCabezeratransferencias() {
+		return this.idtipotransferencia_bovCabezeratransferencias;
+	}
+
+	public void setIdtipotransferencia_bovCabezeratransferencias(List<BovCabezeratransferencia> idtipotransferencia_bovCabezeratransferencias) {
+		this.idtipotransferencia_bovCabezeratransferencias = idtipotransferencia_bovCabezeratransferencias;
+	}
+
+	public BovCabezeratransferencia addIdtipotransferencia_bovCabezeratransferencia(BovCabezeratransferencia idtipotransferencia_bovCabezeratransferencia) {
+		getIdtipotransferencia_bovCabezeratransferencias().add(idtipotransferencia_bovCabezeratransferencia);
+		idtipotransferencia_bovCabezeratransferencia.setIdtipotransferencia(this);
+
+		return idtipotransferencia_bovCabezeratransferencia;
+	}
+
+	public BovCabezeratransferencia removeIdtipotransferencia_bovCabezeratransferencia(BovCabezeratransferencia idtipotransferencia_bovCabezeratransferencia) {
+		getIdtipotransferencia_bovCabezeratransferencias().remove(idtipotransferencia_bovCabezeratransferencia);
+		idtipotransferencia_bovCabezeratransferencia.setIdtipotransferencia(null);
+
+		return idtipotransferencia_bovCabezeratransferencia;
+	}
+
+}

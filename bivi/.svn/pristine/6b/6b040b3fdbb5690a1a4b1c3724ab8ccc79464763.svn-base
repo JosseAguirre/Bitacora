@@ -1,0 +1,115 @@
+package com.scm.modelo.centroefectivo;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
+
+
+/**
+ * The persistent class for the ce_caracteristica_especie database table.
+ * 
+ */
+@Entity
+@Table(name="ce_caracteristica_especie", schema="java")
+@NamedQuery(name="CeCaracteristicaEspecie.findAll", query="SELECT c FROM CeCaracteristicaEspecie c")
+public class CeCaracteristicaEspecie implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_caracteristica_especie", unique=true, nullable=false)
+	private Integer idCaracteristicaEspecie;
+
+	@Column(length=150)
+	private String descripcion;
+
+	@Column(length=30)
+	private String nombre;
+
+	@Column(name="unidad_medida", length=30)
+	private String unidadMedida;
+
+	private double valor;
+
+	//bi-directional many-to-one association to CeCaractEspecie
+	@OneToMany(mappedBy="idcaracteristicaespecie")
+	private List<CeCaractEspecie> idcaracteristicaespecie_cecaract_especie;
+
+	//bi-directional many-to-one association to CeNacionalidadEspecie
+	@ManyToOne
+	@JoinColumn(name="id_nacionalidad_especie")
+	private CeNacionalidadEspecie idnacionalidadespecie;
+
+	public CeCaracteristicaEspecie() {
+	}
+
+	public Integer getIdCaracteristicaEspecie() {
+		return this.idCaracteristicaEspecie;
+	}
+
+	public void setIdCaracteristicaEspecie(Integer idCaracteristicaEspecie) {
+		this.idCaracteristicaEspecie = idCaracteristicaEspecie;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getUnidadMedida() {
+		return this.unidadMedida;
+	}
+
+	public void setUnidadMedida(String unidadMedida) {
+		this.unidadMedida = unidadMedida;
+	}
+
+	public double getValor() {
+		return this.valor;
+	}
+
+	public void setValor(double valor) {
+		this.valor = valor;
+	}
+
+	public List<CeCaractEspecie> getIdcaracteristicaespecie_cecaract_especie() {
+		return this.idcaracteristicaespecie_cecaract_especie;
+	}
+
+	public void setIdcaracteristicaespecie_cecaract_especie(List<CeCaractEspecie> idcaracteristicaespecie_cecaract_especie) {
+		this.idcaracteristicaespecie_cecaract_especie = idcaracteristicaespecie_cecaract_especie;
+	}
+
+	public CeCaractEspecie addIdcaracteristicaespecie_cecaract_especie(CeCaractEspecie idcaracteristicaespecie_cecaract_especie) {
+		getIdcaracteristicaespecie_cecaract_especie().add(idcaracteristicaespecie_cecaract_especie);
+		idcaracteristicaespecie_cecaract_especie.setIdcaracteristicaespecie(this);
+
+		return idcaracteristicaespecie_cecaract_especie;
+	}
+
+	public CeCaractEspecie removeIdcaracteristicaespecie_cecaract_especie(CeCaractEspecie idcaracteristicaespecie_cecaract_especie) {
+		getIdcaracteristicaespecie_cecaract_especie().remove(idcaracteristicaespecie_cecaract_especie);
+		idcaracteristicaespecie_cecaract_especie.setIdcaracteristicaespecie(null);
+
+		return idcaracteristicaespecie_cecaract_especie;
+	}
+
+	public CeNacionalidadEspecie getIdnacionalidadespecie() {
+		return this.idnacionalidadespecie;
+	}
+
+	public void setIdnacionalidadespecie(CeNacionalidadEspecie idnacionalidadespecie) {
+		this.idnacionalidadespecie = idnacionalidadespecie;
+	}
+
+}

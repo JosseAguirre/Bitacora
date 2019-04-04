@@ -1,0 +1,56 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.administracion.Admusuario;
+
+@Stateless
+public class ServicioAdmUsuario {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(Admusuario admusuario) {
+		em.persist(admusuario);
+	}
+	
+	public void delete(Admusuario admusuario) {
+		em.remove(em.merge(admusuario));
+	}
+	
+	public void update(Admusuario admusuario){
+	
+		em.merge(admusuario);
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Admusuario> findAll() {
+		Query q = em.createQuery("select a from Admusuario a  where a.sysdelete = false");
+		return q.getResultList();
+	}
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admusuario ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public Admusuario findOne(Integer codigoadmusuario){
+		Query q = em.createQuery("select a from Admusuario a where a.idusuario = " + codigoadmusuario);
+		return (Admusuario) q.getSingleResult();
+	}
+
+	
+
+}

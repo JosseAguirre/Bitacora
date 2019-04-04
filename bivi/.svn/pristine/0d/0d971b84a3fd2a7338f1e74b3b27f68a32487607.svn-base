@@ -1,0 +1,65 @@
+package com.scm.servicio.sac;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.sac.SacDetalleespecie;
+
+ 
+
+
+
+@Stateless
+public class ServicioSacDetalleEspecie {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(SacDetalleespecie sacDetalleespecie) {
+		em.persist(sacDetalleespecie);
+	}
+	
+	public void delete (SacDetalleespecie sacDetalleespecie) {
+		em.remove(em.merge(sacDetalleespecie));
+	}
+	
+	public void update (SacDetalleespecie sacDetalleespecie) {
+		em.merge(sacDetalleespecie);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SacDetalleespecie> findAll() {
+		Query q = em.createQuery("select b from SacDetalleespecie b");
+		return q.getResultList();
+	}
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from SacDetalleespecie ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public SacDetalleespecie findOne(Integer codigoSacDetalleespecie){
+		Query q = em.createQuery("select b from SacDetalleespecie b where b.idDetalleespeciesac = " + codigoSacDetalleespecie);
+		return (SacDetalleespecie) q.getSingleResult();
+	}
+	
+	public List<SacDetalleespecie> pornombresemejante(String idtransaccion) {
+		return em.createQuery("select b from SacCabezeratransaccione b where b.idDetalleespeciesac like :idDetalleespeciesac", SacDetalleespecie.class)
+				.setParameter("idDetalleespeciesac", "%" + idtransaccion + "%")
+				.getResultList();
+	}
+
+	
+	
+}
+

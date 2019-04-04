@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+		<ui:define name="content">
+		<p:messages id="mensaje" autoUpdate="false"/>	
+		<p:fieldset id="fst" legend="Ingreso de Servicio">
+			<h:panelGrid id="pnl" columns="3" border="0">
+			
+				<p:outputLabel value="Ciudad" for="ciudad" />
+				<p:selectOneMenu id="ciudad" value="#{admClienteBean.idciudad}" required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admClienteBean.listaciudad}" var="item"
+						itemLabel="#{item.nombre}" itemValue="#{item.iddetallecatalogo}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="ciudad" />
+				
+				<p:outputLabel value="Cliente" for="cliente"/>
+				<p:selectOneMenu id="cliente" value="#{sacTransaccionesBean.idCliente}" required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}"/>
+						<f:selectItems value="#{admClienteBean.listacliente}"
+						               var="item" itemLabel="#{item.razonsocial}"
+						               itemValue="#{item.idcliente}">
+						</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="cliente"/>
+				
+				<p:outputLabel value="Agencia" for="agencia"/>
+				<p:selectOneMenu id="agencia" value="#{null}" >
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}"/>
+						<f:selectItems></f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="agencia"/>
+				
+				<p:outputLabel value="Línea de Negocio" for="lineadenegocio" />
+				<p:selectOneMenu id="lineadenegocio" value="#{sacTransaccionesBean.idLineaNegocio}" required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+						<f:selectItems value="#{sacTransaccionesBean.listaLineaNegocio}"
+						               var="item" itemLabel="#{item.nombre}"
+						               itemValue="#{item.iddetallecatalogo}">
+						</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="lineadenegocio" />
+				
+				<p:outputLabel value="Servicio" for="servicio" />
+				<p:selectOneMenu id="servicio" value="#{sacTransaccionesBean.idServicio}" required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{sacTransaccionesBean.listaServicio}" var="item"
+						itemLabel="#{item.nombre}" itemValue="#{item.idservicio}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="servicio" />
+				
+				<p:outputLabel value="Detalle"/>
+				<p:inputTextarea rows="3" cols="33" id="detalle"
+				             value="#{sacTransaccionesBean.sacTransaccion.descripciontrans}"
+				             required="true" requiredMessage="Requerido" maxlength="100">
+				</p:inputTextarea>
+				<p:message for="detalle" />	
+				
+						
+			</h:panelGrid>
+			</p:fieldset>
+	</ui:define>
+	<ui:define name="content2">
+		<p:fieldset id="fst" legend="Atributos">
+			<p:dataTable id="tbl2" value="#{admClienteAgenciaSistemaBean.listaClienteAgenciaSistema}" var="item2" paginator="true" rows="5"
+			 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			 paginatorPosition="bottom" editable="true" tableStyle="width: auto; white-space: nowrap"
+			 widgetVar="carsTable2" filteredValue="#{admClienteAgenciaSistemaBean.clientefiltrado}"
+			 emptyMessage="No existen registros con ese criterio">
+			 
+				<f:facet name="header">
+					<p:outputPanel style="width:300px">
+						<h:outputText value="Buscar Todo  "/>
+						<p:inputText id="globalFilter" onkeyup="PF('carsTable2').filter()" style="width:150px"/>
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column headerText="Id" filterBy="#{item2.idclienteAgenciaSistemas}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idclienteAgenciaSistemas}" />
+				</p:column>
+        		
+        		<p:column headerText="Nombre" filterBy="#{item2.idcliente.razonsocial}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idcliente.razonsocial}" />
+				</p:column>
+        		
+        		<p:column headerText="Tipo" filterBy="#{item2.idsistemas.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idsistemas.nombre}" />
+				</p:column>
+        		
+        		<p:column headerText="Tiempo de Respuesta" filterBy="#{item2.valor}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.valor}" />
+				</p:column>				
+				
+				<p:column headerText="Estado" filterBy="#{item2.valor}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.valor}" />
+				</p:column>
+				
+								
+			</p:dataTable>	
+		</p:fieldset>
+			
+	</ui:define>
+	<ui:define name="content3">
+		<p:fieldset id="fst" legend="Agregar Insumo">
+		
+				<p:outputLabel value="Insumos" for="insumos" />
+				<p:selectOneMenu id="insumos" value="#{sacTransaccionesBean.idLineaNegocio}" required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admAtributoBean.listaAtributo}"
+							               var="item" itemLabel="#{item.nombre}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="insumos" />
+				
+				<br/>
+				
+				
+				<p:commandButton value="Agregar Insumo"
+				 icon="ui-icon-disk" oncomplete="PF('dlg').show();">
+				</p:commandButton>
+				<p:dialog header="Modal Dialog" widgetVar="dlg" modal="true" height="100">
+	    				<h:outputText value="Cliente ingresado exitosamente"/>
+				</p:dialog>			
+				
+		</p:fieldset>
+	</ui:define>
+</ui:composition>
+</html>

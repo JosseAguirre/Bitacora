@@ -1,0 +1,59 @@
+package com.scm.servicio.boveda;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.preboveda.BovTipoTransaccion;
+
+@Stateless
+public class ServicioBovTipoTransaccion {
+
+	
+	@PersistenceContext
+	private EntityManager em;
+	public void create(BovTipoTransaccion bovtipotransaccion) {
+		em.persist(bovtipotransaccion);
+	}
+	
+	public void delete(BovTipoTransaccion bovtipotransaccion) {
+		em.remove(em.merge(bovtipotransaccion));
+	}
+	
+	public void update(BovTipoTransaccion bovtipotransaccion){
+	
+		em.merge(bovtipotransaccion);
+	}
+	
+ 
+	@SuppressWarnings("unchecked")
+	public List<BovTipoTransaccion> findAll() {
+		Query q = em.createQuery("select f from BovTipoTransaccion f ");
+		return q.getResultList();
+	}
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from BovTipoTransaccion ");
+		codigo = (Integer) q.getSingleResult(); 
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public BovTipoTransaccion findOne(Integer bovtipotransaccion){
+		Query q = em.createQuery("select f from BovTipoTransaccion f where f.idTipoTransaccion = " + bovtipotransaccion);
+		return (BovTipoTransaccion) q.getSingleResult();
+	}
+	
+	public List<BovTipoTransaccion> pornombresemejante(String nombre) {
+		return em.createQuery("select f from BovTipoTransaccion f where c.nombres like :nombres", BovTipoTransaccion.class)
+				.setParameter("nombres", "%" + nombre + "%")
+				.getResultList();
+	}
+}

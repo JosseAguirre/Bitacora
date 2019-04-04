@@ -1,0 +1,160 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.preboveda.BovBoveda;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the adm_sucursal database table.
+ * 
+ */
+@Entity
+@Table(name="adm_sucursal", schema="java")
+@NamedQuery(name="AdmSucursal.findAll", query="SELECT a FROM AdmSucursal a")
+public class AdmSucursal implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idsucursal;
+
+	@Column(length=50)
+	private String direccion;
+
+	@Column(length=30)
+	private String nombre;
+
+	@Column(length=14)
+	private String telefono;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idciudad_dc")
+	private Admdetallecatalogo idciudaddc;
+
+	//bi-directional many-to-one association to AdmSucursalServicio
+	@OneToMany(mappedBy="idsucursal")
+	private List<AdmSucursalServicio> idsucursal_admSucursalServicios;
+
+	//bi-directional many-to-one association to Admempleado
+	@OneToMany(mappedBy="idsucursal")
+	private List<Admempleado> idsucursal_admempleado;
+
+	//bi-directional many-to-one association to BovBoveda
+	@OneToMany(mappedBy="idsucursal")
+	private List<BovBoveda> idsucursal_bovBoveda;
+
+	public AdmSucursal() {
+	}
+
+	public Integer getIdsucursal() {
+		return this.idsucursal;
+	}
+
+	public void setIdsucursal(Integer idsucursal) {
+		this.idsucursal = idsucursal;
+	}
+
+	public String getDireccion() {
+		return this.direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getTelefono() {
+		return this.telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public Admdetallecatalogo getIdciudaddc() {
+		return this.idciudaddc;
+	}
+
+	public void setIdciudaddc(Admdetallecatalogo idciudaddc) {
+		this.idciudaddc = idciudaddc;
+	}
+
+	public List<AdmSucursalServicio> getIdsucursal_admSucursalServicios() {
+		return this.idsucursal_admSucursalServicios;
+	}
+
+	public void setIdsucursal_admSucursalServicios(List<AdmSucursalServicio> idsucursal_admSucursalServicios) {
+		this.idsucursal_admSucursalServicios = idsucursal_admSucursalServicios;
+	}
+
+	public AdmSucursalServicio addIdsucursal_admSucursalServicio(AdmSucursalServicio idsucursal_admSucursalServicio) {
+		getIdsucursal_admSucursalServicios().add(idsucursal_admSucursalServicio);
+		idsucursal_admSucursalServicio.setIdsucursal(this);
+
+		return idsucursal_admSucursalServicio;
+	}
+
+	public AdmSucursalServicio removeIdsucursal_admSucursalServicio(AdmSucursalServicio idsucursal_admSucursalServicio) {
+		getIdsucursal_admSucursalServicios().remove(idsucursal_admSucursalServicio);
+		idsucursal_admSucursalServicio.setIdsucursal(null);
+
+		return idsucursal_admSucursalServicio;
+	}
+
+	public List<Admempleado> getIdsucursal_admempleado() {
+		return this.idsucursal_admempleado;
+	}
+
+	public void setIdsucursal_admempleado(List<Admempleado> idsucursal_admempleado) {
+		this.idsucursal_admempleado = idsucursal_admempleado;
+	}
+
+	public Admempleado addIdsucursal_admempleado(Admempleado idsucursal_admempleado) {
+		getIdsucursal_admempleado().add(idsucursal_admempleado);
+		idsucursal_admempleado.setIdsucursal(this);
+
+		return idsucursal_admempleado;
+	}
+
+	public Admempleado removeIdsucursal_admempleado(Admempleado idsucursal_admempleado) {
+		getIdsucursal_admempleado().remove(idsucursal_admempleado);
+		idsucursal_admempleado.setIdsucursal(null);
+
+		return idsucursal_admempleado;
+	}
+
+	public List<BovBoveda> getIdsucursal_bovBoveda() {
+		return this.idsucursal_bovBoveda;
+	}
+
+	public void setIdsucursal_bovBoveda(List<BovBoveda> idsucursal_bovBoveda) {
+		this.idsucursal_bovBoveda = idsucursal_bovBoveda;
+	}
+
+	public BovBoveda addIdsucursal_bovBoveda(BovBoveda idsucursal_bovBoveda) {
+		getIdsucursal_bovBoveda().add(idsucursal_bovBoveda);
+		idsucursal_bovBoveda.setIdsucursal(this);
+
+		return idsucursal_bovBoveda;
+	}
+
+	public BovBoveda removeIdsucursal_bovBoveda(BovBoveda idsucursal_bovBoveda) {
+		getIdsucursal_bovBoveda().remove(idsucursal_bovBoveda);
+		idsucursal_bovBoveda.setIdsucursal(null);
+
+		return idsucursal_bovBoveda;
+	}
+
+}

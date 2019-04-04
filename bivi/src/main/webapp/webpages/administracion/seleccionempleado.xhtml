@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8"/>
+	<title>Seleccione Empelado</title>
+	
+	<h:outputStylesheet library="css" name="estilo.css" />
+</h:head>
+<h:body>
+
+	<h:form>
+    	
+    	
+    	<p:dataTable id="tbl" value="#{admEmpleadoBean.listaempleado}"
+				var="item" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablaEmpleado"
+				filteredValue="#{admEmpleadoBean.empleadofiltrado}"
+				emptyMessage="No existen registros con ese criterio"
+				
+				
+				selectionMode="single"
+			selection="#{admEmpleadoBean.empleadoseleccionado}"
+			rowKey="#{item.idempleado}"
+				>
+    		
+    		
+    		
+    		<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Buscar:" />
+						<p:inputText id="globalFilter" onkeyup="PF('tablaEmpleado').filter()"
+							style="width:150px"
+							title="Escriba la identificiacion, nombre o apellido " />
+					</p:outputPanel>
+				</f:facet>
+    		
+    		
+    		<p:ajax  event="rowSelect" listener="#{admUsuarioBean.onRowSelectEmpleado}" process="@this" />
+    		
+    		<p:column headerText="Id" filterBy="#{item.idempleado}" filterStyle="display:none">
+    			<h:outputText value="#{item.idempleado}" />
+    		</p:column>
+    		
+    		<p:column headerText="Nombres" filterBy="#{item.nombres}" filterStyle="display:none">
+    			<h:outputText value="#{item.nombres}" />
+    		</p:column>
+    		
+    		<p:column headerText="apellidos" filterBy="#{item.apellidos}" filterStyle="display:none">
+    			<h:outputText value="#{item.apellidos}" />
+    		</p:column>
+    		
+    		
+    		
+    	</p:dataTable>
+	</h:form>
+
+</h:body>
+</html>

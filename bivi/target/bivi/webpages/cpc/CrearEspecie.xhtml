@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html  xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+	 
+	<!-- #####CONTENIDO CREAR ESPECIE######## -->
+	<ui:define name="content">
+		<p:messages id="mensaje" autoUpdate="false" />
+		<center>
+		<p:panel header="Crear Especie" style="width: 40%;">
+			<h:panelGrid id="pnl" columns="3" border="0" style="width: 50%; ">
+				<p:outputLabel value="Tipo Especie" for="tipoespecie" />
+				<p:selectOneMenu id="tipoespecie" value="#{ceEspecieBean.idtipoespecie}"
+					required="false" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{ceEspecieBean.listatipoespecie}" var="item"
+						itemLabel="#{item.nombre}" itemValue="#{item.idTipoEspecie}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="tipoespecie" />
+
+				<p:outputLabel value="Nacionalidad" for="nacionalidad" />
+				<p:selectOneMenu id="nacionalidad"
+					value="#{ceEspecieBean.idnacionalidadespecie}">
+					<f:selectItem itemLabel="Seleccionar"
+						itemValue="#{null}" />
+					<f:selectItems value="#{ceEspecieBean.listanacionaidad}"
+						var="item" itemLabel="#{item.nombre}"
+						itemValue="#{item.idNacionalidadEspecie}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="nacionalidad" />
+
+				<p:outputLabel value="Estado" for="estado" />
+				<p:selectOneMenu id="estado"
+					value="#{ceEspecieBean.idestadoespecie}">
+					<f:selectItem itemLabel="Seleccionar"
+						itemValue="#{null}" />
+					<f:selectItems value="#{ceEspecieBean.listaestado}"
+						var="item" itemLabel="#{item.nombre}"
+						itemValue="#{item.idEstadoEspecie}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="estado" />
+				
+				<p:outputLabel value="Nombre" for="nombre" />
+				<p:inputText id="nombre" value="#{ceEspecieBean.ceespecie.nombre}"
+					required="true" requiredMessage="Requerido">
+				</p:inputText>
+				<p:message for="nombre" />
+
+				<p:outputLabel value="Descripción" for="descripcion" />
+				<p:inputTextarea id="descripcion" rows="3" cols="40"
+					completeMethod="#{ceEspecieBean.ceespecie.descripcion}"
+					queryDelay="750" minQueryLength="4"
+					value="#{ceEspecieBean.ceespecie.descripcion}" required="true"
+					requiredMessage="descripcion" />
+				<p:message for="descripcion" />
+
+				<p:outputLabel value="Valor" for="valor" />
+				<p:inputText id="valor"
+									value="#{ceEspecieBean.ceespecie.valor}"
+									 size="5" required="true"
+					requiredMessage="valor"/>
+				<p:message for="valor" />
+
+			</h:panelGrid>
+			<br/>
+			<p:commandButton value="Guardar"
+				action="#{ceEspecieBean.persitir()}"
+				update=":frm:pnl :frm:tbl :frm:growl" />
+		</p:panel>
+		</center>
+		<br />
+		<!-- #####CONTENIDO LISTA ESPECIE######## -->
+		<p:panel>
+			<p:dataTable id="tbl" value="#{ceEspecieBean.listaespecie}"
+				var="item1" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablaespecie"
+				filteredValue="#{ceEspecieBean.especiefiltro}"
+				emptyMessage="No existen registros con ese criterio"
+				styleClass="table" reflow="true" selectionMode="single"
+				rowKey="#{item1.idEspecie}">
+
+				<f:facet name="header">
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:inputText id="globalFilter"
+								onkeyup="PF('tablaespecie').filter()" class="pull-left"
+								style="width: 100%" placeholder="Buscar aqui..." />
+						</div>
+						<div class="col-lg-6">
+							<h:outputText value="Lista Especie" />
+						</div>
+						<div class="col-lg-3">
+							<div class="pull-right">
+								<p:commandButton action="#{ceEspecieBean.eliminar()}"
+									update=":frm:pnl :frm:tbl :frm:growl" title="Eliminar" value="Eliminar"
+									class="btn-primary" icon="fa fa-list">
+									<p:confirm header="Confirmacion"
+										message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</f:facet>
+
+				<p:ajax event="rowSelect" listener="#{ceEspecieBean.onRowSelectespecie}"
+					update=":frm:pnl" />
+
+				<p:column headerText="Codigo">
+					<h:outputText value="#{item1.idEspecie}" />
+				</p:column>
+
+
+				<p:column headerText="Tipo" filterBy="#{item1.idtipoespecie.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.idtipoespecie.nombre}" />
+				</p:column>
+
+				<p:column headerText="Nacionalidad"
+					filterBy="#{item1.idnacionalidadespecie.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.idnacionalidadespecie.nombre}" />
+				</p:column>
+
+				<p:column headerText="Estado"
+					filterBy="#{item1.idestadoespecie.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.idestadoespecie.nombre}" />
+				</p:column>
+
+				<p:column headerText="Nombre" filterBy="#{item1.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.nombre}" />
+				</p:column>
+
+				<p:column headerText="Descripción" filterBy="#{item1.descripcion}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.descripcion}" />
+				</p:column>
+
+				<p:column headerText="Valor" filterBy="#{item1.valor}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.valor}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+	</ui:composition> 
+</html>

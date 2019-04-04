@@ -1,0 +1,73 @@
+package com.scm.servicio.boveda;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.preboveda.BovCambioTurno;
+
+@Stateless
+public class ServicioBovCambioTurno {
+
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(BovCambioTurno bovcambioturno) {
+		em.persist(bovcambioturno);
+	}
+
+	public void delete(BovCambioTurno bovcambioturno) {
+		em.remove(em.merge(bovcambioturno));
+	}
+
+	public void update(BovCambioTurno bovcambioturno) {
+
+		em.merge(bovcambioturno);
+	}
+
+	// trae toda la información de la tabla BovCambioTurno
+	@SuppressWarnings("unchecked")
+	public List<BovCambioTurno> findAll() {
+		Query q = em.createQuery("select f from BovCambioTurno f ");
+		return q.getResultList();
+	}
+
+	// busca la pk mas alta y le suma uno
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from BovCambioTurno ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+	// busca la pk mas alta y le suma uno
+	public Integer getcod() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(numeroCambioTurno) from BovCambioTurno ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+	// trae el id seleccionado
+	public BovCambioTurno findOne(Integer bovcambioturno) {
+		Query q = em.createQuery("select f from BovCambioTurno f where f.id_bov_cambio_turno = " + bovcambioturno);
+		return (BovCambioTurno) q.getSingleResult();
+	}
+
+	// usado para la busqueda por nombres semejantes
+	public List<BovCambioTurno> pornombresemejante(String nombre) {
+		return em.createQuery("select f from BovCambioTurno f where c.nombres like :nombres", BovCambioTurno.class)
+				.setParameter("nombres", "%" + nombre + "%").getResultList();
+	}
+
+}

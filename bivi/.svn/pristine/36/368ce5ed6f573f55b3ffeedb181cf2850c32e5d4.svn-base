@@ -1,0 +1,58 @@
+package com.scm.servicio.boveda;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.preboveda.BovBovedaValidacion;
+
+@Stateless
+public class ServicioBovBovedaValidacion {
+
+	@PersistenceContext
+	private EntityManager em;
+	public void create(BovBovedaValidacion bovbovedavalidacion) {
+		em.persist(bovbovedavalidacion);
+	}
+	
+	public void delete(BovBovedaValidacion bovbovedavalidacion) {
+		em.remove(em.merge(bovbovedavalidacion));
+	}
+	
+	public void update(BovBovedaValidacion bovbovedavalidacion){
+	
+		em.merge(bovbovedavalidacion);
+	}
+	
+ 
+	@SuppressWarnings("unchecked")
+	public List<BovBovedaValidacion> findAll() {
+		Query q = em.createQuery("select f from BovBovedaValidacion f ");
+		return q.getResultList();
+	}
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from BovBovedaValidacion ");
+		codigo = (Integer) q.getSingleResult(); 
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public BovBovedaValidacion findOne(Integer bovbovedavalidacion){
+		Query q = em.createQuery("select f from BovBovedaValidacion f where f.id_boveda_validacion = " + bovbovedavalidacion);
+		return (BovBovedaValidacion) q.getSingleResult();
+	}
+	
+	public List<BovBovedaValidacion> pornombresemejante(String nombre) {
+		return em.createQuery("select f from BovBovedaValidacion f where c.nombres like :nombres", BovBovedaValidacion.class)
+				.setParameter("nombres", "%" + nombre + "%")
+				.getResultList();
+	}
+}

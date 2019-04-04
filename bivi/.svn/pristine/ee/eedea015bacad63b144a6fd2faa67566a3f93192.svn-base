@@ -1,0 +1,102 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
+
+
+/**
+ * The persistent class for the admmenu database table.
+ * 
+ */
+@Entity
+@Table(name="admmenu", schema="java")
+@NamedQuery(name="Admmenu.findAll", query="SELECT a FROM Admmenu a")
+public class Admmenu implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idmenu;
+
+	private Integer idpadre;
+
+	@Column(length=2147483647)
+	private String nombre;
+
+	@Column(length=2147483647)
+	private String tipo;
+
+	@Column(length=2147483647)
+	private String urlpagina;
+
+	//bi-directional many-to-one association to Admrolmenu
+	@OneToMany(mappedBy="idmenu")
+	private List<Admrolmenu> idmenu_admrolmenu;
+
+	public Admmenu() {
+	}
+
+	public Integer getIdmenu() {
+		return this.idmenu;
+	}
+
+	public void setIdmenu(Integer idmenu) {
+		this.idmenu = idmenu;
+	}
+
+	public Integer getIdpadre() {
+		return this.idpadre;
+	}
+
+	public void setIdpadre(Integer idpadre) {
+		this.idpadre = idpadre;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getTipo() {
+		return this.tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getUrlpagina() {
+		return this.urlpagina;
+	}
+
+	public void setUrlpagina(String urlpagina) {
+		this.urlpagina = urlpagina;
+	}
+
+	public List<Admrolmenu> getIdmenu_admrolmenu() {
+		return this.idmenu_admrolmenu;
+	}
+
+	public void setIdmenu_admrolmenu(List<Admrolmenu> idmenu_admrolmenu) {
+		this.idmenu_admrolmenu = idmenu_admrolmenu;
+	}
+
+	public Admrolmenu addIdmenu_admrolmenu(Admrolmenu idmenu_admrolmenu) {
+		getIdmenu_admrolmenu().add(idmenu_admrolmenu);
+		idmenu_admrolmenu.setIdmenu(this);
+
+		return idmenu_admrolmenu;
+	}
+
+	public Admrolmenu removeIdmenu_admrolmenu(Admrolmenu idmenu_admrolmenu) {
+		getIdmenu_admrolmenu().remove(idmenu_admrolmenu);
+		idmenu_admrolmenu.setIdmenu(null);
+
+		return idmenu_admrolmenu;
+	}
+
+}

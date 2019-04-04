@@ -1,0 +1,80 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.centroefectivo.CeEspecie;
+
+
+/**
+ * The persistent class for the bov_detalle_boveda_cliente database table.
+ * 
+ */
+@Entity
+@Table(name="bov_detalle_boveda_cliente", schema="java")
+@NamedQuery(name="BovDetalleBovedaCliente.findAll", query="SELECT b FROM BovDetalleBovedaCliente b")
+public class BovDetalleBovedaCliente implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_detalle_boveda_cliente", unique=true, nullable=false)
+	private Integer idDetalleBovedaCliente;
+
+	private Integer cantidad;
+
+	private double total;
+
+	//bi-directional many-to-one association to BovBovedaCliente
+	@ManyToOne
+	@JoinColumn(name="id_boveda_cliente")
+	private BovBovedaCliente idbovedacliente;
+
+	//bi-directional many-to-one association to CeEspecie
+	@ManyToOne
+	@JoinColumn(name="id_especie")
+	private CeEspecie idespecie;
+
+	public BovDetalleBovedaCliente() {
+	}
+
+	public Integer getIdDetalleBovedaCliente() {
+		return this.idDetalleBovedaCliente;
+	}
+
+	public void setIdDetalleBovedaCliente(Integer idDetalleBovedaCliente) {
+		this.idDetalleBovedaCliente = idDetalleBovedaCliente;
+	}
+
+	public Integer getCantidad() {
+		return this.cantidad;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public double getTotal() {
+		return this.total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+
+	public BovBovedaCliente getIdbovedacliente() {
+		return this.idbovedacliente;
+	}
+
+	public void setIdbovedacliente(BovBovedaCliente idbovedacliente) {
+		this.idbovedacliente = idbovedacliente;
+	}
+
+	public CeEspecie getIdespecie() {
+		return this.idespecie;
+	}
+
+	public void setIdespecie(CeEspecie idespecie) {
+		this.idespecie = idespecie;
+	}
+
+}

@@ -1,0 +1,212 @@
+package com.scm.bean.administracion;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.AdmAtributo;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.servicio.administracion.ServicioAdmAtributo;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+
+@ManagedBean
+@ViewScoped
+public class AdmAtributoBean implements Interface {
+	private static final long serialVersionUID = 1L;
+
+	private AdmAtributo admAtributo;
+	private Admdetallecatalogo admdetallecatalogo;
+	
+	private List<AdmAtributo> listaAtributo;
+	private List<Admdetallecatalogo> listaEstado;
+	private List<AdmAtributo> atributoFiltrado;
+	
+	private Integer bandera;
+	private int idestado;
+	private int detallecatalogo;
+	
+	@EJB
+	private ServicioAdmAtributo servicioAdmAtributo;
+	@EJB
+	private ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+	
+	@Override
+	@PostConstruct	
+	public void init() {
+		
+		cancelar();	
+		
+	}
+
+	@Override
+	public void guardar() {
+		
+		admAtributo.setIdatributo(servicioAdmAtributo.getPK());//Asigna el id del cliente por medio de una consulta
+		admAtributo.setSysdelete(false);	
+				
+		buscaIdCombos();
+		servicioAdmAtributo.create(admAtributo);  //Crea un nuevo registro en la tabla AdmClienteAgenciaSistema
+		cancelar();
+		
+	}
+	
+	public void buscaIdCombos(){// Busca el id de los combo box seleccionados en la pantalla cliente
+		
+		admdetallecatalogo = serviciodetallecatalogo.findOne(idestado);
+		admAtributo.setIdestadodc(admdetallecatalogo);
+		
+	}
+
+	@Override
+	public void eliminar() {
+		servicioAdmAtributo.delete(admAtributo);
+		cancelar();
+		
+	}
+
+	@Override
+	public void actualizar() {
+		buscaIdCombos();
+
+		servicioAdmAtributo.update(admAtributo);
+		cancelar();
+		
+	}
+	
+	public void Eliminar() {
+		admAtributo.setSysdelete(true);
+		servicioAdmAtributo.update(admAtributo);
+		cancelar();
+
+	}
+
+
+	@Override
+	public void consultar() {
+		listaAtributo = new ArrayList<>();
+		listaAtributo = servicioAdmAtributo.findAll();
+		
+		listaEstado = new ArrayList<>();
+		listaEstado = serviciodetallecatalogo.estados();
+		
+				
+	}
+
+	@Override
+	public void cancelar() {
+		admAtributo = new AdmAtributo();
+		consultar();
+		bandera = 0;
+		idestado = -1;
+		
+		
+	}
+	
+	public void atributoseleccionado(){
+		
+		idestado = admAtributo.getIdestadodc().getIddetallecatalogo();
+		bandera = 1;
+	}
+	
+	public void persistir(){
+		if(bandera==1){
+			
+			actualizar();
+			
+		}else{
+			
+			guardar();
+			
+		}
+	}
+
+	public AdmAtributo getAdmAtributo() {
+		return admAtributo;
+	}
+
+	public void setAdmAtributo(AdmAtributo admAtributo) {
+		this.admAtributo = admAtributo;
+	}
+
+	public Admdetallecatalogo getAdmdetallecatalogo() {
+		return admdetallecatalogo;
+	}
+
+	public void setAdmdetallecatalogo(Admdetallecatalogo admdetallecatalogo) {
+		this.admdetallecatalogo = admdetallecatalogo;
+	}
+
+	public List<AdmAtributo> getListaAtributo() {
+		return listaAtributo;
+	}
+
+	public void setListaAtributo(List<AdmAtributo> listaAtributo) {
+		this.listaAtributo = listaAtributo;
+	}
+
+	public List<Admdetallecatalogo> getListaEstado() {
+		return listaEstado;
+	}
+
+	public void setListaEstado(List<Admdetallecatalogo> listaEstado) {
+		this.listaEstado = listaEstado;
+	}
+
+	public Integer getBandera() {
+		return bandera;
+	}
+
+	public void setBandera(Integer bandera) {
+		this.bandera = bandera;
+	}
+
+	public int getIdestado() {
+		return idestado;
+	}
+
+	public void setIdestado(int idestado) {
+		this.idestado = idestado;
+	}
+
+	public int getDetallecatalogo() {
+		return detallecatalogo;
+	}
+
+	public void setDetallecatalogo(int detallecatalogo) {
+		this.detallecatalogo = detallecatalogo;
+	}
+
+	public ServicioAdmAtributo getServicioAdmAtributo() {
+		return servicioAdmAtributo;
+	}
+
+	public void setServicioAdmAtributo(ServicioAdmAtributo servicioAdmAtributo) {
+		this.servicioAdmAtributo = servicioAdmAtributo;
+	}
+
+	public ServicioAdmDetalleCatalogo getServiciodetallecatalogo() {
+		return serviciodetallecatalogo;
+	}
+
+	public void setServiciodetallecatalogo(ServicioAdmDetalleCatalogo serviciodetallecatalogo) {
+		this.serviciodetallecatalogo = serviciodetallecatalogo;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public List<AdmAtributo> getAtributoFiltrado() {
+		return atributoFiltrado;
+	}
+
+	public void setAtributoFiltrado(List<AdmAtributo> atributoFiltrado) {
+		this.atributoFiltrado = atributoFiltrado;
+	}
+		
+}

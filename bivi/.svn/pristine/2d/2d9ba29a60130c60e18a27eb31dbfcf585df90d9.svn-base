@@ -1,0 +1,70 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
+
+
+/**
+ * The persistent class for the admtipocatalogo database table.
+ * 
+ */
+@Entity
+@Table(name="admtipocatalogo", schema="java")
+@NamedQuery(name="Admtipocatalogo.findAll", query="SELECT a FROM Admtipocatalogo a")
+public class Admtipocatalogo implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idtipocatalogo;
+
+	@Column(nullable=false, length=50)
+	private String nombre;
+
+	//bi-directional many-to-one association to Admcatalogo
+	@OneToMany(mappedBy="idtipocatalogo")
+	private List<Admcatalogo> idtipocatalogo_admcatalogo;
+
+	public Admtipocatalogo() {
+	}
+
+	public Integer getIdtipocatalogo() {
+		return this.idtipocatalogo;
+	}
+
+	public void setIdtipocatalogo(Integer idtipocatalogo) {
+		this.idtipocatalogo = idtipocatalogo;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<Admcatalogo> getIdtipocatalogo_admcatalogo() {
+		return this.idtipocatalogo_admcatalogo;
+	}
+
+	public void setIdtipocatalogo_admcatalogo(List<Admcatalogo> idtipocatalogo_admcatalogo) {
+		this.idtipocatalogo_admcatalogo = idtipocatalogo_admcatalogo;
+	}
+
+	public Admcatalogo addIdtipocatalogo_admcatalogo(Admcatalogo idtipocatalogo_admcatalogo) {
+		getIdtipocatalogo_admcatalogo().add(idtipocatalogo_admcatalogo);
+		idtipocatalogo_admcatalogo.setIdtipocatalogo(this);
+
+		return idtipocatalogo_admcatalogo;
+	}
+
+	public Admcatalogo removeIdtipocatalogo_admcatalogo(Admcatalogo idtipocatalogo_admcatalogo) {
+		getIdtipocatalogo_admcatalogo().remove(idtipocatalogo_admcatalogo);
+		idtipocatalogo_admcatalogo.setIdtipocatalogo(null);
+
+		return idtipocatalogo_admcatalogo;
+	}
+
+}

@@ -1,0 +1,108 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admempleado;
+
+import java.sql.Time;
+import java.util.Date;
+
+
+/**
+ * The persistent class for the bov_cambio_turno database table.
+ * 
+ */
+@Entity
+@Table(name="bov_cambio_turno", schema="java")
+@NamedQuery(name="BovCambioTurno.findAll", query="SELECT b FROM BovCambioTurno b")
+public class BovCambioTurno implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_bov_cambio_turno", unique=true, nullable=false)
+	private Integer idBovCambioTurno;
+
+	@Temporal(TemporalType.DATE)
+	private Date fecha;
+
+	private Time hora;
+
+	@Column(name="numero_cambio_turno")
+	private Integer numeroCambioTurno;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado")
+	private Admempleado idempleado;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado2")
+	private Admempleado idempleado2;
+
+	//bi-directional many-to-one association to BovBoveda
+	@ManyToOne
+	@JoinColumn(name="id_boveda")
+	private BovBoveda idboveda;
+
+	public BovCambioTurno() {
+	}
+
+	public Integer getIdBovCambioTurno() {
+		return this.idBovCambioTurno;
+	}
+
+	public void setIdBovCambioTurno(Integer idBovCambioTurno) {
+		this.idBovCambioTurno = idBovCambioTurno;
+	}
+
+	public Date getFecha() {
+		return this.fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public Time getHora() {
+		return this.hora;
+	}
+
+	public void setHora(Time hora) {
+		this.hora = hora;
+	}
+
+	public Integer getNumeroCambioTurno() {
+		return this.numeroCambioTurno;
+	}
+
+	public void setNumeroCambioTurno(Integer numeroCambioTurno) {
+		this.numeroCambioTurno = numeroCambioTurno;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public Admempleado getIdempleado2() {
+		return this.idempleado2;
+	}
+
+	public void setIdempleado2(Admempleado idempleado2) {
+		this.idempleado2 = idempleado2;
+	}
+
+	public BovBoveda getIdboveda() {
+		return this.idboveda;
+	}
+
+	public void setIdboveda(BovBoveda idboveda) {
+		this.idboveda = idboveda;
+	}
+
+}

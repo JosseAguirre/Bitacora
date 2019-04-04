@@ -1,0 +1,55 @@
+package com.scm.servicio.centroefectivo;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.centroefectivo.CeCaractEspecie;
+
+@Stateless
+public class ServicioCeCaractEspecie {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(CeCaractEspecie cecaractespecie) {
+		em.persist(cecaractespecie);
+	}
+
+	public void delete(CeCaractEspecie cecaractespecie) {
+		em.remove(em.merge(cecaractespecie));
+	}
+
+	public void update(CeCaractEspecie cecaractespecie) {
+
+		em.merge(cecaractespecie);
+	}
+
+	// Selecciona todos los datos de la tabla BovBoveda
+	@SuppressWarnings("unchecked")
+	public List<CeCaractEspecie> findAll() {
+		Query q = em.createQuery("select r from CeCaractEspecie r ");
+		return q.getResultList();
+	}
+
+	// Busca la pk mas alta y le suma uno
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from CeCaractEspecie ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// Busca el id seleccionado		 	
+	public CeCaractEspecie findOne(Integer carespecie) {
+		Query q = em.createQuery("select f from CeCaractEspecie f where f.id_caract_especie = " + carespecie);
+		return (CeCaractEspecie) q.getSingleResult();
+	}
+}

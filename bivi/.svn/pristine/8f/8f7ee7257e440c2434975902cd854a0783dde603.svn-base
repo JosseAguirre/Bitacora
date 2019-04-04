@@ -1,0 +1,56 @@
+package com.scm.servicio.centroefectivo;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.centroefectivo.CeTipoEspecie;
+
+
+@Stateless
+public class ServicioCeTipoEspecie {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(CeTipoEspecie bovboveda) {
+		em.persist(bovboveda);
+	}
+
+	public void delete(CeTipoEspecie bovboveda) {
+		em.remove(em.merge(bovboveda));
+	}
+
+	public void update(CeTipoEspecie bovboveda) {
+
+		em.merge(bovboveda);
+	}
+
+	// Selecciona todos los datos de la tabla CeTipoEspecie
+	@SuppressWarnings("unchecked")
+	public List<CeTipoEspecie> findAll() {
+		Query q = em.createQuery("select r from CeTipoEspecie r ");
+		return q.getResultList();
+	}
+
+	// Busca la pk mas alta y le suma uno
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from CeTipoEspecie ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// Busca el id seleccionado
+	public CeTipoEspecie findOne(Integer CeTipoEspecie) {
+		Query q = em.createQuery("select f from CeTipoEspecie f where f.idTipoEspecie = " + CeTipoEspecie);
+		return (CeTipoEspecie) q.getSingleResult();
+	}
+}

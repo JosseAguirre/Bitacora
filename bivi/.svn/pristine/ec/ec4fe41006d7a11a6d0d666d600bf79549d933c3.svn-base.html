@@ -1,0 +1,1503 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+	<!-- #####CONTENIDO TRANSFERENCIA INTERNA######## -->
+	<ui:define name="content">
+
+		<p:messages id="mensaje" autoUpdate="false" />
+
+		<p:panel header="Registro Salida Bóveda" id="pnl"
+			style="margin:0 auto;">
+
+			<p:panelGrid columns="4" style="margin:0 auto;">
+
+				<h:column >
+					<h6>Registra alores que van a salir de bóveda</h6>
+					<p:outputLabel value="Sale de Bóveda" for="origen" />
+					<p:selectOneMenu id="origen"
+						value="#{bovTransferenciaBean.id_boveda_clienteorigen}"
+						required="true" requiredMessage="Requerido">
+						<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+						<f:selectItems value="#{bovTransferenciaBean.listabovedacliente1}"
+							var="item" itemLabel="#{item.nombre}"
+							itemValue="#{item.idBovedaCliente}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<br />
+					<br />
+					<h6>Registra alores que van a ser ingresados a bóveda</h6>
+					<p:outputLabel value="Entra a Bóveda" />
+					<p:selectOneMenu id="destino"
+						value="#{bovTransferenciaBean.id_boveda_clientedestino}"
+						required="true" requiredMessage="Requerido">
+						<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+						<f:selectItems value="#{bovTransferenciaBean.listabovedacliente1}"
+							var="item" itemLabel="#{item.nombre}"
+							itemValue="#{item.idBovedaCliente}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<br />
+					<br />
+					<!-- #####BILLETES NUEVOS######## -->
+					<p:panelGrid columns="6">
+						<f:facet name="header">Billetes nuevos</f:facet>
+						<p:column>
+							<h5>Cantidad</h5>
+							<p>
+								<h:outputLabel value="100$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="cien" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCienNUevo}"
+										update="cienSubtotal cienBalas cienFajos cienpicos1 totalSubtotal" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="50$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="cincuenta"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCiencunentaNuevo}"
+										update="cincuentaSubtotal cincuentaBalas cincuentaFajos cincuentapicos1 totalSubtotal" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="veinte" value="20$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="veinte"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieVeinteNuevo}"
+										update="veinteSubtotal veinteBalas veinteFajos veintepicos1 totalSubtotal" />
+
+
+								</p:inputText>
+
+							</p>
+							<p>
+								<p:outputLabel value="10$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="diez" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieDiezNuevo}"
+										update="diezSubtotal diezBalas diezFajos  diezpicos1 totalSubtotal" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="cinco" value="5$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="cinco" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCincoNuevo}"
+										update="cincoSubtotal cincoBalas cincoFajos cincopicos1 totalSubtotal" />
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="uno" value="1$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="uno" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieUnoNuevo}"
+										update="unoSubtotal unoBalas unoFajos unopicos1 totalSubtotal" />
+								</p:inputText>
+							</p>
+		<br/>
+		<br/>
+						</p:column>
+						<p:column>
+							<h5>Subtotal</h5>
+							<p>
+								<p:inputText id="cienSubtotal"
+									value="#{bovTransferenciaBean.cien}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentaSubtotal"
+									value="#{bovTransferenciaBean.cincuenta}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteSubtotal"
+									value="#{bovTransferenciaBean.veinte}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezSubtotal"
+									value="#{bovTransferenciaBean.diez}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincoSubtotal"
+									value="#{bovTransferenciaBean.cinco}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unoSubtotal"
+									value="#{bovTransferenciaBean.uno}" size="7" disabled="true" />
+							</p>
+
+							<p>
+								<h:outputText id="totalSubtotal"
+									value="#{bovTransferenciaBean.cien+bovTransferenciaBean.cincuenta+bovTransferenciaBean.veinte+bovTransferenciaBean.diez+bovTransferenciaBean.cinco+bovTransferenciaBean.uno}">
+								</h:outputText>
+							</p>
+						</p:column>
+						<p:column>
+
+							<h5>Balas</h5>
+
+							<p>
+								<p:inputText id="cienBalas"
+									value="#{bovTransferenciaBean.cienbalas}" size="7"
+									disabled="true" />
+							</p>
+
+							<p>
+								<p:inputText id="cincuentaBalas"
+									value="#{bovTransferenciaBean.cincuentabalas}" size="7"
+									disabled="true" />
+							</p>
+
+							<p>
+								<p:inputText id="veinteBalas"
+									value="#{bovTransferenciaBean.veintebalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezBalas"
+									value="#{bovTransferenciaBean.diezbalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincoBalas"
+									value="#{bovTransferenciaBean.cincobalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unoBalas"
+									value="#{bovTransferenciaBean.unobalas}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Fajos</h5>
+							<p>
+								<p:inputText id="cienFajos"
+									value="#{bovTransferenciaBean.cienfajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentaFajos"
+									value="#{bovTransferenciaBean.cincuentafajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteFajos"
+									value="#{bovTransferenciaBean.veintefajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezFajos"
+									value="#{bovTransferenciaBean.diezfajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincoFajos"
+									value="#{bovTransferenciaBean.cincofajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unoFajos"
+									value="0.0" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Picos</h5>
+							<p>
+								<p:inputText id="cienpicos1"
+									value="#{bovTransferenciaBean.cienpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentapicos1"
+									value="#{bovTransferenciaBean.cincuentapicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veintepicos1"
+									value="#{bovTransferenciaBean.veintepicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezpicos1"
+									value="#{bovTransferenciaBean.diezpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincopicos1"
+									value="#{bovTransferenciaBean.cincopicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unopicos1"
+									value="#{bovTransferenciaBean.unopicos}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+					</p:panelGrid>
+
+					<br />
+					<!-- #####BILLETES VIEJOS######## -->
+					<p:panelGrid columns="6">
+						<f:facet name="header">Billetes Mutilados</f:facet>
+						<p:column>
+							<h5>Cantidad</h5>
+							<p>
+
+								<h:outputLabel value="100$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="cienn" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCienMutilado}"
+										update="cienSubtotal1 cienBalas1 cienFajos1 cienpicos totalSubtotal1" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="50$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="cincuentan"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCiencunentaMutilado}"
+										update="cincuentaSubtotal1 cincuentaBalas1 cincuentaFajos1 cincuentapicos totalSubtotal1" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="20$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="veinten"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieVeinteMutilado}"
+										update="veinteSubtotal1 veinteBalas1 veinteFajos1 veintepicos totalSubtotal1" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="10$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="diezn" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieDiezMutilado}"
+										update="diezSubtotal1 diezBalas1 diezFajos1 diezpicos totalSubtotal1" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="5$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="cincon"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCincoMutilado}"
+										update="cincoSubtotal1 cincoBalas1 cincoFajos1 cincopicos totalSubtotal1" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="1$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="unon" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieUnoMutilado}"
+										update="unoSubtotal1 unoBalas1 unoFajos1 unopicos totalSubtotal1" />
+
+								</p:inputText>
+							</p>
+<br/>
+<br/>
+
+						</p:column>
+						<p:column>
+							<h5>Subtotal</h5>
+							<p>
+								<p:inputText id="cienSubtotal1"
+									value="#{bovTransferenciaBean.cien}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentaSubtotal1"
+									value="#{bovTransferenciaBean.cincuenta}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteSubtotal1"
+									value="#{bovTransferenciaBean.veinte}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezSubtotal1"
+									value="#{bovTransferenciaBean.diez}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincoSubtotal1"
+									value="#{bovTransferenciaBean.cinco}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unoSubtotal1"
+									value="#{bovTransferenciaBean.uno}" size="7" disabled="true" />
+							</p>
+							<p>
+								<h:outputText id="totalSubtotal1"
+									value="#{bovTransferenciaBean.cien+bovTransferenciaBean.cincuenta+bovTransferenciaBean.veinte+bovTransferenciaBean.diez+bovTransferenciaBean.cinco+bovTransferenciaBean.uno}" size="7" disabled="true">
+								</h:outputText>
+							</p>
+						</p:column>
+						<p:column>
+
+							<h5>Balas</h5>
+
+							<p>
+								<p:inputText id="cienBalas1"
+									value="#{bovTransferenciaBean.cienbalas}" size="7"
+									disabled="true" />
+							</p>
+
+							<p>
+								<p:inputText id="cincuentaBalas1"
+									value="#{bovTransferenciaBean.cincuentabalas}" size="7"
+									disabled="true" />
+							</p>
+
+							<p>
+								<p:inputText id="veinteBalas1"
+									value="#{bovTransferenciaBean.veintebalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezBalas1"
+									value="#{bovTransferenciaBean.diezbalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincoBalas1"
+									value="#{bovTransferenciaBean.cincobalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unoBalas1"
+									value="#{bovTransferenciaBean.unobalas}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Fajos</h5>
+							<p>
+								<p:inputText id="cienFajos1"
+									value="#{bovTransferenciaBean.cienfajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentaFajos1"
+									value="#{bovTransferenciaBean.cincuentafajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteFajos1"
+									value="#{bovTransferenciaBean.veintefajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezFajos1"
+									value="#{bovTransferenciaBean.diezfajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincoFajos1"
+									value="#{bovTransferenciaBean.cincofajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unoFajos1"
+									value="0.0" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Picos</h5>
+							<p>
+								<p:inputText id="cienpicos"
+									value="#{bovTransferenciaBean.cienpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentapicos"
+									value="#{bovTransferenciaBean.cincuentapicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veintepicos"
+									value="#{bovTransferenciaBean.veintepicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezpicos"
+									value="#{bovTransferenciaBean.diezpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincopicos"
+									value="#{bovTransferenciaBean.cincopicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unopicos"
+									value="#{bovTransferenciaBean.unopicos}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+
+					</p:panelGrid>
+
+
+					<!-- #####MONEDAS ######## -->
+
+					<br />
+					<p:panelGrid columns="6">
+						<f:facet name="header">Monedas</f:facet>
+						<p:column>
+							<h5>Cantidad</h5>
+							<p>
+								<h:outputLabel for="undolar" value="1$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="undolar"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaUno}"
+										update="undolarsubtotal undolarfundas undolarcartuchos cienpicosm totalSubtotal2" />
+
+								</p:inputText>
+
+							</p>
+							<p>
+								<p:outputLabel value="0.50ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="cincuentactv"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaCincuenta}"
+										update="cincuentasubtotal cincuentafundas cincuentacartuchos cincuentapicosm totalSubtotal2" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="veinteycincoctv" value="0.25ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="veinteycincoctv"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaVeinticinco}"
+										update="veinteycincosubtotal veinteycincofundas veinteycincocartuchos veinteycincopicosm totalSubtotal2" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="diezctv" value="0.10ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="diezctv"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaDiez}"
+										update="diezsubtotal diezfundas diezcartuchos diezpicosm totalSubtotal2" />
+
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="cincoctv" value="0.05ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="cincoctv"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaCinco}"
+										update="cincosubtotal cincofundas cincocartuchos cincopicosm totalSubtotal2" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="unctv" value="0.01ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="unctv" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaUnoCent}"
+										update="unsubtotal unofundas unocartuchos unopicosm totalSubtotal2" />
+
+								</p:inputText>
+							</p>
+			<br/>
+			<br/>
+						</p:column>
+						<p:column>
+							<h5>Subtotal</h5>
+							<p>
+								<p:inputText id="undolarsubtotal"
+									value="#{bovTransferenciaBean.undolar}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentasubtotal"
+									value="#{bovTransferenciaBean.cincuentactv}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteycincosubtotal"
+									value="#{bovTransferenciaBean.venteycincoctv}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezsubtotal"
+									value="#{bovTransferenciaBean.diezctv}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincosubtotal"
+									value="#{bovTransferenciaBean.cincoctv}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unsubtotal"
+									value="#{bovTransferenciaBean.unctv}" size="7" disabled="true" />
+							</p>
+							<p>
+								<h:outputText id="totalSubtotal2"
+									value="#{bovTransferenciaBean.undolar+bovTransferenciaBean.cincuentactv+bovTransferenciaBean.venteycincoctv+bovTransferenciaBean.diezctv+bovTransferenciaBean.cincoctv+bovTransferenciaBean.unctv}" size="7" disabled="true">
+								</h:outputText>
+							</p>
+						</p:column>
+						<p:column>
+							<h5>fundas</h5>
+							<p>
+								<p:inputText id="undolarfundas"
+									value="#{bovTransferenciaBean.undolarfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentafundas"
+									value="#{bovTransferenciaBean.cincuentactvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteycincofundas"
+									value="#{bovTransferenciaBean.venteycincoctvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezfundas"
+									value="#{bovTransferenciaBean.diezctvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincofundas"
+									value="#{bovTransferenciaBean.cincoctvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unofundas"
+									value="#{bovTransferenciaBean.unctvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>cartuchos</h5>
+							<p>
+								<p:inputText id="undolarcartuchos"
+									value="#{bovTransferenciaBean.undolarcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentacartuchos"
+									value="#{bovTransferenciaBean.cincuentactvcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteycincocartuchos"
+									value="#{bovTransferenciaBean.venteycincoctvcartuchos}"
+									size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezcartuchos"
+									value="#{bovTransferenciaBean.diezctvcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincocartuchos"
+									value="#{bovTransferenciaBean.cincoctvcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unocartuchos"
+									value="#{bovTransferenciaBean.unctvcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Picos</h5>
+							<p>
+								<p:inputText id="cienpicosm"
+									value="#{bovTransferenciaBean.undolarpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentapicosm"
+									value="#{bovTransferenciaBean.cincuentactvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteycincopicosm"
+									value="#{bovTransferenciaBean.venteycincoctvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezpicosm"
+									value="#{bovTransferenciaBean.diezctvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincopicosm"
+									value="#{bovTransferenciaBean.cincoctvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unopicosm"
+									value="#{bovTransferenciaBean.unctvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+					</p:panelGrid>
+					<br />
+					<br />
+
+					<p:commandButton value="Guardar"
+						action="#{bovTransferenciaBean.guardarINT()}"
+						update=":frm:pnl :frm2:tbl :frm:growl" icon="ui-icon-disk">
+					</p:commandButton>
+				</h:column>
+
+
+
+
+				<h:column style="width: 100px;">
+					<!--###########SEGUNDA COLUMNA#########-->
+					<h6>Registra alores que van a salir de bóveda</h6>
+					<p:outputLabel value="Sale de Bóveda" for="origen" />
+					<p:selectOneMenu id="origen1"
+						value="#{bovTransferenciaBean.id_boveda_clienteorigen1}"
+						required="false" requiredMessage="Requerido">
+						<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+						<f:selectItems value="#{bovTransferenciaBean.listabovedacliente1}"
+							var="item" itemLabel="#{item.nombre}"
+							itemValue="#{item.idBovedaCliente}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<br />
+					<br />
+					<h6>Registra alores que van a ser ingresados a bóveda</h6>
+					<p:outputLabel value="Entra a Bóveda" />
+					<p:selectOneMenu id="destino1"
+						value="#{bovTransferenciaBean.id_boveda_clientedestino1}"
+						required="false" requiredMessage="Requerido">
+						<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+						<f:selectItems value="#{bovTransferenciaBean.listabovedacliente1}"
+							var="item" itemLabel="#{item.nombre}"
+							itemValue="#{item.idBovedaCliente}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<br />
+					<br />
+
+					<!-- #####BILLETES NUEVOS######## -->
+					<p:panelGrid columns="6">
+						<f:facet name="header">Billetes nuevos</f:facet>
+						<p:column>
+							<h5>Cantidad</h5>
+							<p>
+								<h:outputLabel for="cien2" value="100$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="cien2" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCienNUevo}"
+										update="cienSubtotal2 cienBalas2 cienFajos2 cienpicos2" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="cincuenta2" value="50$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="cincuenta2"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCiencunentaNuevo}"
+										update="cincuentaSubtotal2 cincuentaBalas2 cincuentaFajos2 cincuentapicos2 totalSubtotal3" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="veinte2" value="20$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="veinte2"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieVeinteNuevo}"
+										update="veinteSubtotal2 veinteBalas2 veinteFajos2  veintepicos2 totalSubtotal3" />
+
+								</p:inputText>
+
+							</p>
+							<p>
+								<p:outputLabel for="diez2" value="10$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="diez2" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieDiezNuevo}"
+										update="diezSubtotal2 diezBalas2  diezFajos22  diezpicos2 totalSubtotal3" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="cinco2" value="5$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="cinco2"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCincoNuevo}"
+										update="cincoSubtotal2 cincoBalas2 cincoFajos2 cincopicos2 totalSubtotal3" />
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="uno2" value="1$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="uno2" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieUnoNuevo}"
+										update="unoSubtotal2 unoBalas2 unoFajos2 unopicos2 totalSubtotal3" />
+								</p:inputText>
+							</p>
+<br/>
+<br/>
+						</p:column>
+
+						<br />
+						<p:column>
+							<h5>Subtotal</h5>
+							<p>
+								<p:inputText id="cienSubtotal2"
+									value="#{bovTransferenciaBean.cien}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentaSubtotal2"
+									value="#{bovTransferenciaBean.cincuenta}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteSubtotal2"
+									value="#{bovTransferenciaBean.veinte}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezSubtotal2"
+									value="#{bovTransferenciaBean.diez}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincoSubtotal2"
+									value="#{bovTransferenciaBean.cinco}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unoSubtotal2"
+									value="#{bovTransferenciaBean.uno}" size="7" disabled="true" />
+							</p>
+
+							<p>
+								<h:outputText id="totalSubtotal3"
+									value="#{bovTransferenciaBean.cien+bovTransferenciaBean.cincuenta+bovTransferenciaBean.veinte+bovTransferenciaBean.diez+bovTransferenciaBean.cinco+bovTransferenciaBean.uno}" size="7" disabled="true">
+								</h:outputText>
+							</p>
+						</p:column>
+						<p:column>
+
+							<h5>Balas</h5>
+
+							<p>
+								<p:inputText id="cienBalas2"
+									value="#{bovTransferenciaBean.cienbalas}" size="7"
+									disabled="true" />
+							</p>
+
+							<p>
+								<p:inputText id="cincuentaBalas2"
+									value="#{bovTransferenciaBean.cincuentabalas}" size="7"
+									disabled="true" />
+							</p>
+
+							<p>
+								<p:inputText id="veinteBalas2"
+									value="#{bovTransferenciaBean.veintebalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezBalas2"
+									value="#{bovTransferenciaBean.diezbalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincoBalas2"
+									value="#{bovTransferenciaBean.cincobalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unoBalas2"
+									value="#{bovTransferenciaBean.unobalas}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Fajos</h5>
+							<p>
+								<p:inputText id="cienFajos2"
+									value="#{bovTransferenciaBean.cienfajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentaFajos2"
+									value="#{bovTransferenciaBean.cincuentafajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteFajos2"
+									value="#{bovTransferenciaBean.veintefajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezFajos22"
+									value="#{bovTransferenciaBean.diezfajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincoFajos2"
+									value="#{bovTransferenciaBean.cincofajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unoFajos2"
+									value="0.0" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Picos</h5>
+							<p>
+								<p:inputText id="cienpicos2"
+									value="#{bovTransferenciaBean.cienpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentapicos2"
+									value="#{bovTransferenciaBean.cincuentapicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veintepicos2"
+									value="#{bovTransferenciaBean.veintepicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezpicos2"
+									value="#{bovTransferenciaBean.diezpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincopicos2"
+									value="#{bovTransferenciaBean.cincopicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unopicos2"
+									value="#{bovTransferenciaBean.unopicos}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+					</p:panelGrid>
+					<br />
+					<!-- #####BILLETES VIEJOS######## -->
+					<p:panelGrid columns="6">
+						<f:facet name="header">Billetes Viejos</f:facet>
+						<p:column>
+							<h5>Cantidad</h5>
+							<p>
+
+								<h:outputLabel value="100$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="cien1" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCienMutilado}"
+										update="cienbilletSubtotal1 cienbilletBalas3 cienbilletFajos3 cienpicos3 totalbilletSubtotal4" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="50$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="cincuenta1"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCiencunentaMutilado}"
+										update="cincuentabilletSubtotal1 cincuentabilletBalas3 cincuentabilletFajos3 cincuentapicos3 totalbilletSubtotal4" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="20$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="veinte1"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieVeinteMutilado}"
+										update="veintebilletSubtotal1 veintebilletBalas3 veintebilletFajos3 veintepicos3 totalbilletSubtotal4" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="10$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="diez1" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieDiezMutilado}"
+										update="diezbilletSubtotal1 diezbilletBalas3 diezbilletFajos3  diezpicos3 totalbilletSubtotal4" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="5$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="cinco1"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieCincoMutilado}"
+										update="cincobilletSubtotal1 cincobilletBalas3 cincobilletFajos3 cincopicos3 totalbilletSubtotal4" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel value="1$" style="width: 60px;font-size:11px;" />
+								<p:inputText id="uno1" value="#{bovTransferenciaBean.cantidad}"
+									min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.especieUnoMutilado}"
+										update="unobilletSubtotal1 unobilletBalas3 unobilletFajos3 unopicos3 totalbilletSubtotal4" />
+
+								</p:inputText>
+							</p>
+			<br/>
+			<br/>
+
+						</p:column>
+						<p:column>
+							<h5>Subtotal</h5>
+							<p>
+								<p:inputText id="cienbilletSubtotal1"
+									value="#{bovTransferenciaBean.cien}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentabilletSubtotal1"
+									value="#{bovTransferenciaBean.cincuenta}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veintebilletSubtotal1"
+									value="#{bovTransferenciaBean.veinte}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezbilletSubtotal1"
+									value="#{bovTransferenciaBean.diez}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincobilletSubtotal1"
+									value="#{bovTransferenciaBean.cinco}" size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unobilletSubtotal1"
+									value="#{bovTransferenciaBean.uno}" size="7" disabled="true" />
+							</p>
+							<p>
+								<h:outputText id="totalbilletSubtotal4"
+									value="#{bovTransferenciaBean.cien+bovTransferenciaBean.cincuenta+bovTransferenciaBean.veinte+bovTransferenciaBean.diez+bovTransferenciaBean.cinco+bovTransferenciaBean.uno}" size="7" disabled="true">
+								</h:outputText>
+							</p>
+						</p:column>
+						<p:column>
+
+							<h5>Balas</h5>
+
+							<p>
+								<p:inputText id="cienbilletBalas3"
+									value="#{bovTransferenciaBean.cienbalas}" size="7"
+									disabled="true" />
+							</p>
+
+							<p>
+								<p:inputText id="cincuentabilletBalas3"
+									value="#{bovTransferenciaBean.cincuentabalas}" size="7"
+									disabled="true" />
+							</p>
+
+							<p>
+								<p:inputText id="veintebilletBalas3"
+									value="#{bovTransferenciaBean.veintebalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezbilletBalas3"
+									value="#{bovTransferenciaBean.diezbalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincobilletBalas3"
+									value="#{bovTransferenciaBean.cincobalas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unobilletBalas3"
+									value="#{bovTransferenciaBean.unobalas}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Fajos</h5>
+							<p>
+								<p:inputText id="cienbilletFajos3"
+									value="#{bovTransferenciaBean.cienfajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentabilletFajos3"
+									value="#{bovTransferenciaBean.cincuentafajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veintebilletFajos3"
+									value="#{bovTransferenciaBean.veintefajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezbilletFajos3"
+									value="#{bovTransferenciaBean.diezfajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincobilletFajos3"
+									value="#{bovTransferenciaBean.cincofajos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unobilletFajos3"
+									value="0.0" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Picos</h5>
+							<p>
+								<p:inputText id="cienpicos3"
+									value="#{bovTransferenciaBean.cienpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentapicos3"
+									value="#{bovTransferenciaBean.cincuentapicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veintepicos3"
+									value="#{bovTransferenciaBean.veintepicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezpicos3"
+									value="#{bovTransferenciaBean.diezpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincopicos3"
+									value="#{bovTransferenciaBean.cincopicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unopicos3"
+									value="#{bovTransferenciaBean.unopicos}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+
+					</p:panelGrid>
+
+
+					<br />
+
+					<p:panelGrid columns="6">
+						<f:facet name="header">Monedas</f:facet>
+						<p:column>
+							<h5>Cantidad</h5>
+							<p>
+								<h:outputLabel for="undolar1" value="1$"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="undolar1"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaUno}"
+										update="undolarsubtotal1 undolarfundas1 undolarcartuchos1 cienpicosm1 totalSubtotal5" />
+
+								</p:inputText>
+
+							</p>
+							<p>
+								<p:outputLabel value="0.50ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="cincuentactv1"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaCincuenta}"
+										update="cincuentasubtotal1 cincuentafundas1 cincuentacartuchos1  cincuentapicosm1 totalSubtotal5" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="veinteycincoctv1" value="0.25ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="veinteycincoctv1"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaVeinticinco}"
+										update="veinteycincosubtotal1 veinteycincofundas1 veinteycincocartuchos1 veinteycincopicosm1 totalSubtotal5"  />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="diezctv1" value="0.10ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="diezctv1"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaDiez}"
+										update="diezsubtotal1 diezfundas1 diezcartuchos1 diezpicosm1 totalSubtotal5" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="cincoctv1" value="0.05ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="cincoctv1"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaCinco}"
+										update="cincosubtota1 cincofundas1 cincocartuchos1 cincopicosm1 totalSubtotal5" />
+
+								</p:inputText>
+							</p>
+							<p>
+								<p:outputLabel for="unctv1" value="0.01ctv"
+									style="width: 60px;font-size:11px;" />
+								<p:inputText id="unctv1"
+									value="#{bovTransferenciaBean.cantidad}" min="0" size="5">
+									<p:ajax event="blur"
+										listener="#{bovTransferenciaBean.monedaUnoCent}"
+										update="unsubtotal1 unofundas1 unocartuchos1 unopicosm1 totalSubtotal5" />
+
+								</p:inputText>
+							</p>
+		<br/>
+		<br/>
+						</p:column>
+
+						<p:column>
+							<h5>Subtotal</h5>
+							<p>
+								<p:inputText id="undolarsubtotal1"
+									value="#{bovTransferenciaBean.undolar}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentasubtotal1"
+									value="#{bovTransferenciaBean.cincuentactv}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteycincosubtotal1"
+									value="#{bovTransferenciaBean.venteycincoctv}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezsubtotal1"
+									value="#{bovTransferenciaBean.diezctv}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincosubtota1"
+									value="#{bovTransferenciaBean.cincoctv}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unsubtotal1"
+									value="#{bovTransferenciaBean.unctv}" size="7" disabled="true" />
+							</p>
+							<p>
+								<h:outputText id="totalSubtotal5"
+									value="#{bovTransferenciaBean.undolar+bovTransferenciaBean.cincuentactv+bovTransferenciaBean.venteycincoctv+bovTransferenciaBean.diezctv+bovTransferenciaBean.cincoctv+bovTransferenciaBean.unctv}" size="7" disabled="true">
+								</h:outputText>
+							</p>
+						</p:column>
+						<p:column>
+							<h5>fundas</h5>
+							<p>
+								<p:inputText id="undolarfundas1"
+									value="#{bovTransferenciaBean.undolarfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentafundas1"
+									value="#{bovTransferenciaBean.cincuentactvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteycincofundas1"
+									value="#{bovTransferenciaBean.venteycincoctvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezfundas1"
+									value="#{bovTransferenciaBean.diezctvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincofundas1"
+									value="#{bovTransferenciaBean.cincoctvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unofundas1"
+									value="#{bovTransferenciaBean.unctvfundas}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>cartuchos</h5>
+							<p>
+								<p:inputText id="undolarcartuchos1"
+									value="#{bovTransferenciaBean.undolarcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentacartuchos1"
+									value="#{bovTransferenciaBean.cincuentactvcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteycincocartuchos1"
+									value="#{bovTransferenciaBean.venteycincoctvcartuchos}"
+									size="7" disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezcartuchos1"
+									value="#{bovTransferenciaBean.diezctvcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincocartuchos1"
+									value="#{bovTransferenciaBean.cincoctvcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unocartuchos1"
+									value="#{bovTransferenciaBean.unctvcartuchos}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+						<p:column>
+							<h5>Picos</h5>
+							<p>
+								<p:inputText id="cienpicosm1"
+									value="#{bovTransferenciaBean.undolarpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincuentapicosm1"
+									value="#{bovTransferenciaBean.cincuentactvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="veinteycincopicosm1"
+									value="#{bovTransferenciaBean.venteycincoctvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="diezpicosm1"
+									value="#{bovTransferenciaBean.diezctvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="cincopicosm1"
+									value="#{bovTransferenciaBean.cincoctvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<p>
+								<p:inputText id="unopicosm1"
+									value="#{bovTransferenciaBean.unctvpicos}" size="7"
+									disabled="true" />
+							</p>
+							<br />
+							<br />
+						</p:column>
+					</p:panelGrid>
+					<br />
+					<br />
+					
+					<p:commandButton value="Guardar"
+						action="#{bovTransferenciaBean.guardarINT1()}"
+						update=":frm:pnl :frm2:tbl :frm3:growl" icon="ui-icon-disk">
+					</p:commandButton>
+				</h:column>
+			</p:panelGrid>
+		</p:panel>
+	</ui:define>
+
+
+
+
+	<ui:define name="content2">
+		<!-- #####CONTENIDO LISTA TRANSFERENCIA######## -->
+
+		<p:panel>
+
+			<p:dataTable id="tbl"
+				value="#{bovTransferenciaBean.listacabezeratransferenciaint}"
+				var="item1" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablatransf"
+				filteredValue="#{bovTransferenciaBean.listatransferenciafiltrado}"
+				emptyMessage="No existen registros con ese criterio"
+				styleClass="table" reflow="true" selectionMode="single"
+				rowKey="#{item1.idCabezeratransferencia}">
+
+				<f:facet name="header">
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:inputText id="globalFilter"
+								onkeyup="PF('tablabovedacliente').filter()" class="pull-left"
+								style="width: 100%" placeholder="xxxxxxxx" />
+						</div>
+						<div class="col-lg-6">
+							<h:outputText value="Lista Bóveda Cliente" />
+						</div>
+						<div class="col-lg-3">
+							<div class="pull-right">
+								<p:commandButton action="#{bovTransferenciaBean.eliminar()}"
+									update=":frm2:tbl :frm3:growl" title="Eliminar"
+									value="Eliminar" class="btn-primary" icon="fa fa-list">
+									<p:confirm header="Confirmacion"
+										message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</f:facet>
+
+
+				<p:column headerText="Codigo">
+					<h:outputText value="#{item1.idCabezeratransferencia}" />
+				</p:column>
+
+				<p:column headerText="Nª Tiket" filterBy="#{item1.numeroticket}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.numeroticket}" />
+				</p:column>
+
+				<p:column headerText="INT/OUT"
+					filterBy="#{item1.idtipotransferencia.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.idtipotransferencia.nombre}" />
+				</p:column>
+
+				<p:column headerText="Origen"
+					filterBy="#{item1.idobvsaliente.nombre}" filterStyle="display:none">
+					<h:outputText value="#{item1.idobvsaliente.nombre}" />
+				</p:column>
+
+				<p:column headerText="Destino"
+					filterBy="#{item1.idboventrante.nombre}" filterStyle="display:none">
+					<h:outputText value="#{item1.idboventrante.nombre}" />
+				</p:column>
+
+				<p:column headerText="Estado"
+					filterBy="#{item1.id_estadotrasferencia.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.id_estadotrasferencia.nombre}" />
+				</p:column>
+
+				<p:column headerText="Fecha" filterBy="#{item1.fecha}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.fecha}" />
+				</p:column>
+
+				<p:column headerText="Hora" filterBy="#{item1.hora}"
+					filterStyle="display:none">
+					<h:outputText value="#{item1.hora}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+	</ui:define>
+
+
+</ui:composition>
+
+
+</html>

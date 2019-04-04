@@ -1,0 +1,56 @@
+package com.scm.converter;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
+
+import com.scm.bean.sac.SacTransaccionesBean;
+import com.scm.modelo.administracion.Admcliente;
+
+@FacesConverter("clienteConverter")
+public class AdmClienteConverter implements Converter {
+	
+public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
+   		
+
+        if(value != null && value.trim().length() > 0) {
+        	try {
+        		   Integer codigo = Integer.valueOf(value);
+                   for (Admcliente cliente : SacTransaccionesBean.listaCliente){
+               		if(codigo.equals(cliente.getIdcliente())){               			
+               			return cliente;
+               		
+               			               		}	
+               	}
+	
+			} catch(NumberFormatException e) {
+				System.out.println("error"+e);
+				throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid theme."));
+			}
+        	
+        }
+        
+        else {
+            return null;
+        }
+		return null;
+		
+    }
+	@Override
+    public String getAsString(FacesContext fc, UIComponent uic, Object object) {
+        if(object != null) {
+            return String.valueOf(((Admcliente) object).getIdcliente());
+        }
+        else {
+            return null;
+        }
+    }   
+    
+
+
+
+
+}

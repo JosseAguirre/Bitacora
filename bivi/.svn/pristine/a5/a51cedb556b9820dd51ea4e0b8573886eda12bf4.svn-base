@@ -1,0 +1,58 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the adm_servicio_atributo database table.
+ * 
+ */
+@Entity
+@Table(name="adm_servicio_atributo", schema="java")
+@NamedQuery(name="AdmServicioAtributo.findAll", query="SELECT a FROM AdmServicioAtributo a")
+public class AdmServicioAtributo implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="idservicio_atributo", unique=true, nullable=false)
+	private Integer idservicioAtributo;
+
+	//bi-directional many-to-one association to AdmAtributo
+	@ManyToOne
+	@JoinColumn(name="idatributo")
+	private AdmAtributo idatributo;
+
+	//bi-directional many-to-one association to AdmServicio
+	@ManyToOne
+	@JoinColumn(name="idservicio")
+	private AdmServicio idservicio;
+
+	public AdmServicioAtributo() {
+	}
+
+	public Integer getIdservicioAtributo() {
+		return this.idservicioAtributo;
+	}
+
+	public void setIdservicioAtributo(Integer idservicioAtributo) {
+		this.idservicioAtributo = idservicioAtributo;
+	}
+
+	public AdmAtributo getIdatributo() {
+		return this.idatributo;
+	}
+
+	public void setIdatributo(AdmAtributo idatributo) {
+		this.idatributo = idatributo;
+	}
+
+	public AdmServicio getIdservicio() {
+		return this.idservicio;
+	}
+
+	public void setIdservicio(AdmServicio idservicio) {
+		this.idservicio = idservicio;
+	}
+
+}

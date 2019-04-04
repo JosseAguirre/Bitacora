@@ -1,0 +1,56 @@
+package com.scm.servicio.boveda;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.preboveda.BovBoveda;
+
+@Stateless
+public class ServicioBovBoveda {
+
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(BovBoveda bovboveda) {
+		em.persist(bovboveda);
+	}
+
+	public void delete(BovBoveda bovboveda) {
+		em.remove(em.merge(bovboveda));
+	}
+
+	public void update(BovBoveda bovboveda) {
+
+		em.merge(bovboveda);
+	}
+
+	// Selecciona todos los datos de la tabla BovBoveda
+	@SuppressWarnings("unchecked")
+	public List<BovBoveda> findAll() {
+		Query q = em.createQuery("select r from BovBoveda r ");
+		return q.getResultList();
+	}
+
+	// Busca la pk mas alta y le suma uno
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from BovBoveda ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// Busca el id seleccionado
+	public BovBoveda findOne(Integer bovboveda) {
+		Query q = em.createQuery("select f from BovBoveda f where f.idBoveda = " + bovboveda);
+		return (BovBoveda) q.getSingleResult();
+	}
+
+}

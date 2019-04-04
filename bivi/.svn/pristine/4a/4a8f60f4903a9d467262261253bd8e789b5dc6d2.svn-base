@@ -1,0 +1,70 @@
+package com.scm.servicio.centroefectivo;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.centroefectivo.CeTipoTransferencia;
+
+
+
+@Stateless
+public class ServicioCeTipoTransferencia {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(CeTipoTransferencia cetipotransferencia) {
+		em.persist(cetipotransferencia);
+	}
+
+	public void delete(CeTipoTransferencia cetipotransferencia) {
+		em.remove(em.merge(cetipotransferencia));
+	}
+
+	public void update(CeTipoTransferencia cetipotransferencia) {
+
+		em.merge(cetipotransferencia);
+	}
+
+	// Selecciona todos los datos de la tabla CeTipoTransferencia 
+	@SuppressWarnings("unchecked")
+	public List<CeTipoTransferencia> findAll() {
+		Query q = em.createQuery("select r from CeTipoTransferencia r ");
+		return q.getResultList();
+	}
+
+	// Busca la pk mas alta y le suma uno
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from CeTipoTransferencia ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// Busca el id seleccionado
+	public CeTipoTransferencia findOne(Integer CeTipoTransferencia) {
+		Query q = em.createQuery(
+				"select f from CeTipoTransferencia f where f.idTipoTransferencia = " + CeTipoTransferencia);
+		return (CeTipoTransferencia) q.getSingleResult();
+	}
+	// Busca el id tipotransferencia int
+	public CeTipoTransferencia findint() {
+		Query q = em.createQuery(
+				"select f from CeTipoTransferencia f where f.idTipoTransferencia = 1 " );
+		return (CeTipoTransferencia) q.getSingleResult();
+	}
+	// Busca el id tipotransferencia out
+	public CeTipoTransferencia findout() {
+		Query q = em.createQuery(
+				"select f from CeTipoTransferencia f where f.idTipoTransferencia = 2 " );
+		return (CeTipoTransferencia) q.getSingleResult();
+	}
+}

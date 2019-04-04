@@ -1,0 +1,63 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.administracion.Admrol;
+
+@Stateless
+public class ServicioAdmRol {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(Admrol Admrol) {
+		em.persist(Admrol);
+	}
+	
+	public void delete(Admrol Admrol) {
+		em.remove(em.merge(Admrol));
+	}
+	
+	public void update(Admrol Admrol){
+	
+		em.merge(Admrol);
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Admrol> findAll() {
+		Query q = em.createQuery("select c from Admrol c ");
+		return q.getResultList();
+	}
+	
+	
+	
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admrol ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public Admrol findOne(Integer codigoAdmrol){
+		Query q = em.createQuery("select c from Admrol c where c.idempleado = " + codigoAdmrol);
+		return (Admrol) q.getSingleResult();
+	}
+
+
+	
+	
+
+
+}

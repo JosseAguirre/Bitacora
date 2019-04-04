@@ -1,0 +1,53 @@
+package com.scm.servicio.centroefectivo;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.centroefectivo.CeCaracteristicaEspecie;
+@Stateless
+public class ServicioCeCaracteristicaEspecie {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(CeCaracteristicaEspecie cecaracteristicaespecie) {
+		em.persist(cecaracteristicaespecie);
+	}
+	
+	public void delete(CeCaracteristicaEspecie cecaracteristicaespecie) {
+		em.remove(em.merge(cecaracteristicaespecie));
+	}
+	
+	public void update(CeCaracteristicaEspecie cecaracteristicaespecie){
+	
+		em.merge(cecaracteristicaespecie);
+		
+		
+	}
+	// Selecciona todos los datos de la tabla CeCaracteristicaEspecie
+	@SuppressWarnings("unchecked")
+	public List<CeCaracteristicaEspecie> findAll() {
+		Query q = em.createQuery("select a from CeCaracteristicaEspecie a");
+		return q.getResultList();
+	}
+	// Busca la pk mas alta y le suma uno
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from CeCaracteristicaEspecie ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	// Busca el id seleccionado
+	public CeCaracteristicaEspecie findOne(Integer codigocaractespe){
+		Query q = em.createQuery("select a from CeCaracteristicaEspecie a where a.id_caracteristica_especie = " + codigocaractespe);
+		return (CeCaracteristicaEspecie) q.getSingleResult();
+	}
+}

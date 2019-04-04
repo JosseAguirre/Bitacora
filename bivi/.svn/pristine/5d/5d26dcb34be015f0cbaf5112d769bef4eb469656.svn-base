@@ -1,0 +1,431 @@
+package com.scm.bean.administracion;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.Admcliente;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.servicio.administracion.ServicioAdmCliente;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+
+@ManagedBean
+@ViewScoped
+public class AdmClienteBean implements Interface {
+	
+	private static final long serialVersionUID = 1L;
+	//Variables de de tipo Admcliente y Admdetallecatalogo
+	private Admcliente admcliente;
+	private Admcliente clienteseleccionado;
+	private Admdetallecatalogo detallecatalogo;
+	private Admdetallecatalogo detallecatalogociudad;
+	//Variable de tipo Admcliente de las listas para la busqueda de los selectOneMenu
+	private List<Admcliente> listacliente;
+	private List<Admcliente> clientefiltrado;
+	private List<Admcliente> listaclientepadre;
+	private List<Admcliente> listaClienteServicio;
+	//Variable de tipo Admdetallecatalogo de las listas para la busqueda de los selectOneMenu
+	private List<Admdetallecatalogo> listaciudad;
+	private List<Admdetallecatalogo> listaestado;
+	private List<Admdetallecatalogo> listatipocliente;
+	private List<Admdetallecatalogo> listaactividad;
+	private List<Admdetallecatalogo> listaprioridad;	
+	
+	
+	
+	//Variables que van a ser usadas
+	private Integer bandera;
+	private int iddetallecatalogo;
+	private Integer idtipocliente;
+	private int idcliente;
+	private int idciudad;
+	private int idsistema;
+	private int idestado;
+	private int idactividad;
+	private int idprioridad;
+	private Integer idcientepadre;
+	private Integer padreCliente;
+	
+	
+	//Variables necesarias para la coneccion con los servicios
+	@EJB
+	private ServicioAdmCliente serviciocliente;
+	@EJB
+	private ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+
+	
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();	       
+       
+	}
+	
+@Override	
+	public void guardar() {//Crea un nuevo registro en la table admcliente
+
+		admcliente.setIdcliente(serviciocliente.getPK());//Setea el Primary key del registro a crear
+		admcliente.setSysdelete(false);//Setea el sysdelete como falso
+		
+		buscaIdCombos();//llama al metodo para tener los id de los combos
+
+		serviciocliente.create(admcliente);//Crea un nuevo registro en la tabla admcliente
+		cancelar();
+	}
+
+public void buscaIdCombos(){//Busca el id de los combos seleccionados en la pantalla cliente
+	
+	
+	Admcliente idPadre = new Admcliente();
+	idPadre.setIdcliente(idcientepadre);//Se obtiene el id del padre en el selectOneMenu de los clientes padre
+	admcliente.setIdclientepadre(idPadre);//Se setea el id del cliente padre
+	
+	//Se obtiene el id seleccionado en el selectOneMenu de las actividades
+	detallecatalogo = serviciodetallecatalogo.findOne(idactividad);
+	admcliente.setIdactividaddc(detallecatalogo);//Se setea el id de la actividad
+	
+	detallecatalogo = serviciodetallecatalogo.findOne(idestado);
+	admcliente.setIdestadodc(detallecatalogo);
+	
+	detallecatalogo = serviciodetallecatalogo.findOne(idprioridad);
+	admcliente.setIdprioridaddc(detallecatalogo);
+	
+	detallecatalogo = serviciodetallecatalogo.findOne(idtipocliente);
+	admcliente.setIdtipoclientedc(detallecatalogo);
+		
+	detallecatalogociudad = serviciodetallecatalogo.findOne(idciudad);
+	admcliente.setIdciudaddc(detallecatalogociudad);
+		
+	
+	
+}
+
+
+@Override
+public void eliminar() {
+	serviciocliente.delete(admcliente);//Borra un registro de la tabla admcliente
+	cancelar();
+	
+}
+
+@Override
+public void actualizar() {
+	buscaIdCombos();//Llama al metodo para tener los id de los combos
+
+	serviciocliente.update(admcliente);//Genera un update
+	cancelar();
+	
+}
+
+public void Eliminar() {
+	
+	admcliente.setSysdelete(true);//Setea el sysdelete a verdadero
+	serviciocliente.update(admcliente);//Se genera un update con el sysdelete seteado a verdadero
+	cancelar();
+}
+//Evento que llama a los campos del registro seleccionado en el grid de la pantalla cliente
+public void onRowSelect(SelectEvent event) {
+	admcliente = (Admcliente) event.getObject();	
+	
+	idciudad = admcliente.getIdciudaddc().getIddetallecatalogo();//Pide el id de la ciudad del registro seleccionado
+    idcientepadre = admcliente.getIdclientepadre().getIdcliente();
+	idactividad = admcliente.getIdactividaddc().getIddetallecatalogo();
+	idestado = admcliente.getIdestadodc().getIddetallecatalogo();
+	idprioridad = admcliente.getIdprioridaddc().getIddetallecatalogo();
+	idtipocliente = admcliente.getIdtipoclientedc().getIddetallecatalogo();
+	System.out.println(idtipocliente);
+	
+	
+	bandera = 1;//Le da valor de 1 a la bandera
+	
+	
+}
+
+public void clienteseleccionado() {
+	
+	
+}
+
+@Override
+public void consultar() {//Metodo usado para el contenido de los selectOneMenu
+	
+	listacliente = new ArrayList<>();//Se crea una variable que sea ArrayList
+	listacliente = serviciocliente.findAll();//Encuentra la lista de todos los cliente que tengan el sysdelete como falso
+	
+	listaciudad = new ArrayList<>();
+	listaciudad = serviciodetallecatalogo.ciudades();//Encuentra la lista de todas las ciudades en la tabla detallecatalogo
+	
+	listaactividad = new ArrayList<>();
+	//Encuentra la lista de todas las actividades en la tabla detallecatalogo
+	listaactividad = serviciodetallecatalogo.actividades();
+	
+	listaestado  = new ArrayList<>();
+	listaestado = serviciodetallecatalogo.estadoagencia();//Encuentra la lista de todos los estados en la tabla detallecatalogo
+	
+	listaclientepadre = new ArrayList<>();
+	//Encuentra la lista de todos los padres en en donde el id del cliente padre = 0
+	listaclientepadre = serviciocliente.findClientePadre();
+	
+	listaprioridad = new ArrayList<>();
+	//Encuentra la lista de todos los tipos de prioridades en la tabla detallecatalogo
+	listaprioridad = serviciodetallecatalogo.prioridad();
+	
+	listatipocliente = new ArrayList<>();
+	//Encuentra la lista de todos los tipos de clientes en la tabla detallecatalogo
+	listatipocliente = serviciodetallecatalogo.tiposcliente();	
+	
+	
+}
+
+@Override
+public void cancelar() {
+	admcliente = new Admcliente();
+	consultar();
+	bandera = 0;
+	idciudad = -1;
+	idactividad = -1;
+	idestado = -1;
+	idprioridad = -1;
+	idtipocliente = -1;	
+	
+}
+
+public void persistir(){
+	if(bandera==1){
+		
+		actualizar();
+		
+	}else{
+		
+		guardar();
+		
+	}
+	
+	
+}
+
+public Admcliente getAdmcliente() {
+	return admcliente;
+}
+
+public void setAdmcliente(Admcliente admcliente) {
+	this.admcliente = admcliente;
+}
+
+public Admdetallecatalogo getDetallecatalogo() {
+	return detallecatalogo;
+}
+
+public void setDetallecatalogo(Admdetallecatalogo detallecatalogo) {
+	this.detallecatalogo = detallecatalogo;
+}
+
+public List<Admcliente> getListacliente() {
+	return listacliente;
+}
+
+public void setListacliente(List<Admcliente> listaclinete) {
+	this.listacliente = listaclinete;
+}
+
+public List<Admdetallecatalogo> getListaciudad() {
+	return listaciudad;
+}
+
+public void setListaciudad(List<Admdetallecatalogo> listaciudad) {
+	this.listaciudad = listaciudad;
+}
+
+public List<Admdetallecatalogo> getListaestado() {
+	return listaestado;
+}
+
+public void setListaestado(List<Admdetallecatalogo> listaestado) {
+	this.listaestado = listaestado;
+}
+
+public List<Admdetallecatalogo> getListatipocliente() {
+	return listatipocliente;
+}
+
+public void setListatipocliente(List<Admdetallecatalogo> listatipocliente) {
+	this.listatipocliente = listatipocliente;
+}
+
+public List<Admdetallecatalogo> getListaactividad() {
+	return listaactividad;
+}
+
+public void setListaactividad(List<Admdetallecatalogo> listaactividad) {
+	this.listaactividad = listaactividad;
+}
+
+public List<Admdetallecatalogo> getListaprioridad() {
+	return listaprioridad;
+}
+
+public void setListaprioridad(List<Admdetallecatalogo> listaprioridad) {
+	this.listaprioridad = listaprioridad;
+}
+
+public Integer getBandera() {
+	return bandera;
+}
+
+public void setBandera(Integer bandera) {
+	this.bandera = bandera;
+}
+
+public int getIddetallecatalogo() {
+	return iddetallecatalogo;
+}
+
+public void setIddetallecatalogo(int iddetallecatalogo) {
+	this.iddetallecatalogo = iddetallecatalogo;
+}
+
+public Integer getIdtipocliente() {
+	return idtipocliente;
+}
+
+public void setIdtipocliente(Integer idtipocliente) {
+	this.idtipocliente = idtipocliente;
+}
+
+public int getIdciudad() {
+	return idciudad;
+}
+
+public void setIdciudad(int idciudad) {
+	this.idciudad = idciudad;
+}
+
+public int getIdsistema() {
+	return idsistema;
+}
+
+public void setIdsistema(int idsistema) {
+	this.idsistema = idsistema;
+}
+
+public int getIdestado() {
+	return idestado;
+}
+
+public void setIdestado(int idestado) {
+	this.idestado = idestado;
+}
+
+public int getIdactividad() {
+	return idactividad;
+}
+
+public void setIdactividad(int idactividad) {
+	this.idactividad = idactividad;
+}
+
+public int getIdprioridad() {
+	return idprioridad;
+}
+
+public void setIdprioridad(int idprioridad) {
+	this.idprioridad = idprioridad;
+}
+
+public ServicioAdmCliente getServiciocliente() {
+	return serviciocliente;
+}
+
+public void setServiciocliente(ServicioAdmCliente serviciocliente) {
+	this.serviciocliente = serviciocliente;
+}
+
+public ServicioAdmDetalleCatalogo getServiciodetallecatalogo() {
+	return serviciodetallecatalogo;
+}
+
+public void setServiciodetallecatalogo(ServicioAdmDetalleCatalogo serviciodetallecatalogo) {
+	this.serviciodetallecatalogo = serviciodetallecatalogo;
+}
+
+public static long getSerialversionuid() {
+	return serialVersionUID;
+}
+
+public List<Admcliente> getListaclientepadre() {
+	return listaclientepadre;
+}
+
+public void setListaclientepadre(List<Admcliente> listaclientepadre) {
+	this.listaclientepadre = listaclientepadre;
+}
+
+
+public int getIdcliente() {
+	return idcliente;
+}
+
+public void setIdcliente(int idcliente) {
+	this.idcliente = idcliente;
+}
+
+public List<Admcliente> getClientefiltrado() {
+	return clientefiltrado;
+}
+
+public void setClientefiltrado(List<Admcliente> clientefiltrado) {
+	this.clientefiltrado = clientefiltrado;
+}
+
+public Integer getIdcientepadre() {
+	return idcientepadre;
+}
+
+public void setIdcientepadre(Integer idcientepadre) {
+	this.idcientepadre = idcientepadre;
+}
+
+public List<Admcliente> getListaClienteServicio() {
+	return listaClienteServicio;
+}
+
+public void setListaClienteServicio(List<Admcliente> listaClienteServicio) {
+	this.listaClienteServicio = listaClienteServicio;
+}
+
+public Admdetallecatalogo getDetallecatalogociudad() {
+	return detallecatalogociudad;
+}
+
+public void setDetallecatalogociudad(Admdetallecatalogo detallecatalogociudad) {
+	this.detallecatalogociudad = detallecatalogociudad;
+}
+
+
+
+
+public Admcliente getClienteseleccionado() {
+	return clienteseleccionado;
+}
+
+public void setClienteseleccionado(Admcliente clienteseleccionado) {
+	this.clienteseleccionado = clienteseleccionado;
+}
+
+public Integer getPadreCliente() {
+	return padreCliente;
+}
+
+public void setPadreCliente(Integer padreCliente) {
+	this.padreCliente = padreCliente;
+}
+
+
+}

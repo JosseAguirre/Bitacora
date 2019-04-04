@@ -1,0 +1,311 @@
+package com.scm.bean.sac;
+
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import java.util.List;
+
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+
+import com.scm.modelo.administracion.Admcliente;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+
+import com.scm.modelo.sac.SacCabezeratransaccione;
+import com.scm.modelo.sac.SacTransaccion;
+import com.scm.servicio.administracion.ServicioAdmAgencia;
+import com.scm.servicio.administracion.ServicioAdmCliente;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+import com.scm.servicio.administracion.ServicioAdmEmpleado;
+import com.scm.servicio.administracion.ServicioAdmServicio;
+import com.scm.servicio.administracion.ServicioAdmTipoServicio;
+import com.scm.servicio.sac.ServicioSacCabeceraTransaccion;
+import com.scm.servicio.sac.ServicioSacTransaccion;
+
+@ManagedBean
+@ViewScoped
+public class SacTransaccionesBean implements Interface {
+
+	private static final long serialVersionUID = 1L;
+	private SacTransaccion sacTransaccion;
+	private SacCabezeratransaccione sacCabeceratransaccione;
+	private Admdetallecatalogo detallecatalogo;
+
+	private List<SacTransaccion> listaTransacciones;
+	private List<SacTransaccion> listaTransaccionAsignada;
+	private List<Admdetallecatalogo> listaEstado;
+	public static List<Admcliente> listaCliente;
+
+
+	private Integer bandera;
+	private int idCabecera;
+	private int idEstado;
+	private Date date;
+	private Time time;
+	
+	//formato para fecha y hora     //sin usar   
+	DateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
+	DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+	//crear hora
+	Calendar Time = Calendar.getInstance();
+	int hora = Time.get(Calendar.HOUR_OF_DAY);
+	int minuto = Time.get(Calendar.MINUTE);
+	int segundo = Time.get(Calendar.SECOND);
+	//metodo que inicia el proceso
+	
+
+
+	@EJB
+	private ServicioSacTransaccion servicioSacTransaccion;
+	@EJB
+	private ServicioSacCabeceraTransaccion servicioSacCabeceraTransaccion;
+	@EJB
+	private ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+	@EJB
+	private ServicioAdmTipoServicio serviciotiposervicio;
+	@EJB
+	private ServicioAdmServicio servicioservicios;
+	@EJB
+	private ServicioAdmAgencia servicioagencia;
+	@EJB
+	private ServicioAdmCliente serviciocliente;
+	@EJB
+	private ServicioAdmEmpleado servicioempleado;
+
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+		date = new Date();
+		time = new Time(hora, minuto, segundo);
+
+	}
+
+	@Override
+	public void guardar() {
+
+		sacTransaccion.setIdTtransaccion(servicioSacTransaccion.getPK());
+		sacTransaccion.setFecha(date);
+		sacTransaccion.setTime(time);
+
+		buscaIdCombos();
+
+		servicioSacTransaccion.create(sacTransaccion);
+		cancelar();
+
+	}
+
+	public void guardarOperacion() {
+
+		sacTransaccion.setIdTtransaccion(servicioSacTransaccion.getPK());
+		sacTransaccion.setFecha(date);
+		sacTransaccion.setTime(time);
+		
+		buscaIdCombosOperaciones();
+
+		servicioSacTransaccion.create(sacTransaccion);
+		cancelar();
+
+	}
+
+	public void buscaIdCombosOperaciones() { 
+
+		detallecatalogo = serviciodetallecatalogo.findOne(idEstado);
+		sacTransaccion.setIdestadodc(detallecatalogo);
+
+	}
+
+
+	public void buscaIdCombos() { // Busca el id de los combo box seleccionados
+									// en la pantalla
+		
+		sacCabeceratransaccione = servicioSacCabeceraTransaccion.findOne(idCabecera);
+		sacTransaccion.setIdcabezeratransaccion(sacCabeceratransaccione);
+		
+		detallecatalogo = serviciodetallecatalogo.findOne(idEstado);
+		sacTransaccion.setIdestadodc(detallecatalogo);
+
+	}
+
+	@Override
+	public void eliminar() {
+		servicioSacTransaccion.delete(sacTransaccion);
+		cancelar();
+
+	}
+
+	@Override
+	public void actualizar() {
+
+		servicioSacTransaccion.update(sacTransaccion);
+		cancelar();
+
+	}
+	
+
+	public void onRowSelect(SelectEvent event) {
+		sacTransaccion = (SacTransaccion) event.getObject();
+		
+		idCabecera = sacTransaccion.getIdcabezeratransaccion().getIdCabezeratransaccion();
+		idEstado = sacTransaccion.getIdestadodc().getIddetallecatalogo();
+
+	}
+
+	@Override
+	public void consultar() {
+
+		listaTransaccionAsignada = new ArrayList<>();
+		listaTransaccionAsignada = servicioSacTransaccion.findTransaccionesAsignadas();
+
+		listaTransacciones = new ArrayList<>();
+		listaTransacciones = servicioSacTransaccion.findAll();
+
+		listaEstado = new ArrayList<>();
+		listaEstado = serviciodetallecatalogo.estadosTransaccion();
+		
+		
+
+	}
+	
+
+	@Override
+	public void cancelar() {
+		sacTransaccion = new SacTransaccion();
+		
+		consultar();
+		
+		bandera = 0;
+		
+		idEstado = -1;
+		idCabecera = -1;
+
+	}
+
+	public void transaccionSeleccionada() {
+		
+		idCabecera = sacTransaccion.getIdcabezeratransaccion().getIdCabezeratransaccion();
+		idEstado = sacTransaccion.getIdestadodc().getIddetallecatalogo();
+		
+
+		bandera = 1;
+
+	}
+
+	public void persitir() {
+		if (bandera == 1) {
+
+			actualizar();
+
+		} else {
+			guardar();
+
+		}
+
+	}
+
+	public int getIdEstado() {
+		return idEstado;
+	}
+
+	public void setIdEstado(int idEstado) {
+		this.idEstado = idEstado;
+	}
+
+	public List<Admdetallecatalogo> getListaEstado() {
+		return listaEstado;
+	}
+
+	public void setListaEstado(List<Admdetallecatalogo> listaEstado) {
+		this.listaEstado = listaEstado;
+	}
+
+	public SacTransaccion getSacTransaccion() {
+		return sacTransaccion;
+	}
+
+	public void setSacTransaccion(SacTransaccion sacTransaccion) {
+		this.sacTransaccion = sacTransaccion;
+	}
+
+	public SacCabezeratransaccione getSacCabeceratransaccione() {
+		return sacCabeceratransaccione;
+	}
+
+	public void setSacCabeceratransaccione(SacCabezeratransaccione sacCabeceratransaccione) {
+		this.sacCabeceratransaccione = sacCabeceratransaccione;
+	}
+
+	public Admdetallecatalogo getDetallecatalogo() {
+		return detallecatalogo;
+	}
+
+	public void setDetallecatalogo(Admdetallecatalogo detallecatalogo) {
+		this.detallecatalogo = detallecatalogo;
+	}
+
+	public List<SacTransaccion> getListaTransacciones() {
+		return listaTransacciones;
+	}
+
+	public void setListaTransacciones(List<SacTransaccion> listaTransacciones) {
+		this.listaTransacciones = listaTransacciones;
+	}
+
+	public List<SacTransaccion> getListaTransaccionAsignada() {
+		return listaTransaccionAsignada;
+	}
+
+	public void setListaTransaccionAsignada(List<SacTransaccion> listaTransaccionAsignada) {
+		this.listaTransaccionAsignada = listaTransaccionAsignada;
+	}
+
+	public static List<Admcliente> getListaCliente() {
+		return listaCliente;
+	}
+
+	public static void setListaCliente(List<Admcliente> listaCliente) {
+		SacTransaccionesBean.listaCliente = listaCliente;
+	}
+
+	public int getIdCabecera() {
+		return idCabecera;
+	}
+
+	public void setIdCabecera(int idCabecera) {
+		this.idCabecera = idCabecera;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Time getTime() {
+		return time;
+	}
+
+	public void setTime(Time time) {
+		this.time = time;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	
+}

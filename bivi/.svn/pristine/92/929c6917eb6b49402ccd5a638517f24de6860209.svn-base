@@ -1,0 +1,93 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.administracion.Admcliente;
+
+@Stateless
+public class ServicioAdmCliente {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(Admcliente admcliente) {
+		em.persist(admcliente);
+	}
+	
+	public void delete (Admcliente admcliente) {
+		em.remove(em.merge(admcliente));
+	}
+	
+	public void update (Admcliente admcliente) {
+		em.merge(admcliente);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Admcliente> findAll() { // Busca todo de la tabla Admcliente
+		Query q = em.createQuery("select b from Admcliente b where b.sysdelete = false and b.idclientepadre != null");
+		return q.getResultList();
+	}
+	@SuppressWarnings("unchecked")
+	public List<Admcliente> findcli() { // Busca todo de la tabla Admcliente
+		Query q = em.createQuery("select b from Admcliente b where b.sysdelete = false and b.idclientepadre = null");
+		return q.getResultList();
+	}
+	//Busca el todo de la tabla Admcliente donde el id del cliente padre sea nulo para asi encontrar los clientes padre
+	@SuppressWarnings("unchecked")
+	public List<Admcliente> findClientePadre(){   
+		Query q = em.createQuery("select b from Admcliente b where b.idclientepadre = 0");
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Admcliente> findPadreTodoLista(){   
+		Query q = em.createQuery("select b from Admcliente b where b.idclientepadre = 0");
+		return q.getResultList();
+	}
+	
+	/*public Integer findPadreTodo(){
+		Query q = em.createQuery("select b from Admcliente b where b.idclientepadre = 0");
+		return (Integer) q.getSingleResult();
+	}
+	*/
+	public Integer getPK() { //Busca la primary key mas alta de la tabla Admcliente y se le suma 1
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admcliente ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{ 
+			codigo++;
+		}
+		return codigo;
+	}
+	 
+	public Integer findPk(){
+		Query q = em.createQuery("select max(id) from Admcliente");
+		return (Integer) q.getSingleResult();
+	}
+	
+	//Selecciona todo de la tabla Admcliente donde el id de la primary key sea igual a la del id seleccionado
+	public Admcliente findOne(Integer codigoAdmCliente){
+		Query q = em.createQuery("select b from Admcliente b where b.idcliente = " + codigoAdmCliente);
+		return (Admcliente) q.getSingleResult();
+	}
+	
+	public List<Admcliente> pornombresemejante(String razonsocial) {
+		return em.createQuery("select b from Admcliente b where b.razonsocial like :razonsocial", Admcliente.class)
+				.setParameter("razonsocial", "%" + razonsocial + "%")
+				.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Admcliente> findCliente(Integer idCiudad) {
+		return em.createQuery("select c from Admcliente c where c.idcliente in (select a from Admagencia a where a.idciudaddc = "+idCiudad+")")
+				.getResultList();
+		
+		
+	}
+	
+}

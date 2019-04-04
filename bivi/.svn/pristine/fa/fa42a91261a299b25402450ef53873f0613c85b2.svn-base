@@ -1,0 +1,137 @@
+package com.scm.bean.administracion;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.Admrol;
+import com.scm.modelo.administracion.Admusuario;
+import com.scm.servicio.administracion.ServicioAdmRol;
+
+
+
+@ManagedBean
+@ViewScoped
+public class AdmRolBean implements Interface , Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	private Admrol admrol;
+	private List<Admrol> listarol;
+	private List<Admrol> rolfiltrado;
+	private int bandera ;
+	
+	@EJB
+	private ServicioAdmRol serviciorol ;
+	
+	
+ 
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+
+	}
+
+	@Override
+	public void guardar() {
+		admrol.setIdrol(serviciorol.getPK());
+		serviciorol.create(admrol);
+		cancelar();
+
+	}
+ 
+	@Override
+	public void eliminar() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void actualizar() {
+		serviciorol.update(admrol);
+		cancelar();
+
+	}
+
+	@Override
+	public void consultar() {
+		listarol = new ArrayList<>();
+		listarol = serviciorol.findAll();
+		
+
+	}
+
+	@Override
+	public void cancelar() {
+		admrol = new Admrol();
+		consultar();
+		bandera = 0;
+
+	}
+	
+	public void rolSeleccionado() {
+		bandera = 0;
+	
+		
+		
+	}
+	
+	public void onRowSelect(SelectEvent event) {
+		admrol =(Admrol) event.getObject();
+		
+		
+		bandera = 1;	
+		
+		
+		
+        
+		
+		
+    }
+	public void persitir() {
+		if(bandera == 1){ 
+			
+			actualizar();
+			
+		}else{
+			guardar();
+			
+			
+		}
+		
+		
+	}
+
+	public Admrol getAdmrol() {
+		return admrol;
+	}
+
+	public void setAdmrol(Admrol admrol) {
+		this.admrol = admrol;
+	}
+
+	public List<Admrol> getListarol() {
+		return listarol;
+	}
+
+	public void setListarol(List<Admrol> listarol) {
+		this.listarol = listarol;
+	}
+
+	public List<Admrol> getRolfiltrado() {
+		return rolfiltrado;
+	}
+
+	public void setRolfiltrado(List<Admrol> rolfiltrado) {
+		this.rolfiltrado = rolfiltrado;
+	}
+
+}

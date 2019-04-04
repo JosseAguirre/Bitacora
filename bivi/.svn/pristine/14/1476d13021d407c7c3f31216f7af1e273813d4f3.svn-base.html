@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+	<!-- #####CONTENIDO CREAR BOVEDA######## --> 
+	<ui:define name="content">
+		<p:messages id="mensaje" autoUpdate="false" />
+		<center>
+		<p:panel header="Crear Bóveda"  style="width:40%;">
+			<h:panelGrid id="pnl" columns="3" border="0" style="width: 50%; ">  
+				<p:outputLabel value="Sucursal Empresa" for="sucursalempresa" />
+				<p:selectOneMenu id="sucursalempresa" 
+					value="#{bovBovedaBean.idsucursalempresa}" required="true"
+					requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{bovBovedaBean.listasucursalempresa}"
+						var="item" itemLabel="#{item.nombre}"
+						itemValue="#{item.idsucursal}">
+					</f:selectItems>
+				</p:selectOneMenu>
+
+				<p:message for="nombre" />
+				<p:outputLabel value="Nombre" for="nombre" />
+				<p:inputText id="nombre" value="#{bovBovedaBean.bovboveda.nombre}"
+					required="true" requiredMessage="nombre">
+				</p:inputText>
+				<p:message for="nombre" />
+
+				<p:outputLabel value="Monto Maximo Atesorar" for="montoatesorar" />
+				<p:inputText id="montoatesorar"
+					value="#{bovBovedaBean.bovboveda.montoMaximo}" required="true"
+					requiredMessage="Requerido"
+					onkeyup="this.value = this.value.toUpperCase();">
+				</p:inputText>
+				<p:message for="montoatesorar" />
+
+				<p:outputLabel value="Largo" for="largo" />
+				<p:inputText id="largo" value="#{bovBovedaBean.bovboveda.largo}"
+					required="true" requiredMessage="largo">
+				</p:inputText>
+				<p:message for="largo" />
+
+				<p:outputLabel value="Ancho" for="ancho" />
+				<p:inputText id="ancho" value="#{bovBovedaBean.bovboveda.ancho}"
+					required="true" requiredMessage="ancho">
+				</p:inputText>
+				<p:message for="ancho" />
+
+				<p:outputLabel value="Altura" for="altura" />
+				<p:inputText id="altura" value="#{bovBovedaBean.bovboveda.altura}"
+					required="true" requiredMessage="altura">
+				</p:inputText>
+				<p:message for="altura" />
+			</h:panelGrid>
+<br/>
+			<p:commandButton value="Guardar" action="#{bovBovedaBean.persitir()}"
+				update=":frm:pnl :frm:tbl :frm:growl" icon="ui-icon-disk">
+			</p:commandButton>
+		</p:panel>
+		</center>
+		<br /> 
+		<!-- #####CONTENIDO LISTA BOVEDA######## -->
+		<p:panel>
+			<p:dataTable id="tbl" value="#{bovBovedaBean.listaboveda}"
+				var="item2" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablaboveda"
+				filteredValue="#{bovBovedaBean.bovedafiltrado}"
+				emptyMessage="No existen registros con ese criterio"
+				styleClass="table" reflow="true" selectionMode="single"
+				rowKey="#{item2.idBoveda}">
+
+				<f:facet name="header">
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:inputText id="globalFilter"
+								onkeyup="PF('tablaboveda').filter()" class="pull-left"
+								style="width: 100%" placeholder="Buscar aqui..." />
+						</div>
+						<div class="col-lg-6">
+							<h:outputText value="Lista de Bóveda" />
+						</div>
+						<div class="col-lg-3">
+							<div class="pull-right">
+								<p:commandButton action="#{bovBovedaBean.eliminar()}"
+									update=":frm:pnl :frm:tbl :frm:growl" title="Eliminar" value="Eliminar"
+									class="btn-primary" icon="fa fa-list">
+									<p:confirm header="Confirmacion"
+										message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</f:facet>
+
+				<p:ajax event="rowSelect"
+					listener="#{bovBovedaBean.onRowSelectBoveda}" update=":frm:pnl" />
+
+				<p:column headerText="Codigo" filterBy="#{item2.idBoveda}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idBoveda}" />
+				</p:column>
+
+				<p:column headerText="Sucursal Empresa"
+					filterBy="#{item2.idsucursal.nombre}" filterStyle="display:none">
+					<h:outputText value="#{item2.idsucursal.nombre}" />
+				</p:column>
+
+				<p:column headerText="Nombre" filterBy="#{item2.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.nombre}" />
+				</p:column>
+
+				<p:column headerText="Monto Maximo" filterBy="#{item2.montoMaximo}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.montoMaximo}" />
+				</p:column>
+
+				<p:column headerText="Largo" filterBy="#{item2.largo}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.largo}" />
+				</p:column>
+
+				<p:column headerText="Ancho" filterBy="#{item2.ancho}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.ancho}" />
+				</p:column>
+
+				<p:column headerText="Alto" filterBy="#{item2.altura}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.altura}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+
+	<!-- #####CONTENIDO CREAR BOVEDA CLIENTE######## -->
+<ui:define name="content2">
+		<p:messages id="mensaje" autoUpdate="false" />
+		<center>
+		<p:panel header="Crear Bóveda Cliente" style="width: 40%; ">
+			<h:panelGrid id="pnl2" columns="3" border="0" style="width: 50%; ">
+			
+			<p:outputLabel value="Bóveda" for="boveda"/>
+				<p:selectOneMenu id="boveda"
+					value="#{bovBovedaBean.id_boveda}" required="true"
+					requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{bovBovedaBean.listaboveda}"
+						var="item" itemLabel="#{item.nombre}"
+						itemValue="#{item.idBoveda}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<br/>
+				<p:outputLabel value="Cliente" for="cliente" />
+				<p:selectOneMenu id="cliente"
+					value="#{bovBovedaBean.idcliente}" required="true"
+					requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{bovBovedaBean.listacliente}"
+						var="item" itemLabel="#{item.nombrecomercial}"
+						itemValue="#{item.idcliente}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				
+				<p:message for="nombre" />
+				<p:outputLabel value="Nombre" for="nombre" />
+				<p:inputText id="nombre" value="#{bovBovedaBean.bovbovedacliente.nombre}"
+					required="true" requiredMessage="Requerido">
+				</p:inputText>
+				<p:message for="nombre" />
+				<p:outputLabel value="Valor Actual" for="valoractual" />
+				<p:inputText id="valoractual" value="#{bovBovedaBean.bovbovedacliente.valorActual}"
+					required="true" requiredMessage="Requerido">
+				</p:inputText>
+				<p:message for="valoractual" />
+			</h:panelGrid>
+<br/>
+			<p:commandButton value="Guardar" action="#{bovBovedaBean.persitir1()}"
+				update=":frm2:pnl2 :frm2:tbl2 :frm2:growl" icon="ui-icon-disk">
+			</p:commandButton>
+		</p:panel>
+		</center>
+		<br />
+		<!-- #####CONTENIDO LISTA BOVEDA CLIENTE######## -->
+		<p:panel>
+			<p:dataTable id="tbl2"
+				value="#{bovBovedaBean.listabovedabovedacliente}" var="item2"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablabovedacliente"
+				filteredValue="#{bovBovedaBean.bovedaclientefiltrado}"
+				emptyMessage="No existen registros con ese criterio"
+				styleClass="table" reflow="true" selectionMode="single"
+				rowKey="#{item2.idBovedaBovedaCliente}">
+
+				<f:facet name="header">
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:inputText id="globalFilter"
+								onkeyup="PF('tablabovedacliente').filter()" class="pull-left"
+								style="width: 100%" placeholder="Buscar aqui..." />
+						</div>
+						<div class="col-lg-6">
+							<h:outputText value="Lista Bóveda Cliente" />
+						</div>
+						<div class="col-lg-3">
+							<div class="pull-right">
+								<p:commandButton action="#{bovBovedaBean.eliminar1()}"
+									update=":frm2:tbl2 :frm2:growl" title="Eliminar"
+									value="Eliminar" class="btn-primary" icon="fa fa-list">
+									<p:confirm header="Confirmacion"
+										message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</f:facet>
+
+				<p:ajax event="rowSelect"
+					listener="#{bovBovedaBean.onRowSelectBovedaCliente}"
+					update=":frm2:pnl2" />
+
+				<p:column headerText="Codigo"
+					filterBy="#{item2.idbovedacliente.idBovedaCliente}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idbovedacliente.idBovedaCliente}" />
+				</p:column>
+
+				<p:column headerText="Bóveda"
+					filterBy="#{item2.idbovedacliente.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idbovedacliente.nombre}" />
+				</p:column>
+
+				<p:column headerText="Cliente"
+					filterBy="#{item2.idbovedacliente.idcliente.nombrecomercial}"
+					filterStyle="display:none">
+					<h:outputText
+						value="#{item2.idbovedacliente.idcliente.nombrecomercial}" />
+				</p:column>
+
+				<p:column headerText="Nombre"
+					filterBy="#{item2.idbovedacliente.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idbovedacliente.nombre}" />
+				</p:column>
+
+				<p:column headerText="Valor Actual"
+					filterBy="#{item2.idbovedacliente.valorActual}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idbovedacliente.valorActual}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,230 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import java.sql.Time;
+
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admempleado;
+import com.scm.modelo.centroefectivo.CeTipoTransferencia;
+
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * The persistent class for the bov_cabezeratransferencia database table.
+ * 
+ */
+@Entity
+@Table(name="bov_cabezeratransferencia" , schema="java")
+@NamedQuery(name="BovCabezeratransferencia.findAll", query="SELECT b FROM BovCabezeratransferencia b")
+public class BovCabezeratransferencia implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_cabezeratransferencia", unique=true, nullable=false)
+	private Integer idCabezeratransferencia;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="\"Fecha\"")
+	private Date fecha;
+
+	@Column(name="\"Hora\"")
+	private Time hora;
+
+	private Integer numeroticket;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="id_estadotrasferencia")
+	private Admdetallecatalogo id_estadotrasferencia;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado")
+	private Admempleado idempleado;
+
+	//bi-directional many-to-one association to BovBovedaCliente
+	@ManyToOne
+	@JoinColumn(name="idobvsaliente")
+	private BovBovedaCliente idobvsaliente;
+
+	//bi-directional many-to-one association to BovBovedaCliente
+	@ManyToOne
+	@JoinColumn(name="idboventrante")
+	private BovBovedaCliente idboventrante;
+
+	//bi-directional many-to-one association to BovTipoTransaccion
+	@ManyToOne
+	@JoinColumn(name="id_tipo_transaccion")
+	private BovTipoTransaccion idtipotransaccion;
+
+	//bi-directional many-to-one association to CeTipoTransferencia
+	@ManyToOne
+	@JoinColumn(name="id_tipo_transferencia")
+	private CeTipoTransferencia idtipotransferencia;
+
+	//bi-directional many-to-one association to BovContadorBoveda
+	@OneToMany(mappedBy="idbovcabezeratransferencia")
+	private List<BovContadorBoveda> idbovcabezeratransferencia_bovContadorBoveda;
+
+	//bi-directional many-to-one association to BovDetalleTransferencia
+	@OneToMany(mappedBy="idbovtransferencia")
+	private List<BovDetalleTransferencia> idbovtransferencia_bovDetalleTransferencias;
+
+	//bi-directional many-to-one association to BovTransferencia
+	@OneToMany(mappedBy="idcabezeratransferencia")
+	private List<BovTransferencia> idcabezeratransferencia_bovTransferencias;
+
+	public BovCabezeratransferencia() {
+	}
+
+	public Integer getIdCabezeratransferencia() {
+		return this.idCabezeratransferencia;
+	}
+
+	public void setIdCabezeratransferencia(Integer idCabezeratransferencia) {
+		this.idCabezeratransferencia = idCabezeratransferencia;
+	}
+
+	public Date getFecha() {
+		return this.fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public Time getHora() {
+		return this.hora;
+	}
+
+	public void setHora(Time hora) {
+		this.hora = hora;
+	}
+
+	public Integer getNumeroticket() {
+		return this.numeroticket;
+	}
+
+	public void setNumeroticket(Integer numeroticket) {
+		this.numeroticket = numeroticket;
+	}
+
+	public Admdetallecatalogo getId_estadotrasferencia() {
+		return this.id_estadotrasferencia;
+	}
+
+	public void setId_estadotrasferencia(Admdetallecatalogo id_estadotrasferencia) {
+		this.id_estadotrasferencia = id_estadotrasferencia;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public BovBovedaCliente getIdobvsaliente() {
+		return this.idobvsaliente;
+	}
+
+	public void setIdobvsaliente(BovBovedaCliente idobvsaliente) {
+		this.idobvsaliente = idobvsaliente;
+	}
+
+	public BovBovedaCliente getIdboventrante() {
+		return this.idboventrante;
+	}
+
+	public void setIdboventrante(BovBovedaCliente idboventrante) {
+		this.idboventrante = idboventrante;
+	}
+
+	public BovTipoTransaccion getIdtipotransaccion() {
+		return this.idtipotransaccion;
+	}
+
+	public void setIdtipotransaccion(BovTipoTransaccion idtipotransaccion) {
+		this.idtipotransaccion = idtipotransaccion;
+	}
+
+	public CeTipoTransferencia getIdtipotransferencia() {
+		return this.idtipotransferencia;
+	}
+
+	public void setIdtipotransferencia(CeTipoTransferencia idtipotransferencia) {
+		this.idtipotransferencia = idtipotransferencia;
+	}
+
+	public List<BovContadorBoveda> getIdbovcabezeratransferencia_bovContadorBoveda() {
+		return this.idbovcabezeratransferencia_bovContadorBoveda;
+	}
+
+	public void setIdbovcabezeratransferencia_bovContadorBoveda(List<BovContadorBoveda> idbovcabezeratransferencia_bovContadorBoveda) {
+		this.idbovcabezeratransferencia_bovContadorBoveda = idbovcabezeratransferencia_bovContadorBoveda;
+	}
+
+	public BovContadorBoveda addIdbovcabezeratransferencia_bovContadorBoveda(BovContadorBoveda idbovcabezeratransferencia_bovContadorBoveda) {
+		getIdbovcabezeratransferencia_bovContadorBoveda().add(idbovcabezeratransferencia_bovContadorBoveda);
+		idbovcabezeratransferencia_bovContadorBoveda.setIdbovcabezeratransferencia(this);
+
+		return idbovcabezeratransferencia_bovContadorBoveda;
+	}
+
+	public BovContadorBoveda removeIdbovcabezeratransferencia_bovContadorBoveda(BovContadorBoveda idbovcabezeratransferencia_bovContadorBoveda) {
+		getIdbovcabezeratransferencia_bovContadorBoveda().remove(idbovcabezeratransferencia_bovContadorBoveda);
+		idbovcabezeratransferencia_bovContadorBoveda.setIdbovcabezeratransferencia(null);
+
+		return idbovcabezeratransferencia_bovContadorBoveda;
+	}
+
+	public List<BovDetalleTransferencia> getIdbovtransferencia_bovDetalleTransferencias() {
+		return this.idbovtransferencia_bovDetalleTransferencias;
+	}
+
+	public void setIdbovtransferencia_bovDetalleTransferencias(List<BovDetalleTransferencia> idbovtransferencia_bovDetalleTransferencias) {
+		this.idbovtransferencia_bovDetalleTransferencias = idbovtransferencia_bovDetalleTransferencias;
+	}
+
+	public BovDetalleTransferencia addIdbovtransferencia_bovDetalleTransferencia(BovDetalleTransferencia idbovtransferencia_bovDetalleTransferencia) {
+		getIdbovtransferencia_bovDetalleTransferencias().add(idbovtransferencia_bovDetalleTransferencia);
+		idbovtransferencia_bovDetalleTransferencia.setIdbovtransferencia(this);
+
+		return idbovtransferencia_bovDetalleTransferencia;
+	}
+
+	public BovDetalleTransferencia removeIdbovtransferencia_bovDetalleTransferencia(BovDetalleTransferencia idbovtransferencia_bovDetalleTransferencia) {
+		getIdbovtransferencia_bovDetalleTransferencias().remove(idbovtransferencia_bovDetalleTransferencia);
+		idbovtransferencia_bovDetalleTransferencia.setIdbovtransferencia(null);
+
+		return idbovtransferencia_bovDetalleTransferencia;
+	}
+
+	public List<BovTransferencia> getIdcabezeratransferencia_bovTransferencias() {
+		return this.idcabezeratransferencia_bovTransferencias;
+	}
+
+	public void setIdcabezeratransferencia_bovTransferencias(List<BovTransferencia> idcabezeratransferencia_bovTransferencias) {
+		this.idcabezeratransferencia_bovTransferencias = idcabezeratransferencia_bovTransferencias;
+	}
+
+	public BovTransferencia addIdcabezeratransferencia_bovTransferencia(BovTransferencia idcabezeratransferencia_bovTransferencia) {
+		getIdcabezeratransferencia_bovTransferencias().add(idcabezeratransferencia_bovTransferencia);
+		idcabezeratransferencia_bovTransferencia.setIdcabezeratransferencia(this);
+
+		return idcabezeratransferencia_bovTransferencia;
+	}
+
+	public BovTransferencia removeIdcabezeratransferencia_bovTransferencia(BovTransferencia idcabezeratransferencia_bovTransferencia) {
+		getIdcabezeratransferencia_bovTransferencias().remove(idcabezeratransferencia_bovTransferencia);
+		idcabezeratransferencia_bovTransferencia.setIdcabezeratransferencia(null);
+
+		return idcabezeratransferencia_bovTransferencia;
+	}
+
+}

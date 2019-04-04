@@ -1,0 +1,99 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.sac.SacCabezeratransaccione;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the adm_tipo_servicio database table.
+ * 
+ */
+@Entity
+@Table(name="adm_tipo_servicio", schema="java")
+@NamedQuery(name="AdmTipoServicio.findAll", query="SELECT a FROM AdmTipoServicio a")
+public class AdmTipoServicio implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="idtipo_servicio", unique=true, nullable=false)
+	private Integer idtipoServicio;
+
+	@Column(nullable=false, length=50)
+	private String nombre;
+
+	//bi-directional many-to-one association to AdmServicio
+	@OneToMany(mappedBy="idtiposervicio")
+	private List<AdmServicio> idtiposervicio_admServicios;
+
+	//bi-directional many-to-one association to SacCabezeratransaccione
+	@OneToMany(mappedBy="idtiposervicio")
+	private List<SacCabezeratransaccione> idtiposervicio_sacCabezeratransacciones;
+
+	public AdmTipoServicio() {
+	}
+
+	public Integer getIdtipoServicio() {
+		return this.idtipoServicio;
+	}
+
+	public void setIdtipoServicio(Integer idtipoServicio) {
+		this.idtipoServicio = idtipoServicio;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<AdmServicio> getIdtiposervicio_admServicios() {
+		return this.idtiposervicio_admServicios;
+	}
+
+	public void setIdtiposervicio_admServicios(List<AdmServicio> idtiposervicio_admServicios) {
+		this.idtiposervicio_admServicios = idtiposervicio_admServicios;
+	}
+
+	public AdmServicio addIdtiposervicio_admServicio(AdmServicio idtiposervicio_admServicio) {
+		getIdtiposervicio_admServicios().add(idtiposervicio_admServicio);
+		idtiposervicio_admServicio.setIdtiposervicio(this);
+
+		return idtiposervicio_admServicio;
+	}
+
+	public AdmServicio removeIdtiposervicio_admServicio(AdmServicio idtiposervicio_admServicio) {
+		getIdtiposervicio_admServicios().remove(idtiposervicio_admServicio);
+		idtiposervicio_admServicio.setIdtiposervicio(null);
+
+		return idtiposervicio_admServicio;
+	}
+
+	public List<SacCabezeratransaccione> getIdtiposervicio_sacCabezeratransacciones() {
+		return this.idtiposervicio_sacCabezeratransacciones;
+	}
+
+	public void setIdtiposervicio_sacCabezeratransacciones(List<SacCabezeratransaccione> idtiposervicio_sacCabezeratransacciones) {
+		this.idtiposervicio_sacCabezeratransacciones = idtiposervicio_sacCabezeratransacciones;
+	}
+
+	public SacCabezeratransaccione addIdtiposervicio_sacCabezeratransaccione(SacCabezeratransaccione idtiposervicio_sacCabezeratransaccione) {
+		getIdtiposervicio_sacCabezeratransacciones().add(idtiposervicio_sacCabezeratransaccione);
+		idtiposervicio_sacCabezeratransaccione.setIdtiposervicio(this);
+
+		return idtiposervicio_sacCabezeratransaccione;
+	}
+
+	public SacCabezeratransaccione removeIdtiposervicio_sacCabezeratransaccione(SacCabezeratransaccione idtiposervicio_sacCabezeratransaccione) {
+		getIdtiposervicio_sacCabezeratransacciones().remove(idtiposervicio_sacCabezeratransaccione);
+		idtiposervicio_sacCabezeratransaccione.setIdtiposervicio(null);
+
+		return idtiposervicio_sacCabezeratransaccione;
+	}
+
+}

@@ -1,0 +1,81 @@
+package com.scm.modelo.centroefectivo;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
+
+
+/**
+ * The persistent class for the ce_tipo_especie database table.
+ * 
+ */
+@Entity
+@Table(name="ce_tipo_especie", schema="java")
+@NamedQuery(name="CeTipoEspecie.findAll", query="SELECT c FROM CeTipoEspecie c")
+public class CeTipoEspecie implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_tipo_especie", unique=true, nullable=false)
+	private Integer idTipoEspecie;
+
+	@Column(length=150)
+	private String descripcion;
+
+	@Column(length=30)
+	private String nombre;
+
+	//bi-directional many-to-one association to CeEspecie
+	@OneToMany(mappedBy="idtipoespecie")
+	private List<CeEspecie> idtipoespecie_ceespecie;
+
+	public CeTipoEspecie() {
+	}
+
+	public Integer getIdTipoEspecie() {
+		return this.idTipoEspecie;
+	}
+
+	public void setIdTipoEspecie(Integer idTipoEspecie) {
+		this.idTipoEspecie = idTipoEspecie;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<CeEspecie> getIdtipoespecie_ceespecie() {
+		return this.idtipoespecie_ceespecie;
+	}
+
+	public void setIdtipoespecie_ceespecie(List<CeEspecie> idtipoespecie_ceespecie) {
+		this.idtipoespecie_ceespecie = idtipoespecie_ceespecie;
+	}
+
+	public CeEspecie addIdtipoespecie_ceespecie(CeEspecie idtipoespecie_ceespecie) {
+		getIdtipoespecie_ceespecie().add(idtipoespecie_ceespecie);
+		idtipoespecie_ceespecie.setIdtipoespecie(this);
+
+		return idtipoespecie_ceespecie;
+	}
+
+	public CeEspecie removeIdtipoespecie_ceespecie(CeEspecie idtipoespecie_ceespecie) {
+		getIdtipoespecie_ceespecie().remove(idtipoespecie_ceespecie);
+		idtipoespecie_ceespecie.setIdtipoespecie(null);
+
+		return idtipoespecie_ceespecie;
+	}
+
+}

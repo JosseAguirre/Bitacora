@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      	xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+	
+	 <ui:define name="content"> 
+	<p:panel header="Lista Bóveda">
+			<p:dataTable id="tbl" value="#{bovBovedaBean.listaboveda}" 
+				var="item2" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap"
+				widgetVar="carsTable2"
+				filteredValue="#{bovBovedaBean.bovedafiltrado}"
+				emptyMessage="No existen registros con ese criterio">
+
+				<f:facet name="header">
+					<p:outputPanel>		
+						<h:outputText value="Buscar:" />
+						<p:inputText id="globalFilter" onkeyup="PF('carsTable2').filter()"
+							style="width:150px"
+							title="Escriba la identificiacion, nombre o apellido " />
+					</p:outputPanel>
+				</f:facet>	
+				
+				<p:column  style="width:45px">
+            		<p:rowToggler />
+       			 </p:column>
+				
+				<p:column headerText="Codigo" filterBy="#{item2.idBoveda}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idBoveda}" /> 
+				</p:column>
+
+				<p:column headerText="Sucursal Empresa"
+					filterBy="#{item2.idsucursal.nombre}" filterStyle="display:none">
+					<h:outputText value="#{item2.idsucursal.nombre}" />
+				</p:column>
+			
+				<p:column headerText="Nombre"
+					filterBy="#{item2.nombre}" filterStyle="display:none">
+					<h:outputText value="#{item2.nombre}" /> 
+				</p:column>
+				
+				<p:column headerText="Monto Maximo"
+					filterBy="#{item2.montoMaximo}" filterStyle="display:none">
+					<h:outputText value="#{item2.montoMaximo}" /> 
+				</p:column>
+
+				<p:column headerText="Largo"
+					filterBy="#{item2.largo}" filterStyle="display:none">
+					<h:outputText value="#{item2.largo}" /> 
+				</p:column>
+				
+				<p:column headerText="Ancho"
+					filterBy="#{item2.ancho}" filterStyle="display:none">
+					<h:outputText value="#{item2.ancho}" /> 
+				</p:column>
+				
+				<p:column headerText="Alto"
+					filterBy="#{item2.altura}" filterStyle="display:none">
+					<h:outputText value="#{item2.altura}" /> 
+				</p:column>
+		
+		<br/>
+		<p:rowExpansion>
+				<p:dataTable  value="#{bovBovedaBean.listabovedabovedacliente}" widgetVar="carsTable3" multiViewState="true"
+                 var="item3" paginator="true" rows="10"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 tableStyle="white-space: nowrap"
+                 filteredValue="#{bovBovedaBean.bovedafiltrado}"
+                  emptyMessage="No existen registros con ese criterio">
+
+				<p:column style="width:45px"> 
+            		<p:rowToggler />
+       			 </p:column>		
+						
+ 				<p:column headerText="id" filterBy="#{item3.idbovedacliente.idBovedaCliente}" filterStyle="display:none">
+                <h:outputText value="#{item3.idbovedacliente.idBovedaCliente}" />
+ 				</p:column>
+ 				
+ 			<!--  	<p:column headerText="Bóveda" filterBy="#{item3.idboveda.nombre}" filterStyle="display:none">
+                <h:outputText value="#{item3.idboveda.nombre}" />
+ 				</p:column>-->
+ 				
+  				<p:column headerText="Nombre" filterBy="#{item3.idbovedacliente.nombre}" filterStyle="display:none">
+                <h:outputText value="#{item3.idbovedacliente.nombre}" />
+ 				</p:column>
+ 
+ 				<p:column headerText="Cliente" filterBy="#{item3.idbovedacliente.idcliente.nombrecomercial}" filterStyle="display:none">
+                <h:outputText value="#{item3.idbovedacliente.idcliente.nombrecomercial}"/>
+ 				</p:column>
+ 				<p:column headerText="Valor actual" filterBy="#{item3.idbovedacliente.valorActual}" filterStyle="display:none">
+                <h:outputText value="#{item3.idbovedacliente.valorActual}" />
+                </p:column>
+                
+                
+           <p:rowExpansion>
+			<p:dataTable id="detallebovedacliente" value="#{bovBovedaBean.listadetallebovedacliente}" 
+				var="item4" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="carsTable2"
+				filteredValue="#{bovBovedaBean.detallebovedaclientefiltrado}"
+				emptyMessage="No existen registros con ese criterio">
+
+ 				
+ 				<p:column headerText="id">
+                <h:outputText value="#{item4.idDetalleBovedaCliente}" />
+ 				</p:column>
+ 				
+ 				<p:column headerText="Boveda">
+                <h:outputText value="#{item4.idbovedacliente.nombre}"/>
+ 				</p:column>
+ 				
+  				<p:column headerText="Especie">
+                <h:outputText value="#{item4.idespecie.nombre}" />
+ 				</p:column>
+ 
+ 				<p:column headerText="Cantidad">
+                <h:outputText value="#{item4.cantidad}" />
+                </p:column>
+                
+				<p:column headerText="Fajos">
+					<h:outputText/>
+				</p:column>	
+				
+				<p:column headerText="Bala">
+					<h:outputText/>
+				</p:column>	
+				
+				<p:column headerText="Picos">
+				<h:outputText/>
+				</p:column>	
+                
+                <p:column headerText="Valor Total">
+                <h:outputText value="#{item4.total}" />
+                </p:column>
+                
+                <p:columnGroup type="footer">
+                <p:row>
+                    <p:column footerText="" />
+                    <p:column footerText="" />
+                    <p:column footerText="" />
+                    <p:column footerText="" />
+                   	<p:column footerText="" />
+                    <p:column footerText="" />
+                    <p:column footerText="Totals: " style="text-align:right"/>
+                    <p:column footerText="#{bovBovedaBean.allTotal}" />
+                </p:row>  
+            </p:columnGroup>
+            
+            </p:dataTable>
+	
+                	</p:rowExpansion>
+            </p:dataTable>
+
+        </p:rowExpansion> 
+				
+			</p:dataTable>
+			
+		</p:panel>
+
+
+
+	</ui:define>
+		
+	</ui:composition>
+</html>

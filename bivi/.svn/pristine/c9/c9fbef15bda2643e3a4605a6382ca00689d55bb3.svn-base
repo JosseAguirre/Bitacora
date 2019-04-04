@@ -1,0 +1,57 @@
+package com.scm.servicio.centroefectivo;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.centroefectivo.CeEspecie;
+
+
+
+@Stateless
+public class ServicioCeEspecie {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(CeEspecie bovboveda) {
+		em.persist(bovboveda);
+	}
+ 
+	public void delete(CeEspecie bovboveda) {
+		em.remove(em.merge(bovboveda));
+	}
+
+	public void update(CeEspecie bovboveda) {
+
+		em.merge(bovboveda);
+	}
+
+	// Selecciona todos los datos de la tabla CeEspecie
+	@SuppressWarnings("unchecked")
+	public List<CeEspecie> findAll() {
+		Query q = em.createQuery("select r from CeEspecie r ");
+		return q.getResultList();
+	}
+
+	// Busca la pk mas alta y le suma uno
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from CeEspecie ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// Busca el id seleccionado
+	public CeEspecie findOne(Integer ceespecie) {
+		Query q = em.createQuery("select f from CeEspecie f where f.idEspecie = " + ceespecie);
+		return (CeEspecie) q.getSingleResult();
+	}
+}

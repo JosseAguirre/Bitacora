@@ -1,0 +1,97 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admempleado;
+
+import java.sql.Time;
+import java.util.Date;
+
+
+/**
+ * The persistent class for the bov_boveda_validacion database table.
+ * 
+ */
+@Entity
+@Table(name="bov_boveda_validacion", schema="java")
+@NamedQuery(name="BovBovedaValidacion.findAll", query="SELECT b FROM BovBovedaValidacion b")
+public class BovBovedaValidacion implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_boveda_validacion", unique=true, nullable=false)
+	private Integer idBovedaValidacion;
+
+	@Temporal(TemporalType.DATE)
+	private Date fecha;
+
+	private Time hora;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado")
+	private Admempleado idempleado;
+
+	//bi-directional many-to-one association to BovBovedaCliente
+	@ManyToOne
+	@JoinColumn(name="id_boveda_cliente")
+	private BovBovedaCliente idbovedacliente;
+
+	//bi-directional many-to-one association to BovTipoValidacion
+	@ManyToOne
+	@JoinColumn(name="id_tipo_validacion")
+	private BovTipoValidacion idtipovalidacion;
+
+	public BovBovedaValidacion() {
+	}
+
+	public Integer getIdBovedaValidacion() {
+		return this.idBovedaValidacion;
+	}
+
+	public void setIdBovedaValidacion(Integer idBovedaValidacion) {
+		this.idBovedaValidacion = idBovedaValidacion;
+	}
+
+	public Date getFecha() {
+		return this.fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public Time getHora() {
+		return this.hora;
+	}
+
+	public void setHora(Time hora) {
+		this.hora = hora;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public BovBovedaCliente getIdbovedacliente() {
+		return this.idbovedacliente;
+	}
+
+	public void setIdbovedacliente(BovBovedaCliente idbovedacliente) {
+		this.idbovedacliente = idbovedacliente;
+	}
+
+	public BovTipoValidacion getIdtipovalidacion() {
+		return this.idtipovalidacion;
+	}
+
+	public void setIdtipovalidacion(BovTipoValidacion idtipovalidacion) {
+		this.idtipovalidacion = idtipovalidacion;
+	}
+
+}

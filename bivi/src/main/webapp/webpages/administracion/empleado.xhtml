@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+	<ui:define name="content">
+		<p:messages id="mensaje" autoUpdate="false" />
+		
+	 <p:panel  header="Datos del Empleado">  
+	 
+			<h:panelGrid id="pnl" columns="3" border="0" style="width: 50%; ">
+
+				<p:outputLabel value="Tipo Empleado" for="tipoempleado"   />
+				<p:selectOneMenu id="tipoempleado" style="width: 60px;"
+					value="#{admEmpleadoBean.idtipoempleado}" required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admEmpleadoBean.listatipoempleado}"
+						var="item" itemLabel="#{item.nombre}"
+						
+						itemValue="#{item.iddetallecatalogo}">
+						
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="tipoempleado" />
+
+
+
+
+				<p:outputLabel value="Identificacion" for="dni"  />
+				<p:inputText id="dni"
+					value="#{admEmpleadoBean.admempleado.identificacion}"
+					required="true" requiredMessage="Requerido"
+					onkeyup="this.value = this.value.toUpperCase();">
+				</p:inputText>
+				<p:message for="dni" />
+
+
+				<p:outputLabel value="Nombre" for="nombre" />
+				<p:inputText id="nombre"
+					value="#{admEmpleadoBean.admempleado.nombres}" required="true"
+					requiredMessage="Requerido"
+					onkeyup="this.value = this.value.toUpperCase();" style="width: 200px;">
+				</p:inputText>
+				<p:message for="nombre" />
+
+				<p:outputLabel value="Apellido" for="apellido" />
+				<p:inputText id="apellido"
+					value="#{admEmpleadoBean.admempleado.apellidos}" required="true"
+					requiredMessage="Requerido"
+					onkeyup="this.value = this.value.toUpperCase();">
+				</p:inputText>
+				<p:message for="apellido" />
+
+				<p:outputLabel value="Correo Electronico" for="mail" />
+				<p:inputText id="mail"
+					value="#{admEmpleadoBean.admempleado.correoelectronico}"
+					required="true" requiredMessage="Requerido">
+				</p:inputText>
+				<p:message for="mail" />
+
+				<p:outputLabel value="Ciudad" for="ciudad" />
+				<p:selectOneMenu id="ciudad" value="#{admEmpleadoBean.idciudad}"
+					required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admEmpleadoBean.listaciudad}" var="item"
+						itemLabel="#{item.nombre}" itemValue="#{item.iddetallecatalogo}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="ciudad" />
+
+				<p:outputLabel value="Sexo" for="sexo" />
+				<p:selectOneMenu id="sexo" value="#{admEmpleadoBean.idsexo}"
+					required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admEmpleadoBean.listasexo}" var="item"
+						itemLabel="#{item.nombre}" itemValue="#{item.iddetallecatalogo}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="sexo" />
+
+				<p:outputLabel value="Fecha Nacimiento:" for="text_fech" />
+				<p:calendar pattern="dd/MM/yyyy" id="text_fech"
+					value="#{admEmpleadoBean.admempleado.fechanacimiento}" locale="es"
+					title="Fecha Nacimiento" showButtonPanel="true" navigator="true"
+					effect="clip" mindate="01/01/1960" showOn="button" required="true"
+					requiredMessage="Completar Fecha!" />
+				<p:message for="text_fech" />
+
+
+
+				<p:outputLabel value="Estado" for="estado" />
+				<p:selectOneMenu id="estado" value="#{admEmpleadoBean.idestado}"
+					required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admEmpleadoBean.listaestado}" var="item"
+						itemLabel="#{item.nombre}" itemValue="#{item.iddetallecatalogo}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="estado" />
+
+				<p:outputLabel value="Cargo" for="cargo" />
+				<p:selectOneMenu id="cargo" value="#{admEmpleadoBean.idcargo}"
+					required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admEmpleadoBean.listacargo}" var="item"
+						itemLabel="#{item.nombre}" itemValue="#{item.iddetallecatalogo}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="cargo" />
+
+				<p:outputLabel value="Direccion" for="direccion" />
+				<p:inputText id="direccion"
+					value="#{admEmpleadoBean.admempleado.direccion}" required="true"
+					requiredMessage="Requerido"
+					onkeyup="this.value = this.value.toUpperCase();">
+				</p:inputText>
+				<p:message for="direccion" />
+
+				<p:outputLabel value="Clase Empleado" for="clase" />
+				<p:selectOneMenu id="clase"
+					value="#{admEmpleadoBean.idclaseempleado}" required="true"
+					requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admEmpleadoBean.listaclaseempleado}"
+						var="item" itemLabel="#{item.nombre}"
+						itemValue="#{item.iddetallecatalogo}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="clase" />
+
+				<p:outputLabel value="Departamento" for="departamento" />
+				<p:selectOneMenu id="departamento"
+					value="#{admEmpleadoBean.iddepartamento}" required="true"
+					requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admEmpleadoBean.listadepartamento}"
+						var="item" itemLabel="#{item.nombre}"
+						itemValue="#{item.iddetallecatalogo}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="departamento" />
+
+				<p:outputLabel value="Linea Negocio" for="linea" />
+				<p:selectOneMenu id="linea"
+					value="#{admEmpleadoBean.idlineanegocio}" required="true"
+					requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{admEmpleadoBean.listalineanegocio}"
+						var="item" itemLabel="#{item.nombre}"
+						itemValue="#{item.iddetallecatalogo}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="linea" />
+
+
+
+				<p:outputLabel value="Nominativo" for="nominativo" />
+				<p:inputText id="nominativo"
+					value="#{admEmpleadoBean.admempleado.nominativo}" required="true"
+					requiredMessage="Requerido"
+					onkeyup="this.value = this.value.toUpperCase();">
+				</p:inputText>
+				<p:message for="nominativo" />
+
+				<p:outputLabel value="Tipo Sangre" for="tipo" />
+				<p:inputText id="tipo"
+					value="#{admEmpleadoBean.admempleado.tiposanguineo}"
+					required="true" requiredMessage="Requerido"
+					onkeyup="this.value = this.value.toUpperCase();">
+				</p:inputText>
+				<p:message for="tipo" />
+
+
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="Guardar"
+				action="#{admEmpleadoBean.persitir()}"
+				update=":frm:pnl :frm2:tbl :frm:growl" icon="ui-icon-disk">
+			</p:commandButton>
+
+</p:panel>
+
+
+
+
+	</ui:define>
+
+<!-- Contenido de la tabla Empleados -->
+	<ui:define name="content2">
+		
+		 
+			<p:dataTable id="tbl" value="#{admEmpleadoBean.listaempleado}"
+				var="item" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablaEmpleado"
+				filteredValue="#{admEmpleadoBean.empleadofiltrado}"
+				emptyMessage="No existen registros con ese criterio"
+				styleClass="table"
+				reflow="true"
+				selectionMode="single"
+		
+			rowKey="#{item.idempleado}"
+				>
+				
+			<f:facet name="header">
+				<div class="row row-nomargin">
+					<div class="col-lg-3">
+						<p:inputText id="globalFilter" onkeyup="PF('tablaEmpleado').filter()" class="pull-left" style="width: 100%" placeholder="xxxxxxxx" />
+					</div>
+					<div class="col-lg-6">
+						<h:outputText value="Lista de Empleados" />
+					</div>
+					<div class="col-lg-3">
+						<div class="pull-right">
+							<p:commandButton action="#{admEmpleadoBean.eliminar}"
+								update=":frm2:tbl :frm:growl" title="Eliminar" value="Eliminar"
+								class="btn-primary" icon="fa fa-list">
+								<p:confirm header="Confirmacion" message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+							</p:commandButton>
+						</div>
+					</div>
+				</div>
+			</f:facet>
+			
+			<p:ajax event="rowSelect" listener="#{admEmpleadoBean.onRowSelect}"	update=":frm:pnl" />
+
+			
+				
+				
+
+				<p:column headerText="Codigo" filterBy="#{item.idempleado}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.idempleado}" />
+				</p:column>
+
+				<p:column headerText="Identificacion"
+					filterBy="#{item.identificacion}" filterStyle="display:none">
+					<h:outputText value="#{item.identificacion}" />
+				</p:column>
+
+				<p:column headerText="Nombre" filterBy="#{item.nombres}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.nombres}" />
+				</p:column>
+
+				<p:column headerText="Apellido" filterBy="#{item.apellidos}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.apellidos}" />
+				</p:column>
+
+				<p:column headerText="Ciudad">
+
+					<h:outputText value="#{item.idciudaddc.nombre}" />
+				</p:column>
+
+				
+
+			</p:dataTable>
+		
+
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

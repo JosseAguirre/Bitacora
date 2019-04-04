@@ -1,0 +1,239 @@
+package com.scm.modelo.centroefectivo;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.preboveda.BovDetalleBovedaCliente;
+import com.scm.modelo.preboveda.BovDetalleTransferencia;
+import com.scm.modelo.sac.SacDetalleespecie;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the ce_especie database table.
+ * 
+ */
+@Entity
+@Table(name="ce_especie", schema="java")
+@NamedQuery(name="CeEspecie.findAll", query="SELECT c FROM CeEspecie c")
+public class CeEspecie implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_especie", unique=true, nullable=false)
+	private Integer idEspecie;
+
+	@Column(length=30)
+	private String descripcion;
+
+	@Column(length=30)
+	private String nombre;
+
+	private double valor;
+
+	//bi-directional many-to-one association to BovDetalleBovedaCliente
+	@OneToMany(mappedBy="idespecie")
+	private List<BovDetalleBovedaCliente> idespecie_bovdetalle_bovedacliente;
+
+	//bi-directional many-to-one association to BovDetalleTransferencia
+	@OneToMany(mappedBy="idespecie")
+	private List<BovDetalleTransferencia> idespecie_bovdetalle_transferencia;
+
+	//bi-directional many-to-one association to CeCaractEspecie
+	@OneToMany(mappedBy="idespecie")
+	private List<CeCaractEspecie> idespecie_cecaract_especie;
+
+	//bi-directional many-to-one association to CeEstadoEspecie
+	@ManyToOne
+	@JoinColumn(name="id_estado_especie")
+	private CeEstadoEspecie idestadoespecie;
+
+	//bi-directional many-to-one association to CeNacionalidadEspecie
+	@ManyToOne
+	@JoinColumn(name="id_nacionalidad_especie")
+	private CeNacionalidadEspecie idnacionalidadespecie;
+
+	//bi-directional many-to-one association to CeTipoEspecie
+	@ManyToOne
+	@JoinColumn(name="id_tipo_especie")
+	private CeTipoEspecie idtipoespecie;
+
+	//bi-directional many-to-one association to CeSerieEspecie
+	@OneToMany(mappedBy="idespecie")
+	private List<CeSerieEspecie> idespecie_ceserie_especie;
+
+	//bi-directional many-to-one association to SacDetalleespecie
+	@OneToMany(mappedBy="idespecie")
+	private List<SacDetalleespecie> idespecie_sacDetalleespecies;
+
+	public CeEspecie() {
+	}
+
+	public Integer getIdEspecie() {
+		return this.idEspecie;
+	}
+
+	public void setIdEspecie(Integer idEspecie) {
+		this.idEspecie = idEspecie;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public double getValor() {
+		return this.valor;
+	}
+
+	public void setValor(double valor) {
+		this.valor = valor;
+	}
+
+	public List<BovDetalleBovedaCliente> getIdespecie_bovdetalle_bovedacliente() {
+		return this.idespecie_bovdetalle_bovedacliente;
+	}
+
+	public void setIdespecie_bovdetalle_bovedacliente(List<BovDetalleBovedaCliente> idespecie_bovdetalle_bovedacliente) {
+		this.idespecie_bovdetalle_bovedacliente = idespecie_bovdetalle_bovedacliente;
+	}
+
+	public BovDetalleBovedaCliente addIdespecie_bovdetalle_bovedacliente(BovDetalleBovedaCliente idespecie_bovdetalle_bovedacliente) {
+		getIdespecie_bovdetalle_bovedacliente().add(idespecie_bovdetalle_bovedacliente);
+		idespecie_bovdetalle_bovedacliente.setIdespecie(this);
+
+		return idespecie_bovdetalle_bovedacliente;
+	}
+
+	public BovDetalleBovedaCliente removeIdespecie_bovdetalle_bovedacliente(BovDetalleBovedaCliente idespecie_bovdetalle_bovedacliente) {
+		getIdespecie_bovdetalle_bovedacliente().remove(idespecie_bovdetalle_bovedacliente);
+		idespecie_bovdetalle_bovedacliente.setIdespecie(null);
+
+		return idespecie_bovdetalle_bovedacliente;
+	}
+
+	public List<BovDetalleTransferencia> getIdespecie_bovdetalle_transferencia() {
+		return this.idespecie_bovdetalle_transferencia;
+	}
+
+	public void setIdespecie_bovdetalle_transferencia(List<BovDetalleTransferencia> idespecie_bovdetalle_transferencia) {
+		this.idespecie_bovdetalle_transferencia = idespecie_bovdetalle_transferencia;
+	}
+
+	public BovDetalleTransferencia addIdespecie_bovdetalle_transferencia(BovDetalleTransferencia idespecie_bovdetalle_transferencia) {
+		getIdespecie_bovdetalle_transferencia().add(idespecie_bovdetalle_transferencia);
+		idespecie_bovdetalle_transferencia.setIdespecie(this);
+
+		return idespecie_bovdetalle_transferencia;
+	}
+
+	public BovDetalleTransferencia removeIdespecie_bovdetalle_transferencia(BovDetalleTransferencia idespecie_bovdetalle_transferencia) {
+		getIdespecie_bovdetalle_transferencia().remove(idespecie_bovdetalle_transferencia);
+		idespecie_bovdetalle_transferencia.setIdespecie(null);
+
+		return idespecie_bovdetalle_transferencia;
+	}
+
+	public List<CeCaractEspecie> getIdespecie_cecaract_especie() {
+		return this.idespecie_cecaract_especie;
+	}
+
+	public void setIdespecie_cecaract_especie(List<CeCaractEspecie> idespecie_cecaract_especie) {
+		this.idespecie_cecaract_especie = idespecie_cecaract_especie;
+	}
+
+	public CeCaractEspecie addIdespecie_cecaract_especie(CeCaractEspecie idespecie_cecaract_especie) {
+		getIdespecie_cecaract_especie().add(idespecie_cecaract_especie);
+		idespecie_cecaract_especie.setIdespecie(this);
+
+		return idespecie_cecaract_especie;
+	}
+
+	public CeCaractEspecie removeIdespecie_cecaract_especie(CeCaractEspecie idespecie_cecaract_especie) {
+		getIdespecie_cecaract_especie().remove(idespecie_cecaract_especie);
+		idespecie_cecaract_especie.setIdespecie(null);
+
+		return idespecie_cecaract_especie;
+	}
+
+	public CeEstadoEspecie getIdestadoespecie() {
+		return this.idestadoespecie;
+	}
+
+	public void setIdestadoespecie(CeEstadoEspecie idestadoespecie) {
+		this.idestadoespecie = idestadoespecie;
+	}
+
+	public CeNacionalidadEspecie getIdnacionalidadespecie() {
+		return this.idnacionalidadespecie;
+	}
+
+	public void setIdnacionalidadespecie(CeNacionalidadEspecie idnacionalidadespecie) {
+		this.idnacionalidadespecie = idnacionalidadespecie;
+	}
+
+	public CeTipoEspecie getIdtipoespecie() {
+		return this.idtipoespecie;
+	}
+
+	public void setIdtipoespecie(CeTipoEspecie idtipoespecie) {
+		this.idtipoespecie = idtipoespecie;
+	}
+
+	public List<CeSerieEspecie> getIdespecie_ceserie_especie() {
+		return this.idespecie_ceserie_especie;
+	}
+
+	public void setIdespecie_ceserie_especie(List<CeSerieEspecie> idespecie_ceserie_especie) {
+		this.idespecie_ceserie_especie = idespecie_ceserie_especie;
+	}
+
+	public CeSerieEspecie addIdespecie_ceserie_especie(CeSerieEspecie idespecie_ceserie_especie) {
+		getIdespecie_ceserie_especie().add(idespecie_ceserie_especie);
+		idespecie_ceserie_especie.setIdespecie(this);
+
+		return idespecie_ceserie_especie;
+	}
+
+	public CeSerieEspecie removeIdespecie_ceserie_especie(CeSerieEspecie idespecie_ceserie_especie) {
+		getIdespecie_ceserie_especie().remove(idespecie_ceserie_especie);
+		idespecie_ceserie_especie.setIdespecie(null);
+
+		return idespecie_ceserie_especie;
+	}
+
+	public List<SacDetalleespecie> getIdespecie_sacDetalleespecies() {
+		return this.idespecie_sacDetalleespecies;
+	}
+
+	public void setIdespecie_sacDetalleespecies(List<SacDetalleespecie> idespecie_sacDetalleespecies) {
+		this.idespecie_sacDetalleespecies = idespecie_sacDetalleespecies;
+	}
+
+	public SacDetalleespecie addIdespecie_sacDetalleespecy(SacDetalleespecie idespecie_sacDetalleespecy) {
+		getIdespecie_sacDetalleespecies().add(idespecie_sacDetalleespecy);
+		idespecie_sacDetalleespecy.setIdespecie(this);
+
+		return idespecie_sacDetalleespecy;
+	}
+
+	public SacDetalleespecie removeIdespecie_sacDetalleespecy(SacDetalleespecie idespecie_sacDetalleespecy) {
+		getIdespecie_sacDetalleespecies().remove(idespecie_sacDetalleespecy);
+		idespecie_sacDetalleespecy.setIdespecie(null);
+
+		return idespecie_sacDetalleespecy;
+	}
+
+}

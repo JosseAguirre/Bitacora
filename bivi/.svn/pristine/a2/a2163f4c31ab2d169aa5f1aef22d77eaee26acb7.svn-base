@@ -1,0 +1,125 @@
+package com.scm.converter;
+
+import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
+
+import com.scm.bean.administracion.AdmPerfilBean;
+import com.scm.modelo.administracion.Admusuario;
+import com.scm.servicio.administracion.ServicioAdmUsuario;
+
+
+
+@FacesConverter("usuarioConverter")
+public class AdmUsuarioConverter implements Converter {
+
+	public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
+   		
+
+        if(value != null && value.trim().length() > 0) {
+        	try {
+        		   Integer codigo = Integer.valueOf(value);
+                   for (Admusuario us : AdmPerfilBean.listausuario){
+               		if(codigo.equals(us.getIdusuario())){               			
+               			return us;
+               		
+               			               		}	
+               	}
+	
+			} catch(NumberFormatException e) {
+				System.out.println("error"+e);
+				throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid theme."));
+			}
+        	
+        }
+        
+        else {
+            return null;
+        }
+		return null;
+		
+    }
+	@Override
+    public String getAsString(FacesContext fc, UIComponent uic, Object object) {
+        if(object != null) {
+            return String.valueOf(((Admusuario) object).getIdusuario());
+        }
+        else {
+            return null;
+        }
+    }   
+}     
+
+
+
+
+
+
+
+
+
+
+/*
+
+@FacesConverter(value ="themeConverter",forClass = AdmPerfilBean.class)
+public class AdmUsuarioConverter implements Converter{
+	
+	
+
+	
+	
+
+		
+	    @SuppressWarnings("null")
+		public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
+	    	
+	    	
+	    	
+	    	//perfilbean = new AdmPerfilBean();
+	    	if(value != null) {
+	    		Admusuario us = new Admusuario();
+	    		
+	    		
+	    		ServicioAdmUsuario serviciousuario = null;
+	       
+	            	Integer codigo = Integer.valueOf(value);
+	            	
+	            	us = serviciousuario.findOne(codigo);
+	            	
+	            	return us;
+	            	
+	            	/*for (Admusuario us : perfilbean.getListausuario()){
+	            		if(codigo.equals(us.getIdusuario())){
+	            			return us;
+	            			
+	            		}
+	            		
+	            	}
+	            	
+	            
+	        }
+
+			return null;
+	    }
+	    
+	    
+		
+	    public String getAsString(FacesContext fc, UIComponent uic, Object object) {
+	        if(object != null) {
+	            return String.valueOf(((Admusuario) object).getIdusuario());
+	        }
+	        else {
+	            return null;
+	        }
+	    }
+
+
+
+	
+}*/

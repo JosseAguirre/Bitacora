@@ -1,0 +1,84 @@
+package com.scm.modelo.sac;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admdetallecatalogo;
+
+import java.sql.Time;
+import java.util.Date;
+
+
+/**
+ * The persistent class for the sa_estadosreferido database table.
+ * 
+ */
+@Entity
+@Table(name="sa_estadosreferido", schema="java")
+@NamedQuery(name="SaEstadosreferido.findAll", query="SELECT s FROM SaEstadosreferido s")
+public class SaEstadosreferido implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_estadoreferido", unique=true, nullable=false)
+	private Integer idEstadoreferido;
+
+	@Temporal(TemporalType.DATE)
+	private Date fecha;
+
+	private Time hora;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idestadodc")
+	private Admdetallecatalogo idestadodc;
+
+	//bi-directional many-to-one association to SacUsuarioReferido
+	@ManyToOne
+	@JoinColumn(name="id_referido")
+	private SacUsuarioReferido idreferido;
+
+	public SaEstadosreferido() {
+	}
+
+	public Integer getIdEstadoreferido() {
+		return this.idEstadoreferido;
+	}
+
+	public void setIdEstadoreferido(Integer idEstadoreferido) {
+		this.idEstadoreferido = idEstadoreferido;
+	}
+
+	public Date getFecha() {
+		return this.fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public Time getHora() {
+		return this.hora;
+	}
+
+	public void setHora(Time hora) {
+		this.hora = hora;
+	}
+
+	public Admdetallecatalogo getIdestadodc() {
+		return this.idestadodc;
+	}
+
+	public void setIdestadodc(Admdetallecatalogo idestadodc) {
+		this.idestadodc = idestadodc;
+	}
+
+	public SacUsuarioReferido getIdreferido() {
+		return this.idreferido;
+	}
+
+	public void setIdreferido(SacUsuarioReferido idreferido) {
+		this.idreferido = idreferido;
+	}
+
+}

@@ -1,0 +1,68 @@
+package com.scm.modelo.centroefectivo;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the ce_caract_especie database table.
+ * 
+ */
+@Entity
+@Table(name="ce_caract_especie", schema="java")
+@NamedQuery(name="CeCaractEspecie.findAll", query="SELECT c FROM CeCaractEspecie c")
+public class CeCaractEspecie implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_caract_especie", unique=true, nullable=false)
+	private Integer idCaractEspecie;
+
+	private Boolean estado;
+
+	//bi-directional many-to-one association to CeCaracteristicaEspecie
+	@ManyToOne
+	@JoinColumn(name="id_caracteristica_especie")
+	private CeCaracteristicaEspecie idcaracteristicaespecie;
+
+	//bi-directional many-to-one association to CeEspecie
+	@ManyToOne
+	@JoinColumn(name="id_especie")
+	private CeEspecie idespecie;
+
+	public CeCaractEspecie() {
+	}
+
+	public Integer getIdCaractEspecie() {
+		return this.idCaractEspecie;
+	}
+
+	public void setIdCaractEspecie(Integer idCaractEspecie) {
+		this.idCaractEspecie = idCaractEspecie;
+	}
+
+	public Boolean getEstado() {
+		return this.estado;
+	}
+
+	public void setEstado(Boolean estado) {
+		this.estado = estado;
+	}
+
+	public CeCaracteristicaEspecie getIdcaracteristicaespecie() {
+		return this.idcaracteristicaespecie;
+	}
+
+	public void setIdcaracteristicaespecie(CeCaracteristicaEspecie idcaracteristicaespecie) {
+		this.idcaracteristicaespecie = idcaracteristicaespecie;
+	}
+
+	public CeEspecie getIdespecie() {
+		return this.idespecie;
+	}
+
+	public void setIdespecie(CeEspecie idespecie) {
+		this.idespecie = idespecie;
+	}
+
+}

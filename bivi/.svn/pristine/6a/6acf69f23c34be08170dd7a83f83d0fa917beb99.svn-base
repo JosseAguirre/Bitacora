@@ -1,0 +1,70 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
+
+
+/**
+ * The persistent class for the admsistemas database table.
+ * 
+ */
+@Entity
+@Table(name="admsistemas", schema="java")
+@NamedQuery(name="Admsistema.findAll", query="SELECT a FROM Admsistema a")
+public class Admsistema implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idsistemas;
+
+	@Column(length=50)
+	private String nombre;
+
+	//bi-directional many-to-one association to AdmClienteAgenciaSistema
+	@OneToMany(mappedBy="idsistemas")
+	private List<AdmClienteAgenciaSistema> idsistemas_adm_cliente_agencia_sistemas;
+
+	public Admsistema() {
+	}
+
+	public Integer getIdsistemas() {
+		return this.idsistemas;
+	}
+
+	public void setIdsistemas(Integer idsistemas) {
+		this.idsistemas = idsistemas;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<AdmClienteAgenciaSistema> getIdsistemas_adm_cliente_agencia_sistemas() {
+		return this.idsistemas_adm_cliente_agencia_sistemas;
+	}
+
+	public void setIdsistemas_adm_cliente_agencia_sistemas(List<AdmClienteAgenciaSistema> idsistemas_adm_cliente_agencia_sistemas) {
+		this.idsistemas_adm_cliente_agencia_sistemas = idsistemas_adm_cliente_agencia_sistemas;
+	}
+
+	public AdmClienteAgenciaSistema addIdsistemas_adm_cliente_agencia_sistema(AdmClienteAgenciaSistema idsistemas_adm_cliente_agencia_sistema) {
+		getIdsistemas_adm_cliente_agencia_sistemas().add(idsistemas_adm_cliente_agencia_sistema);
+		idsistemas_adm_cliente_agencia_sistema.setIdsistemas(this);
+
+		return idsistemas_adm_cliente_agencia_sistema;
+	}
+
+	public AdmClienteAgenciaSistema removeIdsistemas_adm_cliente_agencia_sistema(AdmClienteAgenciaSistema idsistemas_adm_cliente_agencia_sistema) {
+		getIdsistemas_adm_cliente_agencia_sistemas().remove(idsistemas_adm_cliente_agencia_sistema);
+		idsistemas_adm_cliente_agencia_sistema.setIdsistemas(null);
+
+		return idsistemas_adm_cliente_agencia_sistema;
+	}
+
+}

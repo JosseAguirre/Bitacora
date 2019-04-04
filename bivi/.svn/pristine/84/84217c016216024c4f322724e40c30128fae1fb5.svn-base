@@ -1,0 +1,297 @@
+package com.scm.bean.sac;
+
+import java.util.ArrayList;
+
+
+import java.util.List;
+
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import org.primefaces.event.SelectEvent;
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.AdmAtributo;
+import com.scm.modelo.administracion.Admcliente;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admempleado;
+import com.scm.modelo.sac.SacCabezeratransaccione;
+import com.scm.modelo.sac.SacDetalleTransaccion;
+import com.scm.modelo.sac.SacDetalleespecie;
+import com.scm.servicio.administracion.ServicioAdmAgencia;
+import com.scm.servicio.administracion.ServicioAdmAtributo;
+import com.scm.servicio.administracion.ServicioAdmCliente;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+import com.scm.servicio.administracion.ServicioAdmEmpleado;
+import com.scm.servicio.administracion.ServicioAdmServicio;
+import com.scm.servicio.administracion.ServicioAdmTipoServicio;
+import com.scm.servicio.sac.ServicioSacCabeceraTransaccion;
+import com.scm.servicio.sac.ServicioSacDetalleEspecie;
+import com.scm.servicio.sac.ServicioSacDetalleTransaccion;
+
+@ManagedBean
+@ViewScoped
+public class SacDetalleTransaccionBean implements Interface {
+
+	private static final long serialVersionUID = 1L;
+	private SacDetalleTransaccion sacDetalleTransaccion;
+	private SacCabezeratransaccione sacCabezeratransaccion;
+	private SacDetalleespecie sacDetalleespecie;
+	private Admdetallecatalogo detallecatalogo;
+	private AdmAtributo admAtributo;
+	private Admempleado admempleado;
+	
+
+	private List<SacDetalleTransaccion> listaDetalleTransacciones;	
+	private List<SacDetalleTransaccion> listaTransaccionNoAsignada;
+	
+
+	private List<Admdetallecatalogo> listaEstado;
+	private List<Admdetallecatalogo> listaNivel;
+	public static List<Admcliente> listaCliente;
+	private List<Admempleado> listaEmpleado;
+
+	private Integer bandera;
+	private int idCabecera;
+	private int idDetalleEspecie;	
+	private int idEmpleado;
+	private int nivel;
+	private int idAtributo;
+	
+
+	@EJB
+	private ServicioSacDetalleEspecie servicioSacDetalleEspecie;
+	@EJB
+	private ServicioSacCabeceraTransaccion servicioSacCabeceraTransaccion;
+	@EJB
+	private ServicioAdmAtributo servicioAdmAtributo;
+	@EJB
+	private ServicioSacDetalleTransaccion servicioSacDetalleTransaccion;
+	@EJB
+	private ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+	@EJB
+	private ServicioAdmTipoServicio serviciotiposervicio;
+	@EJB
+	private ServicioAdmServicio servicioservicios;
+	@EJB
+	private ServicioAdmAgencia servicioagencia;
+	@EJB
+	private ServicioAdmCliente serviciocliente;
+	@EJB
+	private ServicioAdmEmpleado servicioempleado;
+
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+
+	}
+
+	@Override
+	public void guardar() {
+
+		sacDetalleTransaccion.setIdDetalleTransaccion(servicioSacDetalleTransaccion.getPK());
+	
+		buscaIdCombos();
+
+		servicioSacDetalleTransaccion.create(sacDetalleTransaccion);
+		cancelar();
+
+	}
+
+	public void guardarAsignacion() {
+
+		sacDetalleTransaccion.setIdDetalleTransaccion(servicioSacDetalleTransaccion.getPK());
+
+		buscaIdCombosAsignacion();
+
+		servicioSacDetalleTransaccion.create(sacDetalleTransaccion);
+		cancelar();
+
+	}
+	
+	public void buscaIdCombosAsignacion() { // Busca el id de los combo box seleccionados en la pantalla
+
+		admempleado = servicioempleado.findOne(idEmpleado);
+		sacDetalleTransaccion.setIdEmpleado(admempleado);
+		
+		detallecatalogo = serviciodetallecatalogo.findOne(nivel);
+		sacDetalleTransaccion.setIdniveltransaciondetallecatalogo(detallecatalogo);
+		
+		}
+
+
+	public void buscaIdCombos() { // Busca el id de los combo box seleccionados en la pantalla
+
+		admAtributo = servicioAdmAtributo.findOne(idAtributo);
+		sacDetalleTransaccion.setIdatributo(admAtributo);
+		
+		admempleado = servicioempleado.findOne(idEmpleado);
+		sacDetalleTransaccion.setIdEmpleado_admempleado(admempleado);
+		
+		sacCabezeratransaccion = servicioSacCabeceraTransaccion.findOne(idCabecera);
+		sacDetalleTransaccion.setId_cabezeraTransaccion(sacCabezeratransaccion);
+		
+		detallecatalogo = serviciodetallecatalogo.findOne(nivel);
+		sacDetalleTransaccion.setIdniveltransaciondetallecatalogo(detallecatalogo);
+		
+		sacDetalleespecie = servicioSacDetalleEspecie.findOne(idDetalleEspecie);
+		sacDetalleTransaccion.setIdDetalleespeciesac(sacDetalleespecie);
+
+
+	}
+
+	@Override
+	public void eliminar() {
+		servicioSacDetalleTransaccion.delete(sacDetalleTransaccion);
+		cancelar();
+
+	}
+
+	@Override
+	public void actualizar() {
+
+		servicioSacDetalleTransaccion.update(sacDetalleTransaccion);
+		cancelar();
+
+	}
+
+	public void onRowSelect(SelectEvent event) {
+		sacDetalleTransaccion = (SacDetalleTransaccion) event.getObject();
+		
+		idAtributo = sacDetalleTransaccion.getIdatributo().getIdatributo();
+		idEmpleado = sacDetalleTransaccion.getIdEmpleado().getIdempleado();
+		idCabecera = sacDetalleTransaccion.getId_cabezeraTransaccion().getIdCabezeratransaccion();
+		nivel = sacDetalleTransaccion.getIdniveltransaciondetallecatalogo().getIddetallecatalogo();
+		idDetalleEspecie = sacDetalleTransaccion.getIdDetalleespeciesac().getIdDetalleespeciesac();
+
+	}
+
+	@Override
+	public void consultar() {
+
+		listaTransaccionNoAsignada = new ArrayList<>();
+		listaTransaccionNoAsignada = servicioSacDetalleTransaccion.findTransaccionesNoAsignadas();
+
+		listaDetalleTransacciones = new ArrayList<>();
+		listaDetalleTransacciones = servicioSacDetalleTransaccion.findAll();
+
+		listaNivel = new ArrayList<>();
+		listaNivel = serviciodetallecatalogo.nivelTransaccion();
+
+		listaEmpleado = new ArrayList<>();
+		listaEmpleado = servicioempleado.findAll();
+		
+		
+
+	}
+	
+
+	@Override
+	public void cancelar() {
+		sacDetalleTransaccion = new SacDetalleTransaccion();
+		
+		consultar();
+		bandera = 0;
+		idEmpleado = -1;
+		nivel = -1;
+		idCabecera = -1;
+		idDetalleEspecie = -1;
+	}
+
+	public void transaccionSeleccionada() {	
+
+		idAtributo = sacDetalleTransaccion.getIdatributo().getIdatributo();
+		idEmpleado = sacDetalleTransaccion.getIdEmpleado().getIdempleado();
+		idCabecera = sacDetalleTransaccion.getId_cabezeraTransaccion().getIdCabezeratransaccion();
+		nivel = sacDetalleTransaccion.getIdniveltransaciondetallecatalogo().getIddetallecatalogo();
+		idDetalleEspecie = sacDetalleTransaccion.getIdDetalleespeciesac().getIdDetalleespeciesac();
+		
+		bandera = 1;
+
+	}
+
+	public void persitir() {
+		if (bandera == 1) {
+
+			actualizar();
+
+		} else {
+			guardar();
+
+		}
+
+	}
+
+	public int getIdEmpleado() {
+		return idEmpleado;
+	}
+
+	public void setIdEmpleado(int idEmpleado) {
+		this.idEmpleado = idEmpleado;
+	}
+
+	public int getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(int nivel) {
+		this.nivel = nivel;
+	}
+
+	public List<Admdetallecatalogo> getListaNivel() {
+		return listaNivel;
+	}
+
+	public void setListaNivel(List<Admdetallecatalogo> listaNivel) {
+		this.listaNivel = listaNivel;
+	}
+
+	public List<Admdetallecatalogo> getListaEstado() {
+		return listaEstado;
+	}
+
+	public void setListaEstado(List<Admdetallecatalogo> listaEstado) {
+		this.listaEstado = listaEstado;
+	}
+
+	public List<SacDetalleTransaccion> getListaDetalleTransacciones() {
+		return listaDetalleTransacciones;
+	}
+
+	public void setListaDetalleTransacciones(List<SacDetalleTransaccion> listaDetalleTransacciones) {
+		this.listaDetalleTransacciones = listaDetalleTransacciones;
+	}
+
+	public List<SacDetalleTransaccion> getListaTransaccionNoAsignada() {
+		return listaTransaccionNoAsignada;
+	}
+
+	public void setListaTransaccionNoAsignada(List<SacDetalleTransaccion> listaTransaccionNoAsignada) {
+		this.listaTransaccionNoAsignada = listaTransaccionNoAsignada;
+	}
+
+	public List<Admempleado> getListaEmpleado() {
+		return listaEmpleado;
+	}
+
+	public void setListaEmpleado(List<Admempleado> listaEmpleado) {
+		this.listaEmpleado = listaEmpleado;
+	}
+
+	public static List<Admcliente> getListaCliente() {
+		return listaCliente;
+	}
+
+	public static void setListaCliente(List<Admcliente> listaCliente) {
+		SacDetalleTransaccionBean.listaCliente = listaCliente;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	
+}
+

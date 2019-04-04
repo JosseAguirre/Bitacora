@@ -1,0 +1,105 @@
+package com.scm.servicio.boveda;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.preboveda.BovCabezeratransferencia;
+
+@Stateless
+public class ServicioBovCabezeratransferencia {
+	@PersistenceContext  
+	private EntityManager em;
+
+	public void create(BovCabezeratransferencia BovCabezeratransferencia) {
+		em.persist(BovCabezeratransferencia);
+	}
+
+	public void delete(BovCabezeratransferencia BovCabezeratransferencia) {
+		em.remove(em.merge(BovCabezeratransferencia));
+	}
+
+	public void update(BovCabezeratransferencia BovCabezeratransferencia) { 
+
+		em.merge(BovCabezeratransferencia);
+	}
+
+	// GENERO UNA LISTA PARA OBTENER TOSOD LOS VALORES DE LA TABLA BovCabezeratransferencia QUE
+	// NO SE ENCUENTREN COMO ELIMINADO (NADA SE ELIMINA SOLO CAMBIA COMO
+	// SYSDELETE)
+	@SuppressWarnings("unchecked")
+	public List<BovCabezeratransferencia> findAll() {
+		Query q = em.createQuery("select f from BovCabezeratransferencia f");
+		return q.getResultList();
+	}
+	@SuppressWarnings("unchecked")
+	public List<BovCabezeratransferencia> findAllint() {
+		Query q = em.createQuery("select f from BovCabezeratransferencia f where f.idtipotransferencia = 1 and f.idobvsaliente >= 2 and idboventrante >= 2");
+		return q.getResultList();
+	}
+	@SuppressWarnings("unchecked")
+	public List<BovCabezeratransferencia> findAllaout() {
+		Query q = em.createQuery("select f from BovCabezeratransferencia f where f.idtipotransferencia = 2");
+		return q.getResultList();
+	}
+     
+	@SuppressWarnings("unchecked")
+	public List<BovCabezeratransferencia> findAllcpc() {
+		Query q = em.createQuery("select f from BovCabezeratransferencia f where f.idtipotransferencia = 1 and f.idobvsaliente = 1 or idboventrante = 1");
+		return q.getResultList();
+	}
+	
+	public Integer findPk() {
+
+		Query q = em.createQuery("select max(id) from BovCabezeratransferencia");
+		return (Integer) q.getSingleResult();
+
+	}
+
+	// GENER UNA BUSQUEDA PARA OBTENER EL ID DE MAYOR VALOR
+	public Integer getnumerotiket() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(numeroticket) from BovCabezeratransferencia ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+			// SI EL CODIGO ES MAYOR A NADA SE LE SUMA 1 Y ME DEVUELVE EL NUEVO
+			// CODIGO
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public Integer findnt() {
+
+		Query q = em.createQuery("select max(numeroticket) from BovCabezeratransferencia");
+		return (Integer) q.getSingleResult();
+
+	}
+	
+	// GENER UNA BUSQUEDA PARA OBTENER EL ID DE MAYOR NUMERO TICKET
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from BovCabezeratransferencia ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+			// SI EL CODIGO ES MAYOR A NADA SE LE SUMA 1 Y ME DEVUELVE EL NUEVO
+			// CODIGO
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+	// GENERO UNA BUSQUEDA PARA ENCONTAR EL ID DE LA BovCabezeratransferencia
+	public BovCabezeratransferencia findOne(Integer BovCabezeratransferencia) {
+		Query q = em.createQuery("select f from BovCabezeratransferencia f where f.idCabezeratransferencia = " + BovCabezeratransferencia);
+		return (BovCabezeratransferencia) q.getSingleResult();
+	}
+
+
+}

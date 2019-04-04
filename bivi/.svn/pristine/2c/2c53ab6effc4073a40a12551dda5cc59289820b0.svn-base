@@ -1,0 +1,81 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the adm_cliente_agencia_sistemas database table.
+ * 
+ */
+@Entity
+@Table(name="adm_cliente_agencia_sistemas", schema="java")
+@NamedQuery(name="AdmClienteAgenciaSistema.findAll", query="SELECT a FROM AdmClienteAgenciaSistema a")
+public class AdmClienteAgenciaSistema implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="idcliente_agencia_sistemas", unique=true, nullable=false)
+	private Integer idclienteAgenciaSistemas;
+
+	private Integer valor;
+
+	//bi-directional many-to-one association to Admagencia
+	@ManyToOne
+	@JoinColumn(name="idagencia")
+	private Admagencia idagencia;
+
+	//bi-directional many-to-one association to Admcliente
+	@ManyToOne
+	@JoinColumn(name="idcliente")
+	private Admcliente idcliente;
+
+	//bi-directional many-to-one association to Admsistema
+	@ManyToOne
+	@JoinColumn(name="idsistemas")
+	private Admsistema idsistemas;
+
+	public AdmClienteAgenciaSistema() {
+	}
+
+	public Integer getIdclienteAgenciaSistemas() {
+		return this.idclienteAgenciaSistemas;
+	}
+
+	public void setIdclienteAgenciaSistemas(Integer idclienteAgenciaSistemas) {
+		this.idclienteAgenciaSistemas = idclienteAgenciaSistemas;
+	}
+
+	public Integer getValor() {
+		return this.valor;
+	}
+
+	public void setValor(Integer valor) {
+		this.valor = valor;
+	}
+
+	public Admagencia getIdagencia() {
+		return this.idagencia;
+	}
+
+	public void setIdagencia(Admagencia idagencia) {
+		this.idagencia = idagencia;
+	}
+
+	public Admcliente getIdcliente() {
+		return this.idcliente;
+	}
+
+	public void setIdcliente(Admcliente idcliente) {
+		this.idcliente = idcliente;
+	}
+
+	public Admsistema getIdsistemas() {
+		return this.idsistemas;
+	}
+
+	public void setIdsistemas(Admsistema idsistemas) {
+		this.idsistemas = idsistemas;
+	}
+
+}

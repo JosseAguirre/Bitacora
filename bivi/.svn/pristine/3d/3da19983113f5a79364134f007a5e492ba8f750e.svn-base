@@ -1,0 +1,55 @@
+package com.scm.converter;
+
+
+
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
+
+import com.scm.bean.administracion.AdmPerfilBean;
+import com.scm.modelo.administracion.Admrol;
+import com.scm.modelo.administracion.Admusuario;
+
+@FacesConverter("rolConverter")
+public class AdmRolConverter implements Converter {
+	 
+public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
+   		
+
+        if(value != null && value.trim().length() > 0) {
+        	try {
+        		   Integer codigo = Integer.valueOf(value);
+                   for (Admrol rol : AdmPerfilBean.listarol){
+               		if(codigo.equals(rol.getIdrol())){               			
+               			return rol;
+               		
+               			               		}	
+               	}
+	
+			} catch(NumberFormatException e) {
+				System.out.println("error"+e);
+				throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid theme."));
+			}
+        	
+        }
+        
+        else {
+            return null;
+        }
+		return null;
+		
+    }
+
+    public String getAsString(FacesContext fc, UIComponent uic, Object object) {
+        if(object != null) {
+            return String.valueOf(((Admrol) object).getIdrol());
+        }
+        else {
+            return null;
+        }
+    }   
+
+}

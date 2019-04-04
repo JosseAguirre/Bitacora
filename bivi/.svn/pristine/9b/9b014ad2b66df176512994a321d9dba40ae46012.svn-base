@@ -1,0 +1,58 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the adm_sucursal_servicio database table.
+ * 
+ */
+@Entity
+@Table(name="adm_sucursal_servicio", schema="java")
+@NamedQuery(name="AdmSucursalServicio.findAll", query="SELECT a FROM AdmSucursalServicio a")
+public class AdmSucursalServicio implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="idsucursal_servicio", unique=true, nullable=false)
+	private Integer idsucursalServicio;
+
+	//bi-directional many-to-one association to AdmServicio
+	@ManyToOne
+	@JoinColumn(name="idservicio")
+	private AdmServicio idservicio;
+
+	//bi-directional many-to-one association to AdmSucursal
+	@ManyToOne
+	@JoinColumn(name="idsucursal")
+	private AdmSucursal idsucursal;
+
+	public AdmSucursalServicio() {
+	}
+
+	public Integer getIdsucursalServicio() {
+		return this.idsucursalServicio;
+	}
+
+	public void setIdsucursalServicio(Integer idsucursalServicio) {
+		this.idsucursalServicio = idsucursalServicio;
+	}
+
+	public AdmServicio getIdservicio() {
+		return this.idservicio;
+	}
+
+	public void setIdservicio(AdmServicio idservicio) {
+		this.idservicio = idservicio;
+	}
+
+	public AdmSucursal getIdsucursal() {
+		return this.idsucursal;
+	}
+
+	public void setIdsucursal(AdmSucursal idsucursal) {
+		this.idsucursal = idsucursal;
+	}
+
+}

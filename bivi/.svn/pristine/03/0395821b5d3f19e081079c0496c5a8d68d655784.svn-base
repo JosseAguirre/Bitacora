@@ -1,0 +1,58 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the bov_boveda_boveda_cliente database table.
+ * 
+ */
+@Entity
+@Table(name="bov_boveda_boveda_cliente", schema="java")
+@NamedQuery(name="BovBovedaBovedaCliente.findAll", query="SELECT b FROM BovBovedaBovedaCliente b")
+public class BovBovedaBovedaCliente implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_boveda_boveda_cliente", unique=true, nullable=false)
+	private Integer idBovedaBovedaCliente;
+
+	//bi-directional many-to-one association to BovBoveda
+	@ManyToOne
+	@JoinColumn(name="id_boveda")
+	private BovBoveda idboveda;
+
+	//bi-directional many-to-one association to BovBovedaCliente
+	@ManyToOne
+	@JoinColumn(name="id_boveda_cliente")
+	private BovBovedaCliente idbovedacliente;
+
+	public BovBovedaBovedaCliente() {
+	}
+
+	public Integer getIdBovedaBovedaCliente() {
+		return this.idBovedaBovedaCliente;
+	}
+
+	public void setIdBovedaBovedaCliente(Integer idBovedaBovedaCliente) {
+		this.idBovedaBovedaCliente = idBovedaBovedaCliente;
+	}
+
+	public BovBoveda getIdboveda() {
+		return this.idboveda;
+	}
+
+	public void setIdboveda(BovBoveda idboveda) {
+		this.idboveda = idboveda;
+	}
+
+	public BovBovedaCliente getIdbovedacliente() {
+		return this.idbovedacliente;
+	}
+
+	public void setIdbovedacliente(BovBovedaCliente idbovedacliente) {
+		this.idbovedacliente = idbovedacliente;
+	}
+
+}

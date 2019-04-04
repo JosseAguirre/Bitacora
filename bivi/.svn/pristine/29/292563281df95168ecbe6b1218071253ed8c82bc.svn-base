@@ -1,0 +1,166 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+
+@Stateless
+public class ServicioAdmDetalleCatalogo {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(Admdetallecatalogo detallecatalogo) {
+		em.persist(detallecatalogo);
+	}
+
+	public void delete(Admdetallecatalogo detallecatalogo) {
+		em.remove(em.merge(detallecatalogo));
+	}
+
+	public void update(Admdetallecatalogo detallecatalogo) {
+
+		em.merge(detallecatalogo);
+
+	}
+	
+	// Metodo para obtener el Nivel de Servicio de la tabla Admdetallecatálogo
+			@SuppressWarnings("unchecked")
+			public List<Admdetallecatalogo> estadosTransaccion() {
+				Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 29 ");
+				return q.getResultList();
+			}
+	
+	// Metodo para obtener el Nivel de Servicio de la tabla Admdetallecatálogo
+		@SuppressWarnings("unchecked")
+		public List<Admdetallecatalogo> nivelTransaccion() {
+			Query q = em.createQuery("SELECT c FROM Admdetallecatalogo c where idcatalogo = 28");
+			return q.getResultList();
+		}
+	
+	// Metodo para obtener el Tipo de Cliente de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> tiposcliente() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 9 ");
+		return q.getResultList();
+	}
+
+	// Metodo para obtener la Prioridad de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> prioridad() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 13 ");
+		return q.getResultList();
+	}
+
+	// Metodo para obtener las Actividades de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> actividades() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 11 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener las ciudades de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> ciudades() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 3 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener el genero de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> sexos() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 14 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener os estados de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> estados() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 7 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener los estados de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> estadosusuario() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 6 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener los estados de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> estadoagencia() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 5 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener los estados de la transaccion
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> estadotransf() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 26 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener los cargos de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> cargos() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 15 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener la clase de empleado de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> clasesempleado() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 18 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener los departamentos de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> departamentos() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 16 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener las lineas de negocio de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> lineasnegocio() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 17 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener el tipo empleado de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> tiposempleado() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c where idcatalogo = 19 ");
+		return q.getResultList();
+	}
+	//Metodo para obtener toda la información de la tabla Admdetallecatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> findAll() {
+		Query q = em.createQuery("select c from Admdetallecatalogo c");
+		return q.getResultList();
+	}
+	//metodo para encontar la id mas alta y sumarle uno//usado en el metodo guardar
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admdetallecatalogo ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+//Metodo para obtener el iddetallecatalogo//usado en el metodo editar
+	public Admdetallecatalogo findOne(Integer iddetallecatalogo) {
+		Query q = em.createQuery("select g from Admdetallecatalogo g where g.iddetallecatalogo = " + iddetallecatalogo);
+		return (Admdetallecatalogo) q.getSingleResult();
+	}
+	// Metodo para que me busque todos los iddetallecatalogopadre que tengan el valor de 0
+	//usado para llenar un select one menu de detallecatálogopadre
+	@SuppressWarnings("unchecked")
+	public List<Admdetallecatalogo> detallecatalogopadre() {
+		Query q = em.createQuery("select g from Admdetallecatalogo g  where g.iddetallecatalogopadre = 0");
+		return q.getResultList();
+	}
+	// Metodo para buscar todos los detallecatalogos cuyo iddetallecatalogo sea 0 es decir el
+	// catalogo padre por defecto
+	public Integer findPadreDetalleCatalogo() {
+		Query q = em.createQuery("select iddetallecatalogo from Admdetallecatalogo g where g.iddetallecatalogo = 0");
+		return (Integer) q.getSingleResult();
+	}
+}

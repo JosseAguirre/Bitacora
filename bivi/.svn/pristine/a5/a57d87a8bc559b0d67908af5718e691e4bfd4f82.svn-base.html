@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/menuT.xhtml">
+
+	<!-- SECCION 1 PARA LA RELACION ROLES-USUARIOS -->
+	<ui:define name="content">
+		<p:panel  header="ASIGNACION DE ROLES A USUARIOS">
+			<h:panelGrid id="pnlUsuario" columns="4" border="0">
+				<!-- #### AUTOCOMPLETE ###### -->
+				<p:outputLabel value="Usuario: " for="usuariox" />
+				<p:autoComplete id="usuariox" placeholder="Escriba aqui..."
+					inputStyle="background-color: #ffffb3"
+					value="#{admPerfilBean.admusuario}"
+					completeMethod="#{admPerfilBean.usuarioBuscado}"
+					converter="usuarioConverter" cache="false" var="item"
+					itemLabel="#{item.nombreusuario}" itemValue="#{item}"
+					forceSelection="true">
+					<p:ajax event="itemSelect"
+						listener="#{admPerfilBean.onSelectItemUsuario}"
+						update=":frm:tblRolesAsignados"/>
+
+				</p:autoComplete>
+			</h:panelGrid>
+
+			<br />
+			<br />
+			
+			<!-- #####DIALOGO ROLES DISPONIBLES######## -->
+			<p:dialog id="dlgListRoles" widgetVar="dlgRoles" showEffect="explode"
+				hideEffect="clip" responsive="true" modal="true" width="50%">
+				<p:ajax event="close" listener="#{admPerfilBean.limpiaDlgRol()}" />
+				
+				<!-- Tabla con la lista de roles disponibles que se asignaran al usuario -->
+				<p:dataTable id="checkboxDT" var="item"
+					value="#{admPerfilBean.listarol}"
+					selection="#{admPerfilBean.rolseleccionado}" rowKey="#{item.idrol}"
+					style="margin-bottom:0">
+					<f:facet name="header">ROLES DISPONIBLES</f:facet>
+					<p:column selectionMode="multiple"
+						style="width:40px;text-align:center" />
+					<p:column headerText="Roles">
+						<h:outputText value="#{item.nombre}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:commandButton value="guardar"
+					action="#{admPerfilBean.guardarRol()}"
+					oncomplete="PF('dlgRoles').hide();" update=":frm:tblRolesAsignados">
+
+				</p:commandButton>
+			</p:dialog>
+
+			<p:dataTable id="tblRolesAsignados"
+				value="#{admPerfilBean.listarolasignado}" var="item"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" styleClass="table" reflow="true"
+				selectionMode="single" rowKey="#{item.idrolusuario}">
+
+				<f:facet name="header">
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:commandButton disabled="#{admPerfilBean.activarBtnAgregarRol}"
+								action="#{admPerfilBean.limpiaDlgRol()}" value="Agregar"
+								id="btnAgregar" oncomplete="PF('dlgRoles').show();"
+								update=":frm:dlgListRoles" icon="ui-icon-plusthick">
+
+							</p:commandButton>
+						</div>
+
+						<div class="col-lg-6">
+							<h:outputText
+								value="ROLES ASIGNADOS AL USUARIO: #{admPerfilBean.admusuario.nombreusuario}" />
+						</div>
+						<div class="col-lg-3">
+							<div class="pull-right">
+								<p:commandButton action="#{admPerfilBean.eliminarRolusuario()}"
+									update=":frm:tblRolesAsignados :frm:growl" title="Eliminar"
+									value="Eliminar" class="btn-primary" icon="fa fa-trash-o">
+									<p:confirm header="Confirmacion"
+										message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</f:facet>
+
+				<p:ajax event="rowSelect" listener="#{admPerfilBean.onRowSelectRol}" />
+				<p:column headerText="Rol">
+					<h:outputText value="#{item.idrol.nombre}" />
+				</p:column>
+			</p:dataTable>
+
+
+		</p:panel>
+	</ui:define>
+	
+	
+	<!-- SECCION 2 PARA LA RELACION ROLU - MENU -->
+		
+		<ui:define name="content2">
+		<p:panel  header="ASIGNACION DE MENU A ROLES">
+			<h:panelGrid id="pnlRol" columns="4" border="0">
+				<!-- #### AUTOCOMPLETE ###### -->
+				<p:outputLabel value="Rol: " for="rol" />
+				<p:autoComplete id="rol" placeholder="Escriba aqui..."
+					inputStyle="background-color: #ffffb3"
+					value="#{admPerfilBean.admrol}"
+					completeMethod="#{admPerfilBean.rolBuscado}"
+					converter="rolConverter"
+					cache="false" var="item"
+					itemLabel="#{item.nombre}" itemValue="#{item}"
+					forceSelection="true">
+					<p:ajax event="itemSelect"
+						listener="#{admPerfilBean.onSelectItemRol}"
+						update=":frm2:tblMenuesAsignados" />
+
+				</p:autoComplete>
+			</h:panelGrid>
+
+			<br />
+			<br />
+			
+			<!-- #####DIALOGO MENU DISPONIBLES######## -->
+			<p:dialog id="dlgListMenues" widgetVar="dlgMenues" showEffect="explode"
+				hideEffect="clip" responsive="true" modal="true" width="50%">
+				
+				
+				<!-- Tabla con la lista de MENU disponibles que se asignaran al rol -->
+				<p:dataTable id="checkboxMenu" var="item"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					value="#{admPerfilBean.listamenu}"
+					selection="#{admPerfilBean.menuseleccionado}" rowKey="#{item.idmenu}"
+					style="margin-bottom:0">
+					<f:facet name="header">MENUES DISPONIBLES</f:facet>
+					<p:column selectionMode="multiple"
+						style="width:40px;text-align:center" />
+					<p:column headerText="Menues">
+						<h:outputText value="#{item.nombre}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:commandButton value="Guardar"
+					action="#{admPerfilBean.guardarMenu()}"
+					oncomplete="PF('dlgMenues').hide();" update=":frm2:tblMenuesAsignados">
+
+				</p:commandButton>
+				<p:ajax event="close" listener="#{admPerfilBean.limpiaDlgRol()}" />
+			</p:dialog>
+
+			<p:dataTable id="tblMenuesAsignados"
+				value="#{admPerfilBean.listamenuasignado}" var="item"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" styleClass="table" reflow="true"
+				selectionMode="single" rowKey="#{item.idrolmenu}">
+
+				<f:facet name="header">
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:commandButton disabled="#{admPerfilBean.activarBtnAgregarMenu}"
+								action="#{admPerfilBean.limpiaDlgMenu()}" value="Agregar"
+								id="btnAgregar" oncomplete="PF('dlgMenues').show();"
+								update=":frm2:dlgListMenues" icon="ui-icon-plusthick">
+
+							</p:commandButton>
+						</div>
+
+						<div class="col-lg-6">
+							<h:outputText
+								value="MENUES ASIGNADOS AL ROL:    #{admPerfilBean.admrol.nombre}" />
+						</div>
+						<div class="col-lg-3">
+							<div class="pull-right">
+								<p:commandButton action="#{admPerfilBean.eliminarRolmenu}"
+									update=":frm2:tblMenuesAsignados :frm2:growl" title="Eliminar"
+									value="Eliminar" class="btn-primary" icon="fa fa-trash-o">
+									<p:confirm header="Confirmacion"
+										message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</f:facet>
+
+				<p:ajax event="rowSelect" listener="#{admPerfilBean.onRowSelectMenu}" />
+				<p:column headerText="Menues">
+					<h:outputText value="#{item.idmenu.nombre}" />
+				</p:column>
+			</p:dataTable>
+
+
+		</p:panel>
+	</ui:define>
+	
+	
+		
+	
+		
+		
+		
+		
+
+</ui:composition>
+
+</html>

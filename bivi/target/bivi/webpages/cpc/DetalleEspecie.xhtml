@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+	<!-- #####CAMPO CREAR TIPO ESPECIE######## -->
+	<ui:define name="content">
+		<p:messages id="mensaje" autoUpdate="false" /> 
+<center>
+		<p:panel header="Tipo Especie" style="width: 40%;">
+			<h:panelGrid id="pnl" columns="3" border="0" style="width: 50%; ">
+				<p:outputLabel value="Nombre" for="nombre" />
+				<p:inputText id="nombre"
+					value="#{ceEspecieBean.cetipoespecie.nombre}" required="true"
+					requiredMessage="requerido">
+				</p:inputText>
+				<p:message for="nombre" />
+				<p:outputLabel value="Descripción" for="descripcion" />
+				<p:inputTextarea id="descripcion" rows="3" cols="40"
+					completeMethod="#{ceEspecieBean.cetipoespecie.descripcion}"
+					queryDelay="750" minQueryLength="4"
+					value="#{ceEspecieBean.cetipoespecie.descripcion}" required="true"
+					requiredMessage="descripcion" />
+				<p:message for="descripcion" />
+			</h:panelGrid>
+
+			<p:commandButton value="Guardar" action="#{ceEspecieBean.persitirtipoespecie()}"
+				icon="ui-icon-disk" update=":frm:pnl :frm:tbl :frm:growl" />
+		</p:panel>
+		</center>
+		<br />
+
+		<!-- #####LISTA TIPO ESPECIE######## -->
+		<p:panel>
+			<p:dataTable id="tbl" value="#{ceEspecieBean.listatipoespecie}"
+				var="item" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablatipoespecie"
+				filteredValue="#{ceEspecieBean.tipoespeciefiltro}"
+				emptyMessage="No existen registros con ese criterio"
+				styleClass="table" reflow="true" selectionMode="single"
+				rowKey="#{item.idTipoEspecie}">
+
+				<f:facet name="header">
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:inputText id="globalFilter"
+								onkeyup="PF('tablatipoespecie').filter()" class="pull-left"
+								style="width: 100%" placeholder="Busque aqui..." />
+						</div>
+						<div class="col-lg-6">
+							<h:outputText value="Lista de Tipo Especie" />
+						</div>
+						<div class="col-lg-3">
+							<div class="pull-right">
+								<p:commandButton
+									action="#{ceEspecieBean.eliminartipoespecie()}"
+									update=":frm:tbl :frm:growl" title="Eliminar" value="Eliminar"
+									class="btn-primary" icon="fa fa-list">
+									<p:confirm header="Confirmacion"
+										message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</f:facet>
+
+				<p:ajax event="rowSelect" listener="#{ceEspecieBean.onRowSelect}"
+					update=":frm:pnl" />
+
+				<p:column headerText="Codigo">
+					<h:outputText value="#{item.idTipoEspecie}" />
+				</p:column>
+
+				<p:column headerText="Nombre" filterBy="#{item.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.nombre}" />
+				</p:column>
+
+				<p:column headerText="Descripción" filterBy="#{item.descripcion}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.descripcion}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+
+
+	<!-- #####CAMPO CREAR NACIONALIDADESPECIE######## -->
+	<ui:define name="content2">
+		<p:messages id="mensaje" autoUpdate="false" />
+<center>
+		<p:panel header="Nacionalidad Especie" style="width: 40%;">
+			<h:panelGrid id="pnl2" columns="3" border="0" style="width: 50%; ">
+				<p:outputLabel value="Nombre" for="nombre" />
+				<p:inputText id="nombre"
+					value="#{ceEspecieBean.cenacionalidadespecie.nombre}" required="true"
+					requiredMessage="requerido">
+				</p:inputText>
+				<p:message for="nombre" />
+				
+				<p:outputLabel value="Descripción" for="descripcion" />
+				<p:inputTextarea id="descripcion" rows="3" cols="40"
+					completeMethod="#{ceEspecieBean.cenacionalidadespecie.descripcion}"
+					queryDelay="750" minQueryLength="4"
+					value="#{ceEspecieBean.cenacionalidadespecie.descripcion}" required="true"
+					requiredMessage="descripcion" />
+				<p:message for="descripcion" />
+			</h:panelGrid>
+
+			<p:commandButton value="Guardar" action="#{ceEspecieBean.persitirnacionalidad()}"
+				icon="ui-icon-disk" update=":frm2:pnl2 :frm2:tbl2 :frm2:growl" />
+		</p:panel>
+		</center>
+		<br />
+
+		<!-- #####LISTA NACIONALIDAD ESPECIE######## -->
+		<p:panel>
+			<p:dataTable id="tbl2" value="#{ceEspecieBean.listanacionaidad}"
+				var="item" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablanacionalidad"
+				filteredValue="#{ceEspecieBean.nacionaidadfiltro}"
+				emptyMessage="No existen registros con ese criterio"
+				styleClass="table" reflow="true" selectionMode="single"
+				rowKey="#{item.idNacionalidadEspecie}">
+
+				<f:facet name="header">
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:inputText id="globalFilter"
+								onkeyup="PF('tablanacionalidad').filter()" class="pull-left"
+								style="width: 100%" placeholder="Busque aqui..." />
+						</div>
+						<div class="col-lg-6">
+							<h:outputText value="Lista Nacionalidad Especie" />
+						</div>
+						<div class="col-lg-3">
+							<div class="pull-right">
+								<p:commandButton
+									action="#{ceEspecieBean.eliminarnacionalidad()}"
+									update=":frm2:tbl2 :frm2:growl" title="Eliminar" value="Eliminar"
+									class="btn-primary" icon="fa fa-list">
+									<p:confirm header="Confirmacion"
+										message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</f:facet>
+
+				<p:ajax event="rowSelect" listener="#{ceEspecieBean.onRowSelectnacionalidad}"
+					update=":frm2:pnl2" />
+
+				<p:column headerText="Codigo">
+					<h:outputText value="#{item.idNacionalidadEspecie}" />
+				</p:column>
+
+				<p:column headerText="Nombre" filterBy="#{item.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.nombre}" />
+				</p:column>
+
+				<p:column headerText="Descripción" filterBy="#{item.descripcion}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.descripcion}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+	
+	<!-- #####CAMPO CREAR ESTADO ESPECIE######## -->
+	<ui:define name="content3">
+		<p:messages id="mensaje" autoUpdate="false" />
+<center>
+		<p:panel header="Estado Especie" style="width: 40%;">
+			<h:panelGrid id="pnl3" columns="3" border="0" style="width: 50%; ">
+				<p:outputLabel value="Nombre" for="nombre" />
+				<p:inputText id="nombre"
+					value="#{ceEspecieBean.ceestadoespecie.nombre}" required="true"
+					requiredMessage="requerido">
+				</p:inputText>
+				<p:message for="nombre" />
+				
+				<p:outputLabel value="Descripción" for="descripcion" />
+				<p:inputTextarea id="descripcion" rows="3" cols="40"
+					completeMethod="#{ceEspecieBean.ceestadoespecie.descripcion}"
+					queryDelay="750" minQueryLength="4"
+					value="#{ceEspecieBean.ceestadoespecie.descripcion}" required="true"
+					requiredMessage="descripcion" />
+				<p:message for="descripcion" />
+			</h:panelGrid>
+
+			<p:commandButton value="Guardar" action="#{ceEspecieBean.persitirestado()}"
+				icon="ui-icon-disk" update=":frm3:pnl3 :frm3:tbl3 :frm3:growl" />
+		</p:panel>
+		</center>
+		<br />
+
+		<!-- #####LISTA Estado ESPECIE######## -->
+		<p:panel>
+			<p:dataTable id="tbl3" value="#{ceEspecieBean.listaestado}"
+				var="item" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablaestado"
+				filteredValue="#{ceEspecieBean.estadofiltro}"
+				emptyMessage="No existen registros con ese criterio"
+				styleClass="table" reflow="true" selectionMode="single"
+				rowKey="#{item.idEstadoEspecie}">
+
+				<f:facet name="header">
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:inputText id="globalFilter"
+								onkeyup="PF('tablaestado').filter()" class="pull-left"
+								style="width: 100%" placeholder="Busque aqui..." />
+						</div>
+						<div class="col-lg-6">
+							<h:outputText value="Lista Estado Especie" />
+						</div>
+						<div class="col-lg-3">
+							<div class="pull-right">
+								<p:commandButton
+									action="#{ceEspecieBean.eliminarestado()}"
+									update=":frm3:tbl3 :frm3:pnl3 :frm3:growl" title="Eliminar" value="Eliminar"
+									class="btn-primary" icon="fa fa-list">
+									<p:confirm header="Confirmacion"
+										message="Desea eliminar el Registro..?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</f:facet>
+
+				<p:ajax event="rowSelect" listener="#{ceEspecieBean.onRowSelectestado}"
+					update=":frm3:pnl3" />
+
+				<p:column headerText="Codigo">
+					<h:outputText value="#{item.idEstadoEspecie}" />
+				</p:column>
+
+				<p:column headerText="Nombre" filterBy="#{item.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.nombre}" />
+				</p:column>
+
+				<p:column headerText="Descripción" filterBy="#{item.descripcion}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.descripcion}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+</ui:composition>
+</html>

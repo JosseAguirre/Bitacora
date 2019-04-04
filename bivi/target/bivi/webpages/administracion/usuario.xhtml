@@ -1,0 +1,154 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/templates/menuT.xhtml">
+        <ui:define name="panel"></ui:define>
+        <ui:define name="content">
+            <p:messages id="mensaje" autoUpdate="false" />
+            <p:panel  header="DATOS DEL USUARIO" style="margin:0 auto; width:40%">
+                <p:panelGrid id="pnlEmpleado" columns="4" styleClass="ui-panelgrid-blank">
+                    <p:outputLabel value="Empleado" for="empleado" />
+                    <p:inputText id="empleado" 
+                                 value="#{admUsuarioBean.admempleado.nombres} #{admUsuarioBean.admempleado.apellidos}" required="true"
+                                 requiredMessage="Requerido" disabled="true">
+                    </p:inputText>
+                    <p:message for="empleado" />
+                    <p:commandButton 
+                        action="#{admUsuarioBean.dataEmpleado()}" value="Buscar"
+                        id="btnBuscar" oncomplete="PF('dlgEmpleado').show();"
+                        update=":frm:dlgListEmpleado" icon="ui-icon-search">
+                    </p:commandButton>
+                </p:panelGrid>
+
+                <!-- #######DIALOGO PARA SELECCIONAR EL EMPLEADO#### -->
+                <p:dialog id="dlgListEmpleado" widgetVar="dlgEmpleado" showEffect="explode"
+                          hideEffect="clip" responsive="true" modal="true" width="50%">
+
+                    <p:dataTable id="tbl" value="#{admEmpleadoBean.listaempleado}"
+                                 var="item" paginator="true" rows="10"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 paginatorPosition="bottom" editable="true"
+                                 tableStyle="white-space: nowrap" widgetVar="tablaEmpleado"
+                                 filteredValue="#{admEmpleadoBean.empleadofiltrado}"
+                                 emptyMessage="No existen registros con ese criterio"
+                                 selectionMode="single"
+                                 selection="#{admEmpleadoBean.empleadoseleccionado}"
+                                 rowKey="#{item.idempleado}" >
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Buscar:" />
+                                <p:inputText id="globalFilter" onkeyup="PF('tablaEmpleado').filter()"
+                                             style="width:150px"
+                                             title="Escriba la identificiacion, nombre o apellido " />
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:ajax  event="rowSelect" listener="#{admUsuarioBean.onRowSelectEmpleado}" update = ":frm:pnlEmpleado"   oncomplete="PF('dlgEmpleado').hide();"/>
+
+                        <p:column headerText="Id" filterBy="#{item.idempleado}" filterStyle="display:none">
+                            <h:outputText value="#{item.idempleado}" />
+                        </p:column>
+
+                        <p:column headerText="Nombres" filterBy="#{item.nombres}" filterStyle="display:none">
+                            <h:outputText value="#{item.nombres}" />
+                        </p:column>
+
+                        <p:column  headerText="apellidos" filterBy="#{item.apellidos}" filterStyle="display:none">
+                            <h:outputText value="#{item.apellidos}" />
+                        </p:column>
+                    </p:dataTable>
+
+                </p:dialog>
+                
+                <p:panelGrid id="pnl" columns="3" styleClass="ui-panelgrid-blank">
+
+                    <p:outputLabel value="Usuario" for="usuario" />
+                    <p:inputText id="usuario"
+                                 value="#{admUsuarioBean.admusuario.nombreusuario}" required="true"
+                                 requiredMessage="Requerido">
+                    </p:inputText>
+                    <p:message for="usuario" />
+
+                    <p:outputLabel value="Password" for="password" />
+                    <p:inputText id="password"
+                                 value="#{admUsuarioBean.admusuario.contrasenia}" required="true"
+                                 requiredMessage="password">
+                    </p:inputText>
+                    <p:message for="usuario" />
+
+
+                    <p:outputLabel value="Estado" for="estado" />
+                    <p:selectOneMenu id="estado" value="#{admUsuarioBean.idestado}"
+                                     required="true" requiredMessage="Requerido">
+                        <f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+                        <f:selectItems value="#{admUsuarioBean.listaestado}" var="item"
+                                       itemLabel="#{item.nombre}" itemValue="#{item.iddetallecatalogo}">
+                        </f:selectItems>
+                    </p:selectOneMenu>
+                    <p:message for="estado" />
+
+                </p:panelGrid>
+                <br />
+                <h:panelGrid id="pnlBoton" columns="1" border="0"
+                             style="margin:0 auto;">
+                    <p:commandButton value="Guardar"
+                                     action="#{admUsuarioBean.persitir()}" icon="ui-icon-disk"
+                                     update=":frm:pnl :frm:pnlEmpleado :frm2:tbl :frm:growl" />
+                </h:panelGrid>
+
+            </p:panel>
+
+        </ui:define>
+
+        <ui:define name="content2">
+            <!--#### CONTENIDO DE LA TABLA USUARIO -->
+            <p:dataTable id="tbl" value="#{admUsuarioBean.listausuario}"
+                         var="item" paginator="true" rows="10"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         paginatorPosition="bottom" editable="true"
+                         tableStyle=" white-space: nowrap" widgetVar="carsTable"
+                         filteredValue="#{admUsuarioBean.usuariofiltrado}"
+                         emptyMessage="No existen registros con ese criterio"
+                         styleClass="table" reflow="true" selectionMode="single"
+                         selection="#{admUsuarioBean.usuarioseleccionado}"
+                         rowKey="#{item.idusuario}">
+
+                <f:facet name="header">
+                    <div class="row row-nomargin">
+                        <div class="col-lg-3">
+                            <p:inputText id="globalFilter" onkeyup="PF('carsTable').filter()" class="pull-left" style="width: 100%" placeholder="Escriba lo que busca...." />
+                        </div>
+                        <div class="col-lg-6">
+                            <h:outputText value="Lista de Usuarios" />
+                        </div>
+                        <div class="col-lg-3">
+
+                        </div>
+                    </div>
+                </f:facet>
+
+                <p:ajax event="rowSelect" listener="#{admUsuarioBean.onRowSelectUsuario}"	update=":frm:pnl :frm:pnlEmpleado" />
+
+                <p:column headerText="Codigo">
+                    <h:outputText value="#{item.idusuario}" />
+                </p:column>
+
+                <p:column headerText="Usuario" filterBy="#{item.nombreusuario}"
+                          filterStyle="display:none">
+                    <h:outputText value="#{item.nombreusuario}" />
+                </p:column>
+
+            </p:dataTable>
+
+            <!--  -->
+
+        </ui:define>
+
+    </ui:composition>
+</html>

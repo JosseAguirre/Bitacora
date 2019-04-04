@@ -1,0 +1,60 @@
+package com.scm.modelo.sac;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admempleado;
+
+
+/**
+ * The persistent class for the sac_detallereferido database table.
+ * 
+ */
+@Entity
+@Table(name="sac_detallereferido", schema="java")
+@NamedQuery(name="SacDetallereferido.findAll", query="SELECT s FROM SacDetallereferido s")
+public class SacDetallereferido implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_detallereferido", unique=true, nullable=false)
+	private Integer idDetallereferido;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="id_empleado")
+	private Admempleado idempleado;
+
+	//bi-directional many-to-one association to SacUsuarioReferido
+	@ManyToOne
+	@JoinColumn(name="idreferido")
+	private SacUsuarioReferido idreferido;
+
+	public SacDetallereferido() {
+	}
+
+	public Integer getIdDetallereferido() {
+		return this.idDetallereferido;
+	}
+
+	public void setIdDetallereferido(Integer idDetallereferido) {
+		this.idDetallereferido = idDetallereferido;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public SacUsuarioReferido getIdreferido() {
+		return this.idreferido;
+	}
+
+	public void setIdreferido(SacUsuarioReferido idreferido) {
+		this.idreferido = idreferido;
+	}
+
+}

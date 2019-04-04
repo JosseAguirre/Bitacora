@@ -1,0 +1,688 @@
+package com.scm.bean.cpc;
+
+import java.io.Serializable;
+import java.security.Timestamp;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.centroefectivo.CeCaractEspecie;
+import com.scm.modelo.centroefectivo.CeCaracteristicaEspecie;
+import com.scm.modelo.centroefectivo.CeEspecie;
+import com.scm.modelo.centroefectivo.CeEstadoEspecie;
+import com.scm.modelo.centroefectivo.CeNacionalidadEspecie;
+import com.scm.modelo.centroefectivo.CeSerieEspecie;
+import com.scm.modelo.centroefectivo.CeTipoEspecie;
+import com.scm.servicio.centroefectivo.ServicioCeCaractEspecie;
+import com.scm.servicio.centroefectivo.ServicioCeCaracteristicaEspecie;
+import com.scm.servicio.centroefectivo.ServicioCeEspecie;
+import com.scm.servicio.centroefectivo.ServicioCeEstadoEspecie;
+import com.scm.servicio.centroefectivo.ServicioCeNacionalidadEspecie;
+import com.scm.servicio.centroefectivo.ServicioCeSerieEspecie;
+import com.scm.servicio.centroefectivo.ServicioCeTipoEspecie;
+
+@ManagedBean
+@ViewScoped
+public class CeEspecieBean implements Interface, Serializable {
+	private static final long serialVersionUID = 1L;
+
+	// Creo las variables y listas que necesitaremos para las consultas
+	private CeTipoEspecie cetipoespecie;
+	private List<CeTipoEspecie> listatipoespecie;
+	private List<CeTipoEspecie> tipoespeciefiltro;
+	private CeEspecie ceespecie;
+	private List<CeEspecie> listaespecie;
+	private List<CeEspecie> especiefiltro;
+	private CeCaracteristicaEspecie cecaracterisricaespecie;
+	private CeCaractEspecie cecaractespecie;
+	private CeEstadoEspecie ceestadoespecie;
+	private List<CeEstadoEspecie> listaestado;
+	private List<CeEstadoEspecie> estadofiltro;
+	private CeNacionalidadEspecie cenacionalidadespecie;
+	private List<CeNacionalidadEspecie> listanacionaidad;
+	private List<CeNacionalidadEspecie> nacionaidadfiltro;
+	private CeSerieEspecie ceserieespecie;
+	private List<CeSerieEspecie> listaserieespecie;
+	private List<CeSerieEspecie> serieespeciefiltro;
+
+	// creo los EJB para establecer la comunicacion con los servicios de los
+	// respectivos modelos
+	@EJB
+	ServicioCeTipoEspecie serviciotipoespecie;
+	@EJB
+	ServicioCeEspecie servicioespecie;
+	@EJB
+	ServicioCeCaracteristicaEspecie serviciocaracteristicaespecie;
+	@EJB
+	ServicioCeCaractEspecie serviciocaractespecie;
+	@EJB
+	ServicioCeEstadoEspecie servicioestadoespecie;
+	@EJB
+	ServicioCeNacionalidadEspecie servicionacionalidadespecie;
+	@EJB
+	ServicioCeSerieEspecie servicioserieespecie;
+
+	// variables para editar pantalla de Especie
+	private Integer bandera;
+	private Integer idtipoespecie;
+	private Integer idnacionalidadespecie;
+	private Integer idestadoespecie;
+	private Integer idespecie;
+	private Timestamp fecha;
+	private Date date;
+	private Time time;
+	private Timestamp timestamp;
+
+	Calendar Time = Calendar.getInstance();
+	int hora = Time.get(Calendar.HOUR_OF_DAY);
+	int minuto = Time.get(Calendar.MINUTE);
+	int segundo = Time.get(Calendar.SECOND);
+	// metodo para distingir entre guardar o editar especie
+	public void persitir() {
+		if (bandera == 1) {
+
+			actualizar();
+
+		} else {
+			guardar();
+
+		}
+	}
+
+	// metodo para distingir entre guardar o editar serie especie
+	public void persitirserie() {
+		if (bandera == 1) {
+
+			actualizarserie();
+
+		} else {
+			guardarserie();
+
+		}
+	}
+
+	// metodo para distingir entre guardar o editar tipo especie
+	public void persitirtipoespecie() {
+
+		if (bandera == 1) {
+
+			actualizartipoespecie();
+
+		} else {
+			guardartipoespecie();
+
+		}
+
+	}
+
+	// metodo para distingir entre guardar o editar nacionalidad
+	public void persitirnacionalidad() {
+
+		if (bandera == 1) {
+
+			actualizarnacionalidad();
+
+		} else {
+			guardarnacionalidad();
+
+		}
+
+	}
+
+	// metodo para distingir entre guardar o editar estado
+	public void persitirestado() {
+
+		if (bandera == 1) {
+
+			actualizarestado();
+
+		} else {
+			guardarestado();
+
+		}
+
+	}
+
+	// Metodo para actualizar tipo especie
+	public void actualizartipoespecie() {
+
+		serviciotipoespecie.update(cetipoespecie);
+		// mensaje al actualizar tipoespecie
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se actualizó el Tipo Catálogo: " + cetipoespecie.getNombre()));
+
+		cancelar();
+	}
+
+	// Metodo para actualizar nacionalidad
+	public void actualizarnacionalidad() {
+
+		servicionacionalidadespecie.update(cenacionalidadespecie);
+		// mensaje al actualizar nacionalidad
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se actualizó la Nacionalidad: " + cenacionalidadespecie.getNombre()));
+
+		cancelar();
+	}
+
+	// Metodo para actualizar Estado
+	public void actualizarestado() {
+
+		servicioestadoespecie.update(ceestadoespecie);
+		// mensaje al actualizar nacionalidad
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se actualizó el Estado: " + ceestadoespecie.getNombre()));
+
+		cancelar();
+	}
+
+	// Creo el metodo para guardar el tipo especie
+	public void guardartipoespecie() {
+		cetipoespecie.setIdTipoEspecie(serviciotipoespecie.getPK());
+		serviciotipoespecie.create(cetipoespecie);
+		// mensaje mostrado al guardar
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se registró el Tipo Catálogo: " + cetipoespecie.getNombre()));
+
+		cancelar();
+	}
+
+	// Creo el metodo para guardar nacionalidad
+	public void guardarnacionalidad() {
+		cenacionalidadespecie.setIdNacionalidadEspecie(servicionacionalidadespecie.getPK());
+		servicionacionalidadespecie.create(cenacionalidadespecie);
+		// mensaje mostrado al guardar
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se registró la Nacionalidad: " + cenacionalidadespecie.getNombre()));
+
+		cancelar();
+	}
+
+	// Creo el metodo para guardar estado
+	public void guardarestado() {
+		ceestadoespecie.setIdEstadoEspecie(servicioestadoespecie.getPK());
+		servicioestadoespecie.create(ceestadoespecie);
+		// mensaje mostrado al guardar
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se registró el Estado: " + ceestadoespecie.getNombre()));
+
+		cancelar();
+	}
+
+	// Metodo para eliminar tipoespecie
+	public void eliminartipoespecie() {
+
+		serviciotipoespecie.delete(cetipoespecie);
+		// mensaje al eliminar tipoespecie
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se eliminó el Tipo Especie: " + cetipoespecie.getNombre()));
+
+		cancelar();
+	}
+
+	// Metodo para eliminar estado
+	public void eliminarestado() {
+
+		servicioestadoespecie.delete(ceestadoespecie);
+		// mensaje al eliminar estado
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se eliminó el Estado: " + ceestadoespecie.getNombre()));
+
+		cancelar();
+	}
+
+	// Metodo para eliminar tipoespecie
+	public void eliminarnacionalidad() {
+
+		servicionacionalidadespecie.delete(cenacionalidadespecie);
+		// mensaje al eliminar nacionalidad
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se eliminó la Nacionalidad: " + cenacionalidadespecie.getNombre()));
+
+		cancelar();
+	}
+
+	// Metodo para seleccionar y llenar la información el Tipo especie al
+	// momento de dar un click sobre la fila
+	public void onRowSelect(SelectEvent event) {
+		cetipoespecie = (CeTipoEspecie) event.getObject();
+		bandera = 1;
+	}
+
+	// Metodo para seleccionar y llenar la información el Tipo especie al
+	// momento de dar un click sobre la fila nacionalidad
+	public void onRowSelectnacionalidad(SelectEvent event) {
+		cenacionalidadespecie = (CeNacionalidadEspecie) event.getObject();
+		bandera = 1;
+	}
+
+	// Metodo para seleccionar y llenar la información el Tipo especie al
+	// momento de dar un click sobre la fila estado
+	public void onRowSelectestado(SelectEvent event) {
+		ceestadoespecie = (CeEstadoEspecie) event.getObject();
+		bandera = 1;
+	}
+@PostConstruct
+	@Override
+	public void init() {
+
+	cancelar();
+
+	}
+
+	// metodo para guardar los dtos ingresados
+	@Override
+	public void guardar() {
+
+		ceespecie.setIdEspecie(servicioespecie.getPK());
+		buscaIdCombos();
+		servicioespecie.create(ceespecie);
+
+		// mensaje que se muestra al guardar la agencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se registró la Especie: " + ceespecie.getNombre()));
+		cancelar();
+	}
+	// metodo para guardar los dtos ingresados serie
+
+	public void guardarserie() {
+
+		ceserieespecie.setIdSerie(servicioserieespecie.getPK());
+		buscaIdCombosserie();
+		servicioserieespecie.create(ceserieespecie);
+
+		// mensaje que se muestra al guardar la agencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se registró la Especie: " + ceespecie.getNombre()));
+		cancelar1();
+	}
+
+	// clase que ermite cargar los datos al editar especie
+	public void onRowSelectespecie(SelectEvent event) {
+		ceespecie = (CeEspecie) event.getObject();
+
+		idtipoespecie = ceespecie.getIdtipoespecie().getIdTipoEspecie();
+		idnacionalidadespecie = ceespecie.getIdnacionalidadespecie().getIdNacionalidadEspecie();
+		idestadoespecie = ceespecie.getIdestadoespecie().getIdEstadoEspecie();
+		bandera = 1;
+	}
+
+	// clase que ermite cargar los datos al editar serie especie
+	public void onRowSelectserieespecie(SelectEvent event) {
+		ceserieespecie = (CeSerieEspecie) event.getObject();
+
+		idespecie = ceserieespecie.getIdespecie().getIdEspecie();
+ 
+		bandera = 1;
+	}
+
+	// este metodoelimina de la base de datos la especie
+	@Override
+	public void eliminar() {
+		servicioespecie.delete(ceespecie);
+		// mensaje al eliminar la agencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se elimino la Especie: " + ceespecie.getNombre()));
+		cancelar();
+	}
+	// este metodoelimina de la base de datos la especie
+
+	public void eliminarserie() {
+		servicioserieespecie.delete(ceserieespecie);
+		// mensaje al eliminar la agencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se elimino la Serie: " + ceserieespecie.getSerie()));
+		cancelar();
+	}
+
+	// esta clase nos permite actualizar la tabla especie de manera
+	// automatica sin tener que modificar la base de datos
+	@Override
+	public void actualizar() {
+		buscaIdCombos();
+
+		servicioespecie.update(ceespecie);
+		// mensaje al actuaizar la agencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se actualizo la Especie: " + ceespecie.getNombre()));
+		cancelar();
+
+	}
+
+	public void actualizarserie() {
+		buscaIdCombos();
+
+		servicioserieespecie.update(ceserieespecie);
+		// mensaje al actuaizar la agencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se actualizo la Serie: " + ceserieespecie.getSerie()));
+		cancelar1();
+
+	}
+
+	// clase que nos tra los datos de otras tablas relacionados de las cuales
+	// necesitamos algun campo
+	public void buscaIdCombos() {
+
+		cetipoespecie = serviciotipoespecie.findOne(idtipoespecie);
+		ceespecie.setIdtipoespecie(cetipoespecie);
+
+		cenacionalidadespecie = servicionacionalidadespecie.findOne(idnacionalidadespecie);
+		ceespecie.setIdnacionalidadespecie(cenacionalidadespecie);
+
+		ceestadoespecie = servicioestadoespecie.findOne(idestadoespecie);
+		ceespecie.setIdestadoespecie(ceestadoespecie);
+	}
+
+	// clase que nos tra los datos de otras tablas relacionados de las cuales
+	// para la serieespecie
+	// necesitamos algun campo
+	public void buscaIdCombosserie() {
+
+		ceespecie = servicioespecie.findOne(idespecie);
+		ceserieespecie.setIdespecie(ceespecie);
+
+		cetipoespecie = serviciotipoespecie.findOne(idtipoespecie);
+		ceespecie.setIdtipoespecie(cetipoespecie);
+
+		cenacionalidadespecie = servicionacionalidadespecie.findOne(idnacionalidadespecie);
+		ceespecie.setIdnacionalidadespecie(cenacionalidadespecie);
+
+		ceestadoespecie = servicioestadoespecie.findOne(idestadoespecie);
+		ceespecie.setIdestadoespecie(ceestadoespecie);
+	}
+
+	// Metodo para consutar en la base de datos por medio de los servicios
+	@Override
+	public void consultar() {
+		listatipoespecie = new ArrayList<>();//
+		listatipoespecie = serviciotipoespecie.findAll();
+
+		listanacionaidad = new ArrayList<>();//
+		listanacionaidad = servicionacionalidadespecie.findAll();
+
+		listaestado = new ArrayList<>();
+		listaestado = servicioestadoespecie.findAll();
+
+		listaespecie = new ArrayList<>();
+		listaespecie = servicioespecie.findAll();
+
+		listaserieespecie = new ArrayList<>();
+		listaserieespecie = servicioserieespecie.findAll();
+	}
+
+	// Metodo Cancelar
+	@Override
+	public void cancelar() {
+		ceespecie = new CeEspecie();
+		ceserieespecie = new CeSerieEspecie();
+		date = new Date();
+		consultar();
+		bandera = 0;
+
+	}
+	public void cancelar1() {
+		ceespecie = new CeEspecie();
+		cetipoespecie = new CeTipoEspecie();
+		cenacionalidadespecie = new CeNacionalidadEspecie();
+		ceestadoespecie = new CeEstadoEspecie();
+		ceserieespecie = new CeSerieEspecie();
+		date = new Date();
+		consultar();
+		bandera = 0;
+
+	}
+
+	public CeEspecie getCeespecie() {
+		return ceespecie;
+	}
+
+	public void setCeespecie(CeEspecie ceespecie) {
+		this.ceespecie = ceespecie;
+	}
+
+	public CeCaracteristicaEspecie getCecaracterisricaespecie() {
+		return cecaracterisricaespecie;
+	}
+
+	public void setCecaracterisricaespecie(CeCaracteristicaEspecie cecaracterisricaespecie) {
+		this.cecaracterisricaespecie = cecaracterisricaespecie;
+	}
+
+	public CeTipoEspecie getCetipoespecie() {
+		return cetipoespecie;
+	}
+
+	public void setCetipoespecie(CeTipoEspecie cetipoespecie) {
+		this.cetipoespecie = cetipoespecie;
+	}
+
+	public CeCaractEspecie getCecaractespecie() {
+		return cecaractespecie;
+	}
+
+	public void setCecaractespecie(CeCaractEspecie cecaractespecie) {
+		this.cecaractespecie = cecaractespecie;
+	}
+
+	public CeEstadoEspecie getCeestadoespecie() {
+		return ceestadoespecie;
+	}
+
+	public void setCeestadoespecie(CeEstadoEspecie ceestadoespecie) {
+		this.ceestadoespecie = ceestadoespecie;
+	}
+
+	public CeNacionalidadEspecie getCenacionalidadespecie() {
+		return cenacionalidadespecie;
+	}
+
+	public void setCenacionalidadespecie(CeNacionalidadEspecie cenacionalidadespecie) {
+		this.cenacionalidadespecie = cenacionalidadespecie;
+	}
+
+	public CeSerieEspecie getCeserieespecie() {
+		return ceserieespecie;
+	}
+
+	public void setCeserieespecie(CeSerieEspecie ceserieespecie) {
+		this.ceserieespecie = ceserieespecie;
+	}
+
+	public List<CeTipoEspecie> getListatipoespecie() {
+		return listatipoespecie;
+	}
+
+	public void setListatipoespecie(List<CeTipoEspecie> listatipoespecie) {
+		this.listatipoespecie = listatipoespecie;
+	}
+
+	public List<CeTipoEspecie> getTipoespeciefiltro() {
+		return tipoespeciefiltro;
+	}
+
+	public void setTipoespeciefiltro(List<CeTipoEspecie> tipoespeciefiltro) {
+		this.tipoespeciefiltro = tipoespeciefiltro;
+	}
+
+	public ServicioCeTipoEspecie getServiciotipoespecie() {
+		return serviciotipoespecie;
+	}
+
+	public void setServiciotipoespecie(ServicioCeTipoEspecie serviciotipoespecie) {
+		this.serviciotipoespecie = serviciotipoespecie;
+	}
+
+	public ServicioCeEspecie getServicioespecie() {
+		return servicioespecie;
+	}
+
+	public void setServicioespecie(ServicioCeEspecie servicioespecie) {
+		this.servicioespecie = servicioespecie;
+	}
+
+	public ServicioCeCaracteristicaEspecie getServiciocaracteristicaespecie() {
+		return serviciocaracteristicaespecie;
+	}
+
+	public void setServiciocaracteristicaespecie(ServicioCeCaracteristicaEspecie serviciocaracteristicaespecie) {
+		this.serviciocaracteristicaespecie = serviciocaracteristicaespecie;
+	}
+
+	public ServicioCeCaractEspecie getServiciocaractespecie() {
+		return serviciocaractespecie;
+	}
+
+	public void setServiciocaractespecie(ServicioCeCaractEspecie serviciocaractespecie) {
+		this.serviciocaractespecie = serviciocaractespecie;
+	}
+
+	public ServicioCeEstadoEspecie getServicioestadoespecie() {
+		return servicioestadoespecie;
+	}
+
+	public void setServicioestadoespecie(ServicioCeEstadoEspecie servicioestadoespecie) {
+		this.servicioestadoespecie = servicioestadoespecie;
+	}
+
+	public ServicioCeNacionalidadEspecie getServicionacionalidadespecie() {
+		return servicionacionalidadespecie;
+	}
+
+	public void setServicionacionalidadespecie(ServicioCeNacionalidadEspecie servicionacionalidadespecie) {
+		this.servicionacionalidadespecie = servicionacionalidadespecie;
+	}
+
+	public ServicioCeSerieEspecie getServicioserieespecie() {
+		return servicioserieespecie;
+	}
+
+	public void setServicioserieespecie(ServicioCeSerieEspecie servicioserieespecie) {
+		this.servicioserieespecie = servicioserieespecie;
+	}
+
+	public Integer getBandera() {
+		return bandera;
+	}
+
+	public void setBandera(Integer bandera) {
+		this.bandera = bandera;
+	}
+
+	public List<CeNacionalidadEspecie> getListanacionaidad() {
+		return listanacionaidad;
+	}
+
+	public void setListanacionaidad(List<CeNacionalidadEspecie> listanacionaidad) {
+		this.listanacionaidad = listanacionaidad;
+	}
+
+	public List<CeNacionalidadEspecie> getNacionaidadfiltro() {
+		return nacionaidadfiltro;
+	}
+
+	public void setNacionaidadfiltro(List<CeNacionalidadEspecie> nacionaidadfiltro) {
+		this.nacionaidadfiltro = nacionaidadfiltro;
+	}
+
+	public List<CeEstadoEspecie> getListaestado() {
+		return listaestado;
+	}
+
+	public void setListaestado(List<CeEstadoEspecie> listaestado) {
+		this.listaestado = listaestado;
+	}
+
+	public List<CeEstadoEspecie> getEstadofiltro() {
+		return estadofiltro;
+	}
+
+	public void setEstadofiltro(List<CeEstadoEspecie> estadofiltro) {
+		this.estadofiltro = estadofiltro;
+	}
+
+	public Integer getIdtipoespecie() {
+		return idtipoespecie;
+	}
+
+	public void setIdtipoespecie(Integer idtipoespecie) {
+		this.idtipoespecie = idtipoespecie;
+	}
+
+	public Integer getIdnacionalidadespecie() {
+		return idnacionalidadespecie;
+	}
+
+	public void setIdnacionalidadespecie(Integer idnacionalidadespecie) {
+		this.idnacionalidadespecie = idnacionalidadespecie;
+	}
+
+	public Integer getIdestadoespecie() {
+		return idestadoespecie;
+	}
+
+	public void setIdestadoespecie(Integer idestadoespecie) {
+		this.idestadoespecie = idestadoespecie;
+	}
+
+	public List<CeEspecie> getListaespecie() {
+		return listaespecie;
+	}
+
+	public void setListaespecie(List<CeEspecie> listaespecie) {
+		this.listaespecie = listaespecie;
+	}
+
+	public List<CeEspecie> getEspeciefiltro() {
+		return especiefiltro;
+	}
+
+	public void setEspeciefiltro(List<CeEspecie> especiefiltro) {
+		this.especiefiltro = especiefiltro;
+	}
+
+	public Integer getIdespecie() {
+		return idespecie;
+	}
+
+	public void setIdespecie(Integer idespecie) {
+		this.idespecie = idespecie;
+	}
+
+	public List<CeSerieEspecie> getListaserieespecie() {
+		return listaserieespecie;
+	}
+
+	public void setListaserieespecie(List<CeSerieEspecie> listaserieespecie) {
+		this.listaserieespecie = listaserieespecie;
+	}
+
+	public List<CeSerieEspecie> getSerieespeciefiltro() {
+		return serieespeciefiltro;
+	}
+
+	public void setSerieespeciefiltro(List<CeSerieEspecie> serieespeciefiltro) {
+		this.serieespeciefiltro = serieespeciefiltro;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+}

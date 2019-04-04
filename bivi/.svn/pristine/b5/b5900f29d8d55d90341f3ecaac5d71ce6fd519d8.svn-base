@@ -1,0 +1,81 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
+
+
+/**
+ * The persistent class for the bov_tipo_transaccion database table.
+ * 
+ */
+@Entity
+@Table(name="bov_tipo_transaccion", schema="java")
+@NamedQuery(name="BovTipoTransaccion.findAll", query="SELECT b FROM BovTipoTransaccion b")
+public class BovTipoTransaccion implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_tipo_transaccion", unique=true, nullable=false)
+	private Integer idTipoTransaccion;
+
+	@Column(length=150)
+	private String descripcion;
+
+	@Column(length=30)
+	private String nombre;
+
+	//bi-directional many-to-one association to BovCabezeratransferencia
+	@OneToMany(mappedBy="idtipotransaccion")
+	private List<BovCabezeratransferencia> idtipotransaccion_bovCabezeratransferencias;
+
+	public BovTipoTransaccion() {
+	}
+
+	public Integer getIdTipoTransaccion() {
+		return this.idTipoTransaccion;
+	}
+
+	public void setIdTipoTransaccion(Integer idTipoTransaccion) {
+		this.idTipoTransaccion = idTipoTransaccion;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<BovCabezeratransferencia> getIdtipotransaccion_bovCabezeratransferencias() {
+		return this.idtipotransaccion_bovCabezeratransferencias;
+	}
+
+	public void setIdtipotransaccion_bovCabezeratransferencias(List<BovCabezeratransferencia> idtipotransaccion_bovCabezeratransferencias) {
+		this.idtipotransaccion_bovCabezeratransferencias = idtipotransaccion_bovCabezeratransferencias;
+	}
+
+	public BovCabezeratransferencia addIdtipotransaccion_bovCabezeratransferencia(BovCabezeratransferencia idtipotransaccion_bovCabezeratransferencia) {
+		getIdtipotransaccion_bovCabezeratransferencias().add(idtipotransaccion_bovCabezeratransferencia);
+		idtipotransaccion_bovCabezeratransferencia.setIdtipotransaccion(this);
+
+		return idtipotransaccion_bovCabezeratransferencia;
+	}
+
+	public BovCabezeratransferencia removeIdtipotransaccion_bovCabezeratransferencia(BovCabezeratransferencia idtipotransaccion_bovCabezeratransferencia) {
+		getIdtipotransaccion_bovCabezeratransferencias().remove(idtipotransaccion_bovCabezeratransferencia);
+		idtipotransaccion_bovCabezeratransferencia.setIdtipotransaccion(null);
+
+		return idtipotransaccion_bovCabezeratransferencia;
+	}
+
+}

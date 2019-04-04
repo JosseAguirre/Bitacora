@@ -1,0 +1,58 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the admrolusuario database table.
+ * 
+ */
+@Entity
+@Table(name="admrolusuario", schema="java")
+@NamedQuery(name="Admrolusuario.findAll", query="SELECT a FROM Admrolusuario a")
+public class Admrolusuario implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idrolusuario;
+
+	//bi-directional many-to-one association to Admrol
+	@ManyToOne
+	@JoinColumn(name="idrol")
+	private Admrol idrol;
+
+	//bi-directional many-to-one association to Admusuario
+	@ManyToOne
+	@JoinColumn(name="idusuario")
+	private Admusuario idusuario;
+
+	public Admrolusuario() {
+	}
+
+	public Integer getIdrolusuario() {
+		return this.idrolusuario;
+	}
+
+	public void setIdrolusuario(Integer idrolusuario) {
+		this.idrolusuario = idrolusuario;
+	}
+
+	public Admrol getIdrol() {
+		return this.idrol;
+	}
+
+	public void setIdrol(Admrol idrol) {
+		this.idrol = idrol;
+	}
+
+	public Admusuario getIdusuario() {
+		return this.idusuario;
+	}
+
+	public void setIdusuario(Admusuario idusuario) {
+		this.idusuario = idusuario;
+	}
+
+}

@@ -1,0 +1,156 @@
+package com.scm.modelo.sac;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.AdmServicio;
+import com.scm.modelo.administracion.AdmTipoServicio;
+import com.scm.modelo.administracion.Admagencia;
+import com.scm.modelo.administracion.Admcliente;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the sac_cabezeratransacciones database table.
+ * 
+ */
+@Entity
+@Table(name="sac_cabezeratransacciones", schema="java")
+@NamedQuery(name="SacCabezeratransaccione.findAll", query="SELECT s FROM SacCabezeratransaccione s")
+public class SacCabezeratransaccione implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_cabezeratransaccion", unique=true, nullable=false)
+	private Integer idCabezeratransaccion;
+
+	private Integer numeroticket;
+
+	//bi-directional many-to-one association to AdmServicio
+	@ManyToOne
+	@JoinColumn(name="idservicio")
+	private AdmServicio idservicio;
+
+	//bi-directional many-to-one association to AdmTipoServicio
+	@ManyToOne
+	@JoinColumn(name="idtipo_servicio")
+	private AdmTipoServicio idtiposervicio;
+
+	//bi-directional many-to-one association to Admagencia
+	@ManyToOne
+	@JoinColumn(name="idagencia")
+	private Admagencia idagencia;
+
+	//bi-directional many-to-one association to Admcliente
+	@ManyToOne
+	@JoinColumn(name="idcliente")
+	private Admcliente idcliente;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idlineanegociodc")
+	private Admdetallecatalogo idlineanegociodc;
+
+	//bi-directional many-to-one association to SacTransaccion
+	@OneToMany(mappedBy="idcabezeratransaccion")
+	private List<SacTransaccion> idcabezeratransaccion_sacTransaccions;
+	
+	//bi-directional many-to-one association to SacTransaccion
+	@OneToMany(mappedBy="id_cabezeraTransaccion")
+	private List<SacDetalleTransaccion> idcabezeratransaccion_sacDetalleTransaccions;
+
+	public SacCabezeratransaccione() {
+	}
+
+	public Integer getIdCabezeratransaccion() {
+		return this.idCabezeratransaccion;
+	}
+
+	public void setIdCabezeratransaccion(Integer idCabezeratransaccion) {
+		this.idCabezeratransaccion = idCabezeratransaccion;
+	}
+
+	public Integer getNumeroticket() {
+		return this.numeroticket;
+	}
+
+	public void setNumeroticket(Integer numeroticket) {
+		this.numeroticket = numeroticket;
+	}
+
+	public AdmServicio getIdservicio() {
+		return this.idservicio;
+	}
+
+	public void setIdservicio(AdmServicio idservicio) {
+		this.idservicio = idservicio;
+	}
+
+	public AdmTipoServicio getIdtiposervicio() {
+		return this.idtiposervicio;
+	}
+
+	public void setIdtiposervicio(AdmTipoServicio idtiposervicio) {
+		this.idtiposervicio = idtiposervicio;
+	}
+
+	public Admagencia getIdagencia() {
+		return this.idagencia;
+	}
+
+	public void setIdagencia(Admagencia idagencia) {
+		this.idagencia = idagencia;
+	}
+
+	public Admcliente getIdcliente() {
+		return this.idcliente;
+	}
+
+	public void setIdcliente(Admcliente idcliente) {
+		this.idcliente = idcliente;
+	}
+
+	public Admdetallecatalogo getIdlineanegociodc() {
+		return this.idlineanegociodc;
+	}
+
+	public void setIdlineanegociodc(Admdetallecatalogo idlineanegociodc) {
+		this.idlineanegociodc = idlineanegociodc;
+	}
+
+	public List<SacTransaccion> getIdcabezeratransaccion_sacTransaccions() {
+		return this.idcabezeratransaccion_sacTransaccions;
+	}
+
+	public void setIdcabezeratransaccion_sacTransaccions(List<SacTransaccion> idcabezeratransaccion_sacTransaccions) {
+		this.idcabezeratransaccion_sacTransaccions = idcabezeratransaccion_sacTransaccions;
+	}
+
+	public SacTransaccion addIdcabezeratransaccion_sacTransaccion(SacTransaccion idcabezeratransaccion_sacTransaccion) {
+		getIdcabezeratransaccion_sacTransaccions().add(idcabezeratransaccion_sacTransaccion);
+		idcabezeratransaccion_sacTransaccion.setIdcabezeratransaccion(this);
+
+		return idcabezeratransaccion_sacTransaccion;
+	}
+
+	public SacTransaccion removeIdcabezeratransaccion_sacTransaccion(SacTransaccion idcabezeratransaccion_sacTransaccion) {
+		getIdcabezeratransaccion_sacTransaccions().remove(idcabezeratransaccion_sacTransaccion);
+		idcabezeratransaccion_sacTransaccion.setIdcabezeratransaccion(null);
+
+		return idcabezeratransaccion_sacTransaccion;
+	}
+
+	public List<SacDetalleTransaccion> getIdcabezeratransaccion_sacDetalleTransaccions() {
+		return idcabezeratransaccion_sacDetalleTransaccions;
+	}
+
+	public void setIdcabezeratransaccion_sacDetalleTransaccions(
+			List<SacDetalleTransaccion> idcabezeratransaccion_sacDetalleTransaccions) {
+		this.idcabezeratransaccion_sacDetalleTransaccions = idcabezeratransaccion_sacDetalleTransaccions;
+	}
+	
+	
+
+}

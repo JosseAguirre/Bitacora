@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="pnl"></ui:define>
+	<!-- #####CAMBIO DE TURNO######## -->
+	<ui:define name="content">
+		<p:messages id="mensaje" autoUpdate="false" />
+		<!-- #####TURNO ACTUAL######## -->
+		<center>
+		<p:panel header="Cambio Turno" style="width: 30%;">
+  
+			<h:panelGrid  style="width: 100%;" border="0" id="pnl">
+				<h:column >
+						<center>
+					<h:outputLabel for="boveda" value="Bóveda"/>
+					<p:selectOneMenu id="boveda" value="#{bovCambioTurnoBean.idBoveda}"
+						required="true" requiredMessage="Requerido">
+						<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+						<f:selectItems value="#{bovCambioTurnoBean.listaboveda}" var="item"
+							itemLabel="#{item.nombre}" itemValue="#{item.idBoveda}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<p:message for="boveda" />
+							</center>
+				</h:column>
+		
+<h:column >
+						<!-- #####TURNO ACTUAL######## -->
+						<center>
+				<p:outputLabel value="Turno Actual" for="empleado"/>
+				<br/>									
+					<p:selectOneMenu id="empleado"
+						value="#{bovCambioTurnoBean.idempleado}" required="true"
+						requiredMessage="Requerido" disabled="true">
+						<f:selectItem itemLabel="#{bovCambioTurnoBean.mostrarnombre()}" itemValue="#{bovCambioTurnoBean.idempleado}" />
+
+					</p:selectOneMenu>
+					<p:message for="empleado" />
+					</center>
+				</h:column>
+		
+		
+				<h:column>
+					<!-- #####NUEVO TURNO######## -->
+					<center>
+					<p:outputLabel value="Nuevo Turno" for="empleado1"/>
+					<p:selectOneMenu id="empleado1"
+						value="#{bovCambioTurnoBean.idempleado2}" required="true"
+						requiredMessage="Requerido">
+						<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+						<f:selectItems
+							value="#{bovCambioTurnoBean.listaempeadocambioturno}" var="item"
+							itemLabel="#{item.nombres} #{item.apellidos}" itemValue="#{item.idempleado}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<p:message for="empleado1" />
+					</center>
+				</h:column>
+			</h:panelGrid>
+
+		<br />
+
+		<p:commandButton value="Guardar"
+			action="#{bovCambioTurnoBean.guardar()}"
+			update=":frm:pnl :frm:tbl :frm:growl">
+		</p:commandButton> 
+		
+		<br/>
+		</p:panel>
+		</center>
+	<!-- #####LISTA CAMBIO TURNO######## -->
+<br />
+			<p:dataTable id="tbl" value="#{bovCambioTurnoBean.listacambioturno}"
+				var="item" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="white-space: nowrap" widgetVar="tablaturno"
+				filteredValue="#{bovCambioTurnoBean.cambioturnofiltrado}"
+				emptyMessage="No existen registros con ese criterio"
+				styleClass="table" reflow="true">
+				<f:facet name="header">
+
+					<div class="row row-nomargin">
+						<div class="col-lg-3">
+							<p:inputText id="globalFilter"
+								onkeyup="PF('tablaturno').filter()" class="pull-left"
+								style="width: 100%" placeholder="Busque aqui..." />
+						</div>
+						<div class="col-lg-6">
+							<h:outputText value="Lista Cambio Turno" />
+						</div>
+					</div>
+				</f:facet>
+				<p:column headerText="Codigo" filterBy="#{item.idBovCambioTurno}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.idBovCambioTurno}" />
+				</p:column>
+
+
+				<p:column headerText="Boveda" filterBy="#{item.idboveda.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.idboveda.nombre}" />
+				</p:column>
+
+				<p:column headerText="Empleado 1"
+					filterBy="#{item.idempleado.nombres} #{item.idempleado.apellidos}"
+					filterStyle="display:none">
+					<h:outputText
+						value="#{item.idempleado.nombres} #{item.idempleado.apellidos}" />
+				</p:column>
+
+				<p:column headerText="Empleado2"
+					filterBy="#{item.idempleado2.nombres} #{item.idempleado2.apellidos}"
+					filterStyle="display:none">
+					<h:outputText
+						value="#{item.idempleado2.nombres} #{item.idempleado2.apellidos}" />
+				</p:column>
+
+
+
+				<p:column headerText="Numero Cambio Turno"
+					filterBy="#{item.numeroCambioTurno}" filterStyle="display:none">
+					<div align="center">
+						<h:outputText value="#{item.numeroCambioTurno}" />
+					</div>
+				</p:column>
+
+				<p:column headerText="Fecha" filterBy="#{item1.fecha}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.fecha}" />
+				</p:column>
+
+				<p:column headerText="Hora" filterBy="#{item1.hora}"
+					filterStyle="display:none">
+					<h:outputText value="#{item.hora}" />
+				</p:column>
+
+			</p:dataTable>
+	
+	</ui:define>
+
+
+</ui:composition>
+
+</html>

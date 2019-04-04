@@ -1,0 +1,67 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.administracion.AdmClienteAgenciaSistema;
+
+
+
+@Stateless
+public class ServicioAdmClienteAgenciaSistemas {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(AdmClienteAgenciaSistema admClienteAgenciaSistema) {
+		em.persist(admClienteAgenciaSistema);
+	}
+	
+	public void delete (AdmClienteAgenciaSistema admClienteAgenciaSistema) {
+		em.remove(em.merge(admClienteAgenciaSistema));
+	}
+	
+	public void update (AdmClienteAgenciaSistema admClienteAgenciaSistema) {
+		em.merge(admClienteAgenciaSistema);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AdmClienteAgenciaSistema> findAll() { // Busca todo de la tabla AdmClienteAgenciaSistema
+		Query q = em.createQuery("select b from AdmClienteAgenciaSistema b");
+		return q.getResultList();
+	}
+	@SuppressWarnings("unchecked")
+	public List<AdmClienteAgenciaSistema> findagencia() { // Busca todo de la tabla AdmClienteAgenciaSistema
+		Query q = em.createQuery("select b from AdmClienteAgenciaSistema b where b.idcliente = null");
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AdmClienteAgenciaSistema> findCliente() { // Busca todo de la tabla AdmClienteAgenciaSistema
+		Query q = em.createQuery("select b from AdmClienteAgenciaSistema b where b.idagencia = null");
+		return q.getResultList();
+	}
+	
+		public Integer getPK() { //Busca la primary key mas alta de la tabla AdmClienteAgenciaSistema y se le suma 1
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from AdmClienteAgenciaSistema ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	//Selecciona todo de la tabla AdmClienteAgenciaSistema donde el id de la primary key sea igual a la del id seleccionado
+	public AdmClienteAgenciaSistema findOne(Integer codigoAdmClienteAgenciaSistema){ 
+		Query q = em.createQuery("select b from AdmClienteAgenciaSistema b where b.idclienteagenciasistema = " + codigoAdmClienteAgenciaSistema);
+		return (AdmClienteAgenciaSistema) q.getSingleResult();
+	}
+	
+	
+}

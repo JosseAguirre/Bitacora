@@ -1,0 +1,59 @@
+package com.scm.servicio.boveda;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.preboveda.BovContadorBoveda;
+
+@Stateless
+public class ServicioBovContadorBoveda {
+	
+	@PersistenceContext
+	private EntityManager em;
+	public void create(BovContadorBoveda bovcontadorboveda) {
+		em.persist(bovcontadorboveda);
+	}
+	
+	public void delete(BovContadorBoveda bovcontadorboveda) {
+		em.remove(em.merge(bovcontadorboveda));
+	}
+	
+	public void update(BovContadorBoveda bovcontadorboveda){
+	
+		em.merge(bovcontadorboveda);
+	}
+	
+ 
+	@SuppressWarnings("unchecked")
+	public List<BovContadorBoveda> findAll() {
+		Query q = em.createQuery("select f from BovContadorBoveda f ");
+		return q.getResultList();
+	}
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from BovContadorBoveda ");
+		codigo = (Integer) q.getSingleResult(); 
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public BovContadorBoveda findOne(Integer bovcontadorboveda){
+		Query q = em.createQuery("select f from BovContadorBoveda f where f.id_contador_boveda = " + bovcontadorboveda);
+		return (BovContadorBoveda) q.getSingleResult();
+	}
+	
+	public List<BovContadorBoveda> pornombresemejante(String nombre) {
+		return em.createQuery("select f from BovContadorBoveda f where c.nombres like :nombres", BovContadorBoveda.class)
+				.setParameter("nombres", "%" + nombre + "%")
+				.getResultList();
+	}	
+
+}

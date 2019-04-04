@@ -1,0 +1,72 @@
+package com.scm.servicio.sac;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.sac.SacTransaccion;
+
+ 
+
+
+
+@Stateless
+public class ServicioSacTransaccion {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(SacTransaccion sacTransaccione) {
+		em.persist(sacTransaccione);
+	}
+	
+	public void delete (SacTransaccion sacTransaccione) {
+		em.remove(em.merge(sacTransaccione));
+	}
+	
+	public void update (SacTransaccion sacTransaccione) {
+		em.merge(sacTransaccione);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SacTransaccion> findAll() {
+		Query q = em.createQuery("select b from SacTransaccion b");
+		return q.getResultList();
+	}
+		
+	
+	@SuppressWarnings("unchecked")
+	public List<SacTransaccion> findTransaccionesAsignadas() {
+		Query q = em.createQuery("select b from SacTransaccion b where b.idEstadodc=302");
+		return q.getResultList();
+	}
+	
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from SacTransaccion ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	
+	public SacTransaccion findOne(Integer codigoSacTransaccione){
+		Query q = em.createQuery("select b from SacTransaccion b where b.idTtransaccion = " + codigoSacTransaccione);
+		return (SacTransaccion) q.getSingleResult();
+	}
+	
+	public List<SacTransaccion> pornombresemejante(String idtransaccion) {
+		return em.createQuery("select b from SacTransaccion b where b.idTtransaccion like :idTtransaccion", SacTransaccion.class)
+				.setParameter("idTtransaccion", "%" + idtransaccion + "%")
+				.getResultList();
+	}
+	
+}
+

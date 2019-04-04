@@ -1,0 +1,75 @@
+package com.scm.servicio.sac;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.sac.SacCabezeratransaccione;
+
+@Stateless
+public class ServicioCabeceraTransaccion {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(SacCabezeratransaccione sacUsuarioReferido) {
+		em.persist(sacUsuarioReferido);
+	}
+
+	public void delete(SacCabezeratransaccione sacUsuarioReferido) {
+		em.remove(em.merge(sacUsuarioReferido));
+	}
+
+	public void update(SacCabezeratransaccione sacUsuarioReferido) {
+		em.merge(sacUsuarioReferido);
+	}
+
+	@SuppressWarnings("unchecked") // Busca todo de la tabla
+									// sac_usuario_referido
+	public List<SacCabezeratransaccione> findAll() {
+		Query q = em.createQuery("select b from SacCabezeratransaccione b");
+		return q.getResultList();
+	}
+
+	// Llama al numero mayor del campo numeroticket de la tabla
+	// sac_usuario_referido y le suma 1
+	public Integer getNumeroTicket() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(s.numeroticket) from SacCabezeratransaccione s");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	public Integer getPK() {// Busca la primary key mas alta de la tabla
+							// sac_usuario_referido y se le suma 1
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from SacUsuarioReferido ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// Selecciona todo de la tabla sac_usuario_referido donde el id de la
+	// primary key sea igual a la del id seleccionado
+	public SacCabezeratransaccione findOne(Integer codigoSacReferido) {
+		Query q = em.createQuery("select b from SacCabezeratransaccione b where b.idCabezeratransaccion = " + codigoSacReferido);
+		return (SacCabezeratransaccione) q.getSingleResult();
+	}
+
+	public List<SacCabezeratransaccione> pornombresemejante(String nombre) {
+		return em
+				.createQuery("select b from SacCabezeratransaccione b where b.nombre like :nombre", SacCabezeratransaccione.class)
+				.setParameter("nombre", "%" + nombre + "%").getResultList();
+	}
+}

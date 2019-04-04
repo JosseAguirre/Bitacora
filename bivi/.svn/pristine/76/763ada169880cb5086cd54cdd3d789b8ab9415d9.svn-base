@@ -1,0 +1,393 @@
+package com.scm.bean.administracion;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import org.primefaces.event.SelectEvent;
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admempleado;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+import com.scm.servicio.administracion.ServicioAdmEmpleado;
+
+@ManagedBean
+@ViewScoped
+
+public class AdmEmpleadoBean implements Interface, Serializable {
+	// creo clases y listas para obtener la informacion que necesito
+	private static final long serialVersionUID = 1L;
+	private Admempleado admempleado;
+	private Admempleado empleadoseleccionado;
+	private Admdetallecatalogo detallecatalogo;
+	private List<Admempleado> listaempleado;
+	private List<Admempleado> empleadofiltrado;
+
+	private List<Admdetallecatalogo> listaciudad;
+	private List<Admdetallecatalogo> listasexo;
+	private List<Admdetallecatalogo> listaestado;
+	private List<Admdetallecatalogo> listacargo;
+	private List<Admdetallecatalogo> listaclaseempleado;
+	private List<Admdetallecatalogo> listadepartamento;
+	private List<Admdetallecatalogo> listalineanegocio;
+	private List<Admdetallecatalogo> listatipoempleado;
+
+	// creo variables
+	private Integer bandera;
+	private int iddetallecatalogo;
+	private Integer idtipoempleado;
+	private int idciudad;
+	private int idsexo;
+	private int idestado;
+	private int idcargo;
+	private int idlineanegocio;
+	private int idclaseempleado;
+	private int iddepartamento;
+	private Date date;
+
+	// establesco conección a los servicios por medio de los ejb
+	@EJB
+	private ServicioAdmEmpleado servicioempleado;
+	@EJB
+	private ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+
+	// metodo que inicia el proceso
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+		date = new Date();
+
+		/*
+		 * String strDateFormat1 = "yyyy-mm-dd"; DateFormat dateFormat1 = new
+		 * SimpleDateFormat(strDateFormat1); String formattedDate1=
+		 * dateFormat1.format(date); System.out.
+		 * println("Current time of the day using Date - 12 hour format: " +
+		 * formattedDate1);
+		 */
+	}
+
+	// metdo para guardar el empleado
+	@Override
+	public void guardar() {
+
+		admempleado.setIdempleado(servicioempleado.getPK());
+		admempleado.setSysdelete(false);
+		admempleado.setFecharegistro(date);
+
+		buscaIdCombos();
+		servicioempleado.create(admempleado);
+		cancelar();
+	}
+
+	// metodo que busca la información necesaria para llenar el campo crear
+	// empleado
+	public void buscaIdCombos() {
+
+		detallecatalogo = serviciodetallecatalogo.findOne(idtipoempleado);
+		admempleado.setIdtipoempleadodc(detallecatalogo);
+
+		detallecatalogo = serviciodetallecatalogo.findOne(idciudad);
+		admempleado.setIdciudaddc(detallecatalogo);
+
+		detallecatalogo = serviciodetallecatalogo.findOne(idsexo);
+		admempleado.setIdgenerodc(detallecatalogo);
+
+		detallecatalogo = serviciodetallecatalogo.findOne(idestado);
+		admempleado.setIdestadodc(detallecatalogo);
+
+		detallecatalogo = serviciodetallecatalogo.findOne(idcargo);
+		admempleado.setIdcargodc(detallecatalogo);
+
+		detallecatalogo = serviciodetallecatalogo.findOne(idclaseempleado);
+		admempleado.setIdclaseempleado(detallecatalogo);
+
+		detallecatalogo = serviciodetallecatalogo.findOne(iddepartamento);
+		admempleado.setIddepartamentodc(detallecatalogo);
+
+		detallecatalogo = serviciodetallecatalogo.findOne(idlineanegocio);
+		admempleado.setIdlineadenegociodc(detallecatalogo);
+
+	}
+
+	// metodo para eliminar al empleado
+	@Override
+	public void eliminar() {
+		servicioempleado.delete(admempleado);
+		cancelar();
+	}
+
+	// metodo para actualizar el empleado
+	@Override
+	public void actualizar() {
+		buscaIdCombos();
+
+		servicioempleado.update(admempleado);
+		cancelar();
+	}
+
+	// metodo para eliminar y actualizar un empeado
+	public void Eliminar() {
+		admempleado.setSysdelete(true);
+		servicioempleado.update(admempleado);
+		cancelar();
+	}
+
+	// metodo para cargar la información de la fila seleccionada
+	public void onRowSelect(SelectEvent event) {
+		admempleado = (Admempleado) event.getObject();
+		idtipoempleado = admempleado.getIdtipoempleadodc().getIddetallecatalogo();
+		idciudad = admempleado.getIdciudaddc().getIddetallecatalogo();
+		idsexo = admempleado.getIdgenerodc().getIddetallecatalogo();
+		idestado = admempleado.getIdestadodc().getIddetallecatalogo();
+		idcargo = admempleado.getIdcargodc().getIddetallecatalogo();
+		idclaseempleado = admempleado.getIdclaseempleado().getIddetallecatalogo();
+		iddepartamento = admempleado.getIddepartamentodc().getIddetallecatalogo();
+		idlineanegocio = admempleado.getIdlineadenegociodc().getIddetallecatalogo();
+		System.out.println(idtipoempleado);
+		bandera = 1;
+	}
+
+	// metodo que consulta la información por medio de las listas
+	@Override
+	public void consultar() {
+		listaempleado = new ArrayList<>();
+		listaempleado = servicioempleado.findAll();
+
+		listaciudad = new ArrayList<>();
+		listaciudad = serviciodetallecatalogo.ciudades();
+
+		listasexo = new ArrayList<>();
+		listasexo = serviciodetallecatalogo.sexos();
+
+		listaestado = new ArrayList<>();
+		listaestado = serviciodetallecatalogo.estados();
+
+		listacargo = new ArrayList<>();
+		listacargo = serviciodetallecatalogo.cargos();
+
+		listaclaseempleado = new ArrayList<>();
+		listaclaseempleado = serviciodetallecatalogo.clasesempleado();
+
+		listadepartamento = new ArrayList<>();
+		listadepartamento = serviciodetallecatalogo.departamentos();
+
+		listalineanegocio = new ArrayList<>();
+		listalineanegocio = serviciodetallecatalogo.lineasnegocio();
+
+		listatipoempleado = new ArrayList<>();
+		listatipoempleado = serviciodetallecatalogo.tiposempleado();
+	}
+
+	// metodo para cancelar el proceso
+	@Override
+	public void cancelar() {
+		admempleado = new Admempleado();
+		consultar();
+		bandera = 0;
+		idtipoempleado = -1;
+		idciudad = -1;
+		idsexo = -1;
+		idestado = -1;
+		idcargo = -1;
+		idlineanegocio = -1;
+		idclaseempleado = -1;
+		iddepartamento = -1;
+	}
+
+	public void empleadoSeleccionado() {
+
+	}
+
+	// metodo para diferenciar entre guardar y actualizar
+	public void persitir() {
+		if (bandera == 1) {
+
+			actualizar();
+
+		} else {
+			guardar();
+		}
+	}
+
+	public Admempleado getAdmempleado() {
+		return admempleado;
+	}
+
+	public void setAdmempleado(Admempleado admempleado) {
+		this.admempleado = admempleado;
+	}
+
+	public List<Admempleado> getListaempleado() {
+		return listaempleado;
+	}
+
+	public void setListaempleado(List<Admempleado> listaempleado) {
+		this.listaempleado = listaempleado;
+	}
+
+	public List<Admdetallecatalogo> getListaciudad() {
+		return listaciudad;
+	}
+
+	public void setListaciudad(List<Admdetallecatalogo> listaciudad) {
+		this.listaciudad = listaciudad;
+	}
+
+	public List<Admdetallecatalogo> getListasexo() {
+		return listasexo;
+	}
+
+	public void setListasexo(List<Admdetallecatalogo> listasexo) {
+		this.listasexo = listasexo;
+	}
+
+	public List<Admdetallecatalogo> getListaestado() {
+		return listaestado;
+	}
+
+	public void setListaestado(List<Admdetallecatalogo> listaestado) {
+		this.listaestado = listaestado;
+	}
+
+	public List<Admdetallecatalogo> getListacargo() {
+		return listacargo;
+	}
+
+	public void setListacargo(List<Admdetallecatalogo> listacargo) {
+		this.listacargo = listacargo;
+	}
+
+	public List<Admdetallecatalogo> getListaclaseempleado() {
+		return listaclaseempleado;
+	}
+
+	public void setListaclaseempleado(List<Admdetallecatalogo> listaclaseempleado) {
+		this.listaclaseempleado = listaclaseempleado;
+	}
+
+	public List<Admdetallecatalogo> getListadepartamento() {
+		return listadepartamento;
+	}
+
+	public void setListadepartamento(List<Admdetallecatalogo> listadepartamento) {
+		this.listadepartamento = listadepartamento;
+	}
+
+	public List<Admdetallecatalogo> getListalineanegocio() {
+		return listalineanegocio;
+	}
+
+	public void setListalineanegocio(List<Admdetallecatalogo> listalineanegocio) {
+		this.listalineanegocio = listalineanegocio;
+	}
+
+	public List<Admdetallecatalogo> getListatipoempleado() {
+		return listatipoempleado;
+	}
+
+	public void setListatipoempleado(List<Admdetallecatalogo> listatipoempleado) {
+		this.listatipoempleado = listatipoempleado;
+	}
+
+	public Admdetallecatalogo getDetallecatalogo() {
+		return detallecatalogo;
+	}
+
+	public void setDetallecatalogo(Admdetallecatalogo detallecatalogo) {
+		this.detallecatalogo = detallecatalogo;
+	}
+
+	public int getIddetallecatalogo() {
+		return iddetallecatalogo;
+	}
+
+	public void setIddetallecatalogo(int iddetallecatalogo) {
+		this.iddetallecatalogo = iddetallecatalogo;
+	}
+
+	public int getIdtipoempleado() {
+		return idtipoempleado;
+	}
+
+	public void setIdtipoempleado(int idtipoempleado) {
+		this.idtipoempleado = idtipoempleado;
+	}
+
+	public int getIdciudad() {
+		return idciudad;
+	}
+
+	public void setIdciudad(int idciudad) {
+		this.idciudad = idciudad;
+	}
+
+	public int getIdestado() {
+		return idestado;
+	}
+
+	public void setIdestado(int idestado) {
+		this.idestado = idestado;
+	}
+
+	public int getIdcargo() {
+		return idcargo;
+	}
+
+	public void setIdcargo(int idcargo) {
+		this.idcargo = idcargo;
+	}
+
+	public int getIdlineanegocio() {
+		return idlineanegocio;
+	}
+
+	public void setIdlineanegocio(int idlineanegocio) {
+		this.idlineanegocio = idlineanegocio;
+	}
+
+	public int getIdclaseempleado() {
+		return idclaseempleado;
+	}
+
+	public void setIdclaseempleado(int idclaseempleado) {
+		this.idclaseempleado = idclaseempleado;
+	}
+
+	public int getIddepartamento() {
+		return iddepartamento;
+	}
+
+	public void setIddepartamento(int iddepartamento) {
+		this.iddepartamento = iddepartamento;
+	}
+
+	public int getIdsexo() {
+		return idsexo;
+	}
+
+	public void setIdsexo(int idsexo) {
+		this.idsexo = idsexo;
+	}
+
+	public List<Admempleado> getEmpleadofiltrado() {
+		return empleadofiltrado;
+	}
+
+	public void setEmpleadofiltrado(List<Admempleado> empleadofiltrado) {
+		this.empleadofiltrado = empleadofiltrado;
+	}
+
+	public Admempleado getEmpleadoseleccionado() {
+		return empleadoseleccionado;
+	}
+
+	public void setEmpleadoseleccionado(Admempleado empleadoseleccionado) {
+		this.empleadoseleccionado = empleadoseleccionado;
+	}
+
+}

@@ -1,0 +1,60 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.administracion.AdmTipoServicio;
+
+
+@Stateless
+public class ServicioAdmTipoServicio {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(AdmTipoServicio admTipoServicio) {
+		em.persist(admTipoServicio);
+	}
+	
+	public void delete(AdmTipoServicio admTipoServicio) {
+		em.remove(em.merge(admTipoServicio));
+	}
+	
+	public void update(AdmTipoServicio admTipoServicio){
+	
+		em.merge(admTipoServicio);
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AdmTipoServicio> findAll() {
+		Query q = em.createQuery("select c from AdmTipoServicio c");
+		return q.getResultList();
+	}
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from AdmTipoServicio ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public AdmTipoServicio findOne(Integer codigoAdmTipoServicio){
+		Query q = em.createQuery("select c from AdmTipoServicio c where c.idtipo_servicio = " + codigoAdmTipoServicio);
+		return (AdmTipoServicio) q.getSingleResult();
+	}
+	
+
+	
+	
+
+}

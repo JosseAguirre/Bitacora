@@ -1,0 +1,53 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.administracion.Admusuario;
+
+
+@Stateless
+public class ServicioIinicioSesion {
+	
+	Admusuario usuario;
+	List <Admusuario> listausuarios;
+	
+	@PersistenceContext
+	private EntityManager em;
+	
+	
+	@SuppressWarnings("unchecked")
+	public Admusuario iniciarSesion (Admusuario usuario){
+		
+		this.usuario= null;	
+		try {
+			// consulto en la bdd el username y passsword
+			Query query = em.createQuery("select a from Admusuario a where a.nombreusuario = ?1 and a.contrasenia = ?2");
+			query.setParameter(1, usuario.getNombreusuario()); //paso como parametros el nombre de usuario
+			query.setParameter(2, usuario.getContrasenia()); ////paso como parametros la contraseña
+			listausuarios = query.getResultList(); // añado a lista el resultado de la consulta
+			
+			if(!listausuarios.isEmpty()){ // comparo si la lista no esta vacia
+				this.usuario = listausuarios.get(0); // obtengo el primer item de la lista
+	
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		
+		
+		
+		
+		return this.usuario;
+		
+	}
+	
+
+}

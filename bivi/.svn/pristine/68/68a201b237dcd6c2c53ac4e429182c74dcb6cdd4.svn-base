@@ -1,0 +1,81 @@
+package com.scm.modelo.centroefectivo;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
+
+
+/**
+ * The persistent class for the ce_estado_especie database table.
+ * 
+ */
+@Entity
+@Table(name="ce_estado_especie", schema="java")
+@NamedQuery(name="CeEstadoEspecie.findAll", query="SELECT c FROM CeEstadoEspecie c")
+public class CeEstadoEspecie implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_estado_especie", unique=true, nullable=false)
+	private Integer idEstadoEspecie;
+
+	@Column(length=30)
+	private String descripcion;
+
+	@Column(length=30)
+	private String nombre;
+
+	//bi-directional many-to-one association to CeEspecie
+	@OneToMany(mappedBy="idestadoespecie")
+	private List<CeEspecie> idestadoespecie_ceespecie;
+
+	public CeEstadoEspecie() {
+	}
+
+	public Integer getIdEstadoEspecie() {
+		return this.idEstadoEspecie;
+	}
+
+	public void setIdEstadoEspecie(Integer idEstadoEspecie) {
+		this.idEstadoEspecie = idEstadoEspecie;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<CeEspecie> getIdestadoespecie_ceespecie() {
+		return this.idestadoespecie_ceespecie;
+	}
+
+	public void setIdestadoespecie_ceespecie(List<CeEspecie> idestadoespecie_ceespecie) {
+		this.idestadoespecie_ceespecie = idestadoespecie_ceespecie;
+	}
+
+	public CeEspecie addIdestadoespecie_ceespecie(CeEspecie idestadoespecie_ceespecie) {
+		getIdestadoespecie_ceespecie().add(idestadoespecie_ceespecie);
+		idestadoespecie_ceespecie.setIdestadoespecie(this);
+
+		return idestadoespecie_ceespecie;
+	}
+
+	public CeEspecie removeIdestadoespecie_ceespecie(CeEspecie idestadoespecie_ceespecie) {
+		getIdestadoespecie_ceespecie().remove(idestadoespecie_ceespecie);
+		idestadoespecie_ceespecie.setIdestadoespecie(null);
+
+		return idestadoespecie_ceespecie;
+	}
+
+}

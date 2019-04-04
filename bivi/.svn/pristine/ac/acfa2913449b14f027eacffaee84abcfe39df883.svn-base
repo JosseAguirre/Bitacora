@@ -1,0 +1,90 @@
+package com.scm.servicio.sac;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.sac.SacCabezeratransaccione;
+
+ 
+
+
+
+@Stateless
+public class ServicioSacCabeceraTransaccion {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(SacCabezeratransaccione sacCabezeratransaccione) {
+		em.persist(sacCabezeratransaccione);
+	}
+	
+	public void delete (SacCabezeratransaccione sacCabezeratransaccione) {
+		em.remove(em.merge(sacCabezeratransaccione));
+	}
+	
+	public void update (SacCabezeratransaccione sacCabezeratransaccione) {
+		em.merge(sacCabezeratransaccione);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SacCabezeratransaccione> findAll() {
+		Query q = em.createQuery("select b from SacCabezeratransaccione b");
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SacCabezeratransaccione> findServicios() {
+		Query q = em.createQuery("select b from SacCabezeratransaccione b where b.idtiposervicio=3");
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SacCabezeratransaccione> findQuejasReclamos() {
+		Query q = em.createQuery("select b from SacCabezeratransaccione b where b.idtiposervicio=1 or b.idtiposervicio=2");
+		return q.getResultList();
+	}
+	
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from SacCabezeratransaccione ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public Integer getNumeroTicket() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(s.numeroticket) from SacCabezeratransaccione b");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public SacCabezeratransaccione findOne(Integer codigoSacTransaccione){
+		Query q = em.createQuery("select b from SacCabezeratransaccione b where b.idCabezeratransaccion = " + codigoSacTransaccione);
+		return (SacCabezeratransaccione) q.getSingleResult();
+	}
+	
+	public List<SacCabezeratransaccione> pornombresemejante(String idtransaccion) {
+		return em.createQuery("select b from SacCabezeratransaccione b where b.idCabezeratransaccion like :idCabezeratransaccion", SacCabezeratransaccione.class)
+				.setParameter("idCabezeratransaccion", "%" + idtransaccion + "%")
+				.getResultList();
+	}
+
+	
+	
+}
+

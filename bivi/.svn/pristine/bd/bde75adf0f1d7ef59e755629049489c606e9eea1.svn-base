@@ -1,0 +1,117 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
+
+
+/**
+ * The persistent class for the admrol database table.
+ * 
+ */
+@Entity
+@Table(name="admrol", schema="java")
+@NamedQuery(name="Admrol.findAll", query="SELECT a FROM Admrol a")
+public class Admrol implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idrol;
+
+	@Column(length=2147483647)
+	private String descripcion;
+
+	private Integer idpadre;
+
+	@Column(length=2147483647)
+	private String nombre;
+
+	//bi-directional many-to-one association to Admrolmenu
+	@OneToMany(mappedBy="idrol")
+	private List<Admrolmenu> idrol_admrolmenu;
+
+	//bi-directional many-to-one association to Admrolusuario
+	@OneToMany(mappedBy="idrol")
+	private List<Admrolusuario> idrol_admrolusuario;
+
+	public Admrol() {
+	}
+
+	public Integer getIdrol() {
+		return this.idrol;
+	}
+
+	public void setIdrol(Integer idrol) {
+		this.idrol = idrol;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public Integer getIdpadre() {
+		return this.idpadre;
+	}
+
+	public void setIdpadre(Integer idpadre) {
+		this.idpadre = idpadre;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<Admrolmenu> getIdrol_admrolmenu() {
+		return this.idrol_admrolmenu;
+	}
+
+	public void setIdrol_admrolmenu(List<Admrolmenu> idrol_admrolmenu) {
+		this.idrol_admrolmenu = idrol_admrolmenu;
+	}
+
+	public Admrolmenu addIdrol_admrolmenu(Admrolmenu idrol_admrolmenu) {
+		getIdrol_admrolmenu().add(idrol_admrolmenu);
+		idrol_admrolmenu.setIdrol(this);
+
+		return idrol_admrolmenu;
+	}
+
+	public Admrolmenu removeIdrol_admrolmenu(Admrolmenu idrol_admrolmenu) {
+		getIdrol_admrolmenu().remove(idrol_admrolmenu);
+		idrol_admrolmenu.setIdrol(null);
+
+		return idrol_admrolmenu;
+	}
+
+	public List<Admrolusuario> getIdrol_admrolusuario() {
+		return this.idrol_admrolusuario;
+	}
+
+	public void setIdrol_admrolusuario(List<Admrolusuario> idrol_admrolusuario) {
+		this.idrol_admrolusuario = idrol_admrolusuario;
+	}
+
+	public Admrolusuario addIdrol_admrolusuario(Admrolusuario idrol_admrolusuario) {
+		getIdrol_admrolusuario().add(idrol_admrolusuario);
+		idrol_admrolusuario.setIdrol(this);
+
+		return idrol_admrolusuario;
+	}
+
+	public Admrolusuario removeIdrol_admrolusuario(Admrolusuario idrol_admrolusuario) {
+		getIdrol_admrolusuario().remove(idrol_admrolusuario);
+		idrol_admrolusuario.setIdrol(null);
+
+		return idrol_admrolusuario;
+	}
+
+}

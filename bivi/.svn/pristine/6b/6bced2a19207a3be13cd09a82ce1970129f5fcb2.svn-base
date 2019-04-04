@@ -1,0 +1,79 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.administracion.Admempleado;
+import com.scm.modelo.administracion.Admusuario;
+import com.scm.modelo.preboveda.BovBovedaCliente;
+
+@Stateless
+public class ServicioAdmEmpleado {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(Admempleado admempleado) {
+		em.persist(admempleado);
+	}
+
+	public void delete(Admempleado admempleado) {
+		em.remove(em.merge(admempleado));
+	}
+
+	public void update(Admempleado admempleado) {
+
+		em.merge(admempleado);
+
+	}
+
+	// trae todos los empleados que no esen marcados como eliminados
+	@SuppressWarnings("unchecked")
+	public List<Admempleado> findAll() {
+		Query q = em.createQuery("select c from Admempleado c where c.sysdelete = false");
+		return q.getResultList();
+	}
+
+	// busca la pk mayor y le suma uno
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admempleado ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+	// Busca el id seleccionado
+	public Admempleado findOne(Integer bovbovedacliente) {
+		Query q = em.createQuery("select f from Admempleado f where f.idempleado = " + bovbovedacliente);
+		return (Admempleado) q.getSingleResult();
+	}
+	// busca el id del empleado seleccionado
+	public Admempleado findempleado() {
+		
+		Admusuario us = (Admusuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("usuario");
+		Query q = em.createQuery("select c from Admempleado c where c.idempleado = (select a from Admusuario a where idusuario = "+us.getIdusuario()+")");
+		return (Admempleado) q.getSingleResult();
+	}
+
+	// usado para buscar el empleado por el nombre semejante
+	public List<Admempleado> pornombresemejante(String nombre) {
+		return em.createQuery("select c from Admempleado c where c.nombres like :nombres", Admempleado.class)
+				.setParameter("nombres", "%" + nombre + "%").getResultList();
+	}
+
+	// selecciona todos los empleados cuyo cargo sea cajero principal o cajero
+	@SuppressWarnings("unchecked")
+	public List<Admempleado> empleadocambioturno() {
+		Query q = em.createQuery("select c from Admempleado c where c.idcargodc = 113 or c.idcargodc = 114");
+		return q.getResultList();
+	}
+	
+}

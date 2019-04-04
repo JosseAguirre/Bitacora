@@ -1,0 +1,79 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.administracion.Admcatalogo;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+
+@Stateless
+public class ServicioAdmCatalogo {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(Admcatalogo admcatalogo) {
+		em.persist(admcatalogo);
+	}
+
+	public void delete(Admcatalogo admcatalogo) {
+		em.remove(em.merge(admcatalogo));
+	}
+
+	public void update(Admcatalogo admcatalogo) {
+
+		em.merge(admcatalogo);
+
+	}
+
+	// metodo para buscar toda lainformación de la base de datos de la tabla
+	// Admcatalogo
+	@SuppressWarnings("unchecked")
+	public List<Admcatalogo> findAll() {
+		Query q = em.createQuery("select a from Admcatalogo a");
+		return q.getResultList();
+	}
+
+	// Metodo para seleccionar el id mas alto y sumarle uno si es mayor q cero o
+	// manejarlo como cero//se usa en el metodo guardar
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admcatalogo ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// Metodo para que me retorne el id del catalogo//usado en el metodo
+	// actualizar por medio de la busqueda en combos
+	public Admcatalogo findOne(Integer codigocatalogo) {
+		Query q = em.createQuery("select a from Admcatalogo a where a.idcatalogo = " + codigocatalogo);
+		return (Admcatalogo) q.getSingleResult();
+	}
+
+	public List<Admdetallecatalogo> estadosusuario() {
+		return null;
+	}
+
+	// Metodo para que me busque todos los idcatalogopadreque tengan el valor de 0
+	//usado para llenar un select one menu de catálogopadre
+	@SuppressWarnings("unchecked")
+	public List<Admcatalogo> catalogopadre() {
+		Query q = em.createQuery("select g from Admcatalogo g  where g.idpadrecatalogo = 0");
+		return q.getResultList();
+	}
+
+	// Metodo para buscar todos los catalogos cuyo idcatalogo sea 0 es decir el
+	// catalogo padre por defecto
+	public Integer findPadreCatalogo() {
+		Query q = em.createQuery("select idcatalogo from Admcatalogo c where c.idcatalogo = 0");
+		return (Integer) q.getSingleResult();
+	}
+
+}

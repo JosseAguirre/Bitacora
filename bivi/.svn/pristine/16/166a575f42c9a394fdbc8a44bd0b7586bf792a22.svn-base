@@ -1,0 +1,62 @@
+package com.scm.servicio.boveda;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import com.scm.modelo.preboveda.BovBovedaCliente;
+
+@Stateless
+public class ServicioBovBovedaCliente {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(BovBovedaCliente bovbovedacliente) {
+		em.persist(bovbovedacliente);
+	}
+
+	public void delete(BovBovedaCliente bovbovedacliente) {
+		em.remove(em.merge(bovbovedacliente));
+	}
+
+	public void update(BovBovedaCliente bovbovedacliente) {
+
+		em.merge(bovbovedacliente);
+	}
+
+	// Busca todos los datos de la tabla BovBovedaCliente
+	@SuppressWarnings("unchecked")
+	public List<BovBovedaCliente> findAll() {
+		Query q = em.createQuery("select f from BovBovedaCliente f ");
+		return q.getResultList();
+	}
+
+	// selecciona el pk mas alto y le suma uno
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from BovBovedaCliente ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// Busca el id seleccionado
+	public BovBovedaCliente findOne(Integer bovbovedacliente) {
+		Query q = em.createQuery("select f from BovBovedaCliente f where f.idBovedaCliente = " + bovbovedacliente);
+		return (BovBovedaCliente) q.getSingleResult();
+	}
+	
+	// Busca todos los datos de la tabla BovBovedaCliente
+	@SuppressWarnings("unchecked")
+	public List<BovBovedaCliente> findboveda() {
+		Query q = em.createQuery("select f from BovBovedaCliente f where f.idcliente >= 1");
+		return q.getResultList();
+	}
+	
+}

@@ -1,0 +1,58 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the adm_zona_empleado database table.
+ * 
+ */
+@Entity
+@Table(name="adm_zona_empleado", schema="java")
+@NamedQuery(name="AdmZonaEmpleado.findAll", query="SELECT a FROM AdmZonaEmpleado a")
+public class AdmZonaEmpleado implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="idzona_empleado", unique=true, nullable=false)
+	private Integer idzonaEmpleado;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idzona_dc")
+	private Admdetallecatalogo idzonadc;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado")
+	private Admempleado idempleado;
+
+	public AdmZonaEmpleado() {
+	}
+
+	public Integer getIdzonaEmpleado() {
+		return this.idzonaEmpleado;
+	}
+
+	public void setIdzonaEmpleado(Integer idzonaEmpleado) {
+		this.idzonaEmpleado = idzonaEmpleado;
+	}
+
+	public Admdetallecatalogo getIdzonadc() {
+		return this.idzonadc;
+	}
+
+	public void setIdzonadc(Admdetallecatalogo idzonadc) {
+		this.idzonadc = idzonadc;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+}

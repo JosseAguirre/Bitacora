@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="productos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="97be5da5-afb5-4e57-8135-43832ca73fef">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="CodigoProducto" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select p.productoid
+, p.descripcion
+, c.nombrecat
+, pr.nombreprov
+, p.preciounit
+, p.existencia
+from java.productos p
+inner join java.categorias c on c.categoriaid = p.categoriaid
+inner join java.proveedores pr on pr.proveedorid = p.proveedorid
+where p.productoid=$P{CodigoProducto}
+]]>
+	</queryString>
+	<field name="productoid" class="java.lang.Integer"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="nombrecat" class="java.lang.String"/>
+	<field name="nombreprov" class="java.lang.String"/>
+	<field name="preciounit" class="java.math.BigDecimal"/>
+	<field name="existencia" class="java.lang.Integer"/>
+	<group name="productoid">
+		<groupExpression><![CDATA[$F{productoid}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="89" height="79" uuid="77a6654b-dcd9-40f3-9daf-c57f2e7b5e75"/>
+				<imageExpression><![CDATA["C:\\Users\\COORD. TEC. LDV\\workspaceEclipse\\com.curso.db.uno\\src\\main\\webapp\\images\\logo2.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="53" height="20" uuid="51036ba7-ed74-4559-9412-9fa0079524da"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="53" y="0" width="284" height="20" uuid="e0b35577-6926-47e4-bf91-ee7cf16b2fb1"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="53" height="20" uuid="dcaff6bd-67bf-404d-85ea-2cc5ede77d01"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{productoid}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="53" y="0" width="284" height="20" uuid="10692ad6-0573-446f-8196-fd4baddd3d63"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

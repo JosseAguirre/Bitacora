@@ -1,0 +1,615 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.preboveda.BovBovedaValidacion;
+import com.scm.modelo.preboveda.BovCabezeratransferencia;
+import com.scm.modelo.preboveda.BovCambioTurno;
+import com.scm.modelo.preboveda.BovDetalleBoveda;
+import com.scm.modelo.sac.SacContadorTicket;
+import com.scm.modelo.sac.SacDetalleTransaccion;
+import com.scm.modelo.sac.SacDetallereferido;
+import com.scm.modelo.sac.SacTransaccionReferido;
+
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * The persistent class for the admempleado database table.
+ * 
+ */
+@Entity
+@Table(name="admempleado" , schema="java")
+@NamedQuery(name="Admempleado.findAll", query="SELECT a FROM Admempleado a")
+public class Admempleado implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idempleado;
+
+	@Column(length=50)
+	private String apellidos;
+
+	@Column(length=100)
+	private String correoelectronico;
+
+	@Column(length=200)
+	private String direccion;
+
+	@Temporal(TemporalType.DATE)
+	private Date fechanacimiento;
+
+	@Temporal(TemporalType.DATE)
+	private Date fecharegistro;
+
+	@Temporal(TemporalType.DATE)
+	private Date fechasalida;
+
+	@Column(length=13)
+	private String identificacion;
+
+	@Column(length=50)
+	private String nombres;
+
+	@Column(length=50)
+	private String nominativo;
+
+	private Boolean sysdelete;
+
+	@Column(length=4)
+	private String tiposanguineo;
+
+	@Column(length=100)
+	private String urlfirma;
+
+	@Column(length=100)
+	private String urlfoto;
+
+	//bi-directional many-to-one association to AdmClienteEmpleado
+	@OneToMany(mappedBy="idempleado")
+	private List<AdmClienteEmpleado> idempleado_admClienteEmpleados;
+
+	//bi-directional many-to-one association to AdmZonaEmpleado
+	@OneToMany(mappedBy="idempleado")
+	private List<AdmZonaEmpleado> idempleado_admZonaEmpleados;
+
+	//bi-directional many-to-one association to AdmSucursal
+	@ManyToOne
+	@JoinColumn(name="idsucursal")
+	private AdmSucursal idsucursal;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idcargodc")
+	private Admdetallecatalogo idcargodc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idciudaddc")
+	private Admdetallecatalogo idciudaddc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idclaseempleado")
+	private Admdetallecatalogo idclaseempleado;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="iddepartamentodc")
+	private Admdetallecatalogo iddepartamentodc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idestadodc")
+	private Admdetallecatalogo idestadodc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idgenerodc")
+	private Admdetallecatalogo idgenerodc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idlineadenegociodc")
+	private Admdetallecatalogo idlineadenegociodc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idtipoempleadodc", nullable=false)
+	private Admdetallecatalogo idtipoempleadodc;
+
+	//bi-directional many-to-one association to Admempleadoagencia
+	@OneToMany(mappedBy="idempleado")
+	private List<Admempleadoagencia> idempleado_admempleadoagencia;
+
+	//bi-directional many-to-one association to Admusuario
+	@OneToMany(mappedBy="idempleado")
+	private List<Admusuario> idempleado_admusuario;
+
+	//bi-directional many-to-one association to BovBovedaValidacion
+	@OneToMany(mappedBy="idempleado")
+	private List<BovBovedaValidacion> idempleado_bovboveda_validacion;
+
+	//bi-directional many-to-one association to BovCabezeratransferencia
+	@OneToMany(mappedBy="idempleado")
+	private List<BovCabezeratransferencia> idempleado_bovCabezeratransferencias;
+
+	//bi-directional many-to-one association to BovCambioTurno
+	@OneToMany(mappedBy="idempleado")
+	private List<BovCambioTurno> idempleado_bovcambioturno;
+
+	//bi-directional many-to-one association to BovCambioTurno
+	@OneToMany(mappedBy="idempleado2")
+	private List<BovCambioTurno> idempleado2_bovcambioturno;
+
+	//bi-directional many-to-one association to BovDetalleBoveda
+	@OneToMany(mappedBy="idempleado")
+	private List<BovDetalleBoveda> idempleado_bovdetalleboveda;
+
+	//bi-directional many-to-one association to SacContadorTicket
+	@OneToMany(mappedBy="idempleado")
+	private List<SacContadorTicket> idempleado_sacContadorTickets;
+	
+	//bi-directional many-to-one association to SacDetallereferido
+	@OneToMany(mappedBy="idempleado")
+	private List<SacDetallereferido> idempleado_sacDetallereferidos;
+
+	//bi-directional many-to-one association to SacTransaccionReferido
+	@OneToMany(mappedBy="idempleado")
+	private List<SacTransaccionReferido> idempleado_sacTransaccionReferidos;
+
+	public Admempleado() {
+	}
+
+	public Integer getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Integer idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public String getApellidos() {
+		return this.apellidos;
+	}
+
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
+	}
+
+	public String getCorreoelectronico() {
+		return this.correoelectronico;
+	}
+
+	public void setCorreoelectronico(String correoelectronico) {
+		this.correoelectronico = correoelectronico;
+	}
+
+	public String getDireccion() {
+		return this.direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public Date getFechanacimiento() {
+		return this.fechanacimiento;
+	}
+
+	public void setFechanacimiento(Date fechanacimiento) {
+		this.fechanacimiento = fechanacimiento;
+	}
+
+	public Date getFecharegistro() {
+		return this.fecharegistro;
+	}
+
+	public void setFecharegistro(Date fecharegistro) {
+		this.fecharegistro = fecharegistro;
+	}
+
+	public Date getFechasalida() {
+		return this.fechasalida;
+	}
+
+	public void setFechasalida(Date fechasalida) {
+		this.fechasalida = fechasalida;
+	}
+
+	public String getIdentificacion() {
+		return this.identificacion;
+	}
+
+	public void setIdentificacion(String identificacion) {
+		this.identificacion = identificacion;
+	}
+
+	public String getNombres() {
+		return this.nombres;
+	}
+
+	public void setNombres(String nombres) {
+		this.nombres = nombres;
+	}
+
+	public String getNominativo() {
+		return this.nominativo;
+	}
+
+	public void setNominativo(String nominativo) {
+		this.nominativo = nominativo;
+	}
+
+	public Boolean getSysdelete() {
+		return this.sysdelete;
+	}
+
+	public void setSysdelete(Boolean sysdelete) {
+		this.sysdelete = sysdelete;
+	}
+
+	public String getTiposanguineo() {
+		return this.tiposanguineo;
+	}
+
+	public void setTiposanguineo(String tiposanguineo) {
+		this.tiposanguineo = tiposanguineo;
+	}
+
+	public String getUrlfirma() {
+		return this.urlfirma;
+	}
+
+	public void setUrlfirma(String urlfirma) {
+		this.urlfirma = urlfirma;
+	}
+
+	public String getUrlfoto() {
+		return this.urlfoto;
+	}
+
+	public void setUrlfoto(String urlfoto) {
+		this.urlfoto = urlfoto;
+	}
+
+	public List<AdmClienteEmpleado> getIdempleado_admClienteEmpleados() {
+		return this.idempleado_admClienteEmpleados;
+	}
+
+	public void setIdempleado_admClienteEmpleados(List<AdmClienteEmpleado> idempleado_admClienteEmpleados) {
+		this.idempleado_admClienteEmpleados = idempleado_admClienteEmpleados;
+	}
+
+	public AdmClienteEmpleado addIdempleado_admClienteEmpleado(AdmClienteEmpleado idempleado_admClienteEmpleado) {
+		getIdempleado_admClienteEmpleados().add(idempleado_admClienteEmpleado);
+		idempleado_admClienteEmpleado.setIdempleado(this);
+
+		return idempleado_admClienteEmpleado;
+	}
+
+	public AdmClienteEmpleado removeIdempleado_admClienteEmpleado(AdmClienteEmpleado idempleado_admClienteEmpleado) {
+		getIdempleado_admClienteEmpleados().remove(idempleado_admClienteEmpleado);
+		idempleado_admClienteEmpleado.setIdempleado(null);
+
+		return idempleado_admClienteEmpleado;
+	}
+
+	public List<AdmZonaEmpleado> getIdempleado_admZonaEmpleados() {
+		return this.idempleado_admZonaEmpleados;
+	}
+
+	public void setIdempleado_admZonaEmpleados(List<AdmZonaEmpleado> idempleado_admZonaEmpleados) {
+		this.idempleado_admZonaEmpleados = idempleado_admZonaEmpleados;
+	}
+
+	public AdmZonaEmpleado addIdempleado_admZonaEmpleado(AdmZonaEmpleado idempleado_admZonaEmpleado) {
+		getIdempleado_admZonaEmpleados().add(idempleado_admZonaEmpleado);
+		idempleado_admZonaEmpleado.setIdempleado(this);
+
+		return idempleado_admZonaEmpleado;
+	}
+
+	public AdmZonaEmpleado removeIdempleado_admZonaEmpleado(AdmZonaEmpleado idempleado_admZonaEmpleado) {
+		getIdempleado_admZonaEmpleados().remove(idempleado_admZonaEmpleado);
+		idempleado_admZonaEmpleado.setIdempleado(null);
+
+		return idempleado_admZonaEmpleado;
+	}
+
+	public AdmSucursal getIdsucursal() {
+		return this.idsucursal;
+	}
+
+	public void setIdsucursal(AdmSucursal idsucursal) {
+		this.idsucursal = idsucursal;
+	}
+
+	public Admdetallecatalogo getIdcargodc() {
+		return this.idcargodc;
+	}
+
+	public void setIdcargodc(Admdetallecatalogo idcargodc) {
+		this.idcargodc = idcargodc;
+	}
+
+	public Admdetallecatalogo getIdciudaddc() {
+		return this.idciudaddc;
+	}
+
+	public void setIdciudaddc(Admdetallecatalogo idciudaddc) {
+		this.idciudaddc = idciudaddc;
+	}
+
+	public Admdetallecatalogo getIdclaseempleado() {
+		return this.idclaseempleado;
+	}
+
+	public void setIdclaseempleado(Admdetallecatalogo idclaseempleado) {
+		this.idclaseempleado = idclaseempleado;
+	}
+
+	public Admdetallecatalogo getIddepartamentodc() {
+		return this.iddepartamentodc;
+	}
+
+	public void setIddepartamentodc(Admdetallecatalogo iddepartamentodc) {
+		this.iddepartamentodc = iddepartamentodc;
+	}
+
+	public Admdetallecatalogo getIdestadodc() {
+		return this.idestadodc;
+	}
+
+	public void setIdestadodc(Admdetallecatalogo idestadodc) {
+		this.idestadodc = idestadodc;
+	}
+
+	public Admdetallecatalogo getIdgenerodc() {
+		return this.idgenerodc;
+	}
+
+	public void setIdgenerodc(Admdetallecatalogo idgenerodc) {
+		this.idgenerodc = idgenerodc;
+	}
+
+	public Admdetallecatalogo getIdlineadenegociodc() {
+		return this.idlineadenegociodc;
+	}
+
+	public void setIdlineadenegociodc(Admdetallecatalogo idlineadenegociodc) {
+		this.idlineadenegociodc = idlineadenegociodc;
+	}
+
+	public Admdetallecatalogo getIdtipoempleadodc() {
+		return this.idtipoempleadodc;
+	}
+
+	public void setIdtipoempleadodc(Admdetallecatalogo idtipoempleadodc) {
+		this.idtipoempleadodc = idtipoempleadodc;
+	}
+
+	public List<Admempleadoagencia> getIdempleado_admempleadoagencia() {
+		return this.idempleado_admempleadoagencia;
+	}
+
+	public void setIdempleado_admempleadoagencia(List<Admempleadoagencia> idempleado_admempleadoagencia) {
+		this.idempleado_admempleadoagencia = idempleado_admempleadoagencia;
+	}
+
+	public Admempleadoagencia addIdempleado_admempleadoagencia(Admempleadoagencia idempleado_admempleadoagencia) {
+		getIdempleado_admempleadoagencia().add(idempleado_admempleadoagencia);
+		idempleado_admempleadoagencia.setIdempleado(this);
+
+		return idempleado_admempleadoagencia;
+	}
+
+	public Admempleadoagencia removeIdempleado_admempleadoagencia(Admempleadoagencia idempleado_admempleadoagencia) {
+		getIdempleado_admempleadoagencia().remove(idempleado_admempleadoagencia);
+		idempleado_admempleadoagencia.setIdempleado(null);
+
+		return idempleado_admempleadoagencia;
+	}
+
+	public List<Admusuario> getIdempleado_admusuario() {
+		return this.idempleado_admusuario;
+	}
+
+	public void setIdempleado_admusuario(List<Admusuario> idempleado_admusuario) {
+		this.idempleado_admusuario = idempleado_admusuario;
+	}
+
+	public Admusuario addIdempleado_admusuario(Admusuario idempleado_admusuario) {
+		getIdempleado_admusuario().add(idempleado_admusuario);
+		idempleado_admusuario.setIdempleado(this);
+
+		return idempleado_admusuario;
+	}
+
+	public Admusuario removeIdempleado_admusuario(Admusuario idempleado_admusuario) {
+		getIdempleado_admusuario().remove(idempleado_admusuario);
+		idempleado_admusuario.setIdempleado(null);
+
+		return idempleado_admusuario;
+	}
+
+	public List<BovBovedaValidacion> getIdempleado_bovboveda_validacion() {
+		return this.idempleado_bovboveda_validacion;
+	}
+
+	public void setIdempleado_bovboveda_validacion(List<BovBovedaValidacion> idempleado_bovboveda_validacion) {
+		this.idempleado_bovboveda_validacion = idempleado_bovboveda_validacion;
+	}
+
+	public BovBovedaValidacion addIdempleado_bovboveda_validacion(BovBovedaValidacion idempleado_bovboveda_validacion) {
+		getIdempleado_bovboveda_validacion().add(idempleado_bovboveda_validacion);
+		idempleado_bovboveda_validacion.setIdempleado(this);
+
+		return idempleado_bovboveda_validacion;
+	}
+
+	public BovBovedaValidacion removeIdempleado_bovboveda_validacion(BovBovedaValidacion idempleado_bovboveda_validacion) {
+		getIdempleado_bovboveda_validacion().remove(idempleado_bovboveda_validacion);
+		idempleado_bovboveda_validacion.setIdempleado(null);
+
+		return idempleado_bovboveda_validacion;
+	}
+
+	public List<BovCabezeratransferencia> getIdempleado_bovCabezeratransferencias() {
+		return this.idempleado_bovCabezeratransferencias;
+	}
+
+	public void setIdempleado_bovCabezeratransferencias(List<BovCabezeratransferencia> idempleado_bovCabezeratransferencias) {
+		this.idempleado_bovCabezeratransferencias = idempleado_bovCabezeratransferencias;
+	}
+
+	public BovCabezeratransferencia addIdempleado_bovCabezeratransferencia(BovCabezeratransferencia idempleado_bovCabezeratransferencia) {
+		getIdempleado_bovCabezeratransferencias().add(idempleado_bovCabezeratransferencia);
+		idempleado_bovCabezeratransferencia.setIdempleado(this);
+
+		return idempleado_bovCabezeratransferencia;
+	}
+
+	public BovCabezeratransferencia removeIdempleado_bovCabezeratransferencia(BovCabezeratransferencia idempleado_bovCabezeratransferencia) {
+		getIdempleado_bovCabezeratransferencias().remove(idempleado_bovCabezeratransferencia);
+		idempleado_bovCabezeratransferencia.setIdempleado(null);
+
+		return idempleado_bovCabezeratransferencia;
+	}
+
+	public List<BovCambioTurno> getIdempleado_bovcambioturno() {
+		return this.idempleado_bovcambioturno;
+	}
+
+	public void setIdempleado_bovcambioturno(List<BovCambioTurno> idempleado_bovcambioturno) {
+		this.idempleado_bovcambioturno = idempleado_bovcambioturno;
+	}
+
+	public BovCambioTurno addIdempleado_bovcambioturno(BovCambioTurno idempleado_bovcambioturno) {
+		getIdempleado_bovcambioturno().add(idempleado_bovcambioturno);
+		idempleado_bovcambioturno.setIdempleado(this);
+
+		return idempleado_bovcambioturno;
+	}
+
+	public BovCambioTurno removeIdempleado_bovcambioturno(BovCambioTurno idempleado_bovcambioturno) {
+		getIdempleado_bovcambioturno().remove(idempleado_bovcambioturno);
+		idempleado_bovcambioturno.setIdempleado(null);
+
+		return idempleado_bovcambioturno;
+	}
+
+	public List<BovCambioTurno> getIdempleado2_bovcambioturno() {
+		return this.idempleado2_bovcambioturno;
+	}
+
+	public void setIdempleado2_bovcambioturno(List<BovCambioTurno> idempleado2_bovcambioturno) {
+		this.idempleado2_bovcambioturno = idempleado2_bovcambioturno;
+	}
+
+	public BovCambioTurno addIdempleado2_bovcambioturno(BovCambioTurno idempleado2_bovcambioturno) {
+		getIdempleado2_bovcambioturno().add(idempleado2_bovcambioturno);
+		idempleado2_bovcambioturno.setIdempleado2(this);
+
+		return idempleado2_bovcambioturno;
+	}
+
+	public BovCambioTurno removeIdempleado2_bovcambioturno(BovCambioTurno idempleado2_bovcambioturno) {
+		getIdempleado2_bovcambioturno().remove(idempleado2_bovcambioturno);
+		idempleado2_bovcambioturno.setIdempleado2(null);
+
+		return idempleado2_bovcambioturno;
+	}
+
+	public List<BovDetalleBoveda> getIdempleado_bovdetalleboveda() {
+		return this.idempleado_bovdetalleboveda;
+	}
+
+	public void setIdempleado_bovdetalleboveda(List<BovDetalleBoveda> idempleado_bovdetalleboveda) {
+		this.idempleado_bovdetalleboveda = idempleado_bovdetalleboveda;
+	}
+
+	public BovDetalleBoveda addIdempleado_bovdetalleboveda(BovDetalleBoveda idempleado_bovdetalleboveda) {
+		getIdempleado_bovdetalleboveda().add(idempleado_bovdetalleboveda);
+		idempleado_bovdetalleboveda.setIdempleado(this);
+
+		return idempleado_bovdetalleboveda;
+	}
+
+	public BovDetalleBoveda removeIdempleado_bovdetalleboveda(BovDetalleBoveda idempleado_bovdetalleboveda) {
+		getIdempleado_bovdetalleboveda().remove(idempleado_bovdetalleboveda);
+		idempleado_bovdetalleboveda.setIdempleado(null);
+
+		return idempleado_bovdetalleboveda;
+	}
+
+	public List<SacContadorTicket> getIdempleado_sacContadorTickets() {
+		return this.idempleado_sacContadorTickets;
+	}
+
+	public void setIdempleado_sacContadorTickets(List<SacContadorTicket> idempleado_sacContadorTickets) {
+		this.idempleado_sacContadorTickets = idempleado_sacContadorTickets;
+	}
+
+	public SacContadorTicket addIdempleado_sacContadorTicket(SacContadorTicket idempleado_sacContadorTicket) {
+		getIdempleado_sacContadorTickets().add(idempleado_sacContadorTicket);
+		idempleado_sacContadorTicket.setIdempleado(this);
+
+		return idempleado_sacContadorTicket;
+	}
+
+	public SacContadorTicket removeIdempleado_sacContadorTicket(SacContadorTicket idempleado_sacContadorTicket) {
+		getIdempleado_sacContadorTickets().remove(idempleado_sacContadorTicket);
+		idempleado_sacContadorTicket.setIdempleado(null);
+
+		return idempleado_sacContadorTicket;
+	}
+	
+	public List<SacDetallereferido> getIdempleado_sacDetallereferidos() {
+		return this.idempleado_sacDetallereferidos;
+	}
+
+	public void setIdempleado_sacDetallereferidos(List<SacDetallereferido> idempleado_sacDetallereferidos) {
+		this.idempleado_sacDetallereferidos = idempleado_sacDetallereferidos;
+	}
+
+	public SacDetallereferido addIdempleado_sacDetallereferido(SacDetallereferido idempleado_sacDetallereferido) {
+		getIdempleado_sacDetallereferidos().add(idempleado_sacDetallereferido);
+		idempleado_sacDetallereferido.setIdempleado(this);
+
+		return idempleado_sacDetallereferido;
+	}
+
+	public SacDetallereferido removeIdempleado_sacDetallereferido(SacDetallereferido idempleado_sacDetallereferido) {
+		getIdempleado_sacDetallereferidos().remove(idempleado_sacDetallereferido);
+		idempleado_sacDetallereferido.setIdempleado(null);
+
+		return idempleado_sacDetallereferido;
+	}
+
+	public List<SacTransaccionReferido> getIdempleado_sacTransaccionReferidos() {
+		return this.idempleado_sacTransaccionReferidos;
+	}
+
+	public void setIdempleado_sacTransaccionReferidos(List<SacTransaccionReferido> idempleado_sacTransaccionReferidos) {
+		this.idempleado_sacTransaccionReferidos = idempleado_sacTransaccionReferidos;
+	}
+
+	public SacTransaccionReferido addIdempleado_sacTransaccionReferido(SacTransaccionReferido idempleado_sacTransaccionReferido) {
+		getIdempleado_sacTransaccionReferidos().add(idempleado_sacTransaccionReferido);
+		idempleado_sacTransaccionReferido.setIdempleado(this);
+
+		return idempleado_sacTransaccionReferido;
+	}
+
+	public SacTransaccionReferido removeIdempleado_sacTransaccionReferido(SacTransaccionReferido idempleado_sacTransaccionReferido) {
+		getIdempleado_sacTransaccionReferidos().remove(idempleado_sacTransaccionReferido);
+		idempleado_sacTransaccionReferido.setIdempleado(null);
+
+		return idempleado_sacTransaccionReferido;
+	}
+
+}

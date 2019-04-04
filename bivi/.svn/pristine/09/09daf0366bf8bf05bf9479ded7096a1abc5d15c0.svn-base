@@ -1,0 +1,68 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the admempleadoagencia database table.
+ * 
+ */
+@Entity
+@Table(name="admempleadoagencia", schema="java")
+@NamedQuery(name="Admempleadoagencia.findAll", query="SELECT a FROM Admempleadoagencia a")
+public class Admempleadoagencia implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idempleadoagencia;
+
+	private Boolean agenciaprincipal;
+
+	//bi-directional many-to-one association to Admagencia
+	@ManyToOne
+	@JoinColumn(name="idagencia")
+	private Admagencia idagencia;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado")
+	private Admempleado idempleado;
+
+	public Admempleadoagencia() {
+	}
+
+	public Integer getIdempleadoagencia() {
+		return this.idempleadoagencia;
+	}
+
+	public void setIdempleadoagencia(Integer idempleadoagencia) {
+		this.idempleadoagencia = idempleadoagencia;
+	}
+
+	public Boolean getAgenciaprincipal() {
+		return this.agenciaprincipal;
+	}
+
+	public void setAgenciaprincipal(Boolean agenciaprincipal) {
+		this.agenciaprincipal = agenciaprincipal;
+	}
+
+	public Admagencia getIdagencia() {
+		return this.idagencia;
+	}
+
+	public void setIdagencia(Admagencia idagencia) {
+		this.idagencia = idagencia;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+}

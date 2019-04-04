@@ -1,0 +1,98 @@
+package com.scm.modelo.sac;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admdetallecatalogo;
+
+import java.sql.Time;
+import java.util.Date;
+
+
+/**
+ * The persistent class for the sac_transaccion database table.
+ * 
+ */
+@Entity
+@Table(name="sac_transaccion", schema="java")
+@NamedQuery(name="SacTransaccion.findAll", query="SELECT s FROM SacTransaccion s")
+public class SacTransaccion implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="\"idTtransaccion\"", unique=true, nullable=false)
+	private Integer idTtransaccion;
+
+	@Column(name="\"Descipcion\"", length=200)
+	private String descipcion;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="\"Fecha\"")
+	private Date fecha;
+
+	@Column(name="\"Time\"")
+	private Time time;
+	
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idestadodc")
+	private Admdetallecatalogo idestadodc;
+
+	//bi-directional many-to-one association to SacCabezeratransaccione
+	@ManyToOne
+	@JoinColumn(name="id_cabezeratransaccion")
+	private SacCabezeratransaccione idcabezeratransaccion;
+
+	public SacTransaccion() {
+	}
+
+	public Integer getIdTtransaccion() {
+		return this.idTtransaccion;
+	}
+
+	public void setIdTtransaccion(Integer idTtransaccion) {
+		this.idTtransaccion = idTtransaccion;
+	}
+
+	public String getDescipcion() {
+		return this.descipcion;
+	}
+
+	public void setDescipcion(String descipcion) {
+		this.descipcion = descipcion;
+	}
+
+	public Date getFecha() {
+		return this.fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public Time getTime() {
+		return this.time;
+	}
+
+	public void setTime(Time time) {
+		this.time = time;
+	}
+
+	public SacCabezeratransaccione getIdcabezeratransaccion() {
+		return this.idcabezeratransaccion;
+	}
+
+	public void setIdcabezeratransaccion(SacCabezeratransaccione idcabezeratransaccion) {
+		this.idcabezeratransaccion = idcabezeratransaccion;
+	}
+
+	public Admdetallecatalogo getIdestadodc() {
+		return idestadodc;
+	}
+
+	public void setIdestadodc(Admdetallecatalogo idestadodc) {
+		this.idestadodc = idestadodc;
+	}
+	
+	
+}

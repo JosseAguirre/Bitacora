@@ -1,0 +1,59 @@
+
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.administracion.Admtipocatalogo;
+
+@Stateless
+public class ServicioAdmTipoCatalogo {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(Admtipocatalogo admtipocatalogo) {
+		em.persist(admtipocatalogo);
+	}
+
+	public void delete(Admtipocatalogo admtipocatalogo) {
+		em.remove(em.merge(admtipocatalogo));
+	}
+
+	public void update(Admtipocatalogo admtipocatalogo) {
+
+		em.merge(admtipocatalogo);
+
+	}
+
+	// Metodo paraobener toda la información de a tabla Admtipocatálogo
+	@SuppressWarnings("unchecked")
+	public List<Admtipocatalogo> findAll() {
+		Query q = em.createQuery("select a from Admtipocatalogo a");
+		return q.getResultList();
+	}
+
+	// Metodo para obtener la id mas alta y se suma unoen caso de ser mayor a
+	// uno ysi no existe se crea como uno//usado para el metodo guardar
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admtipocatalogo ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// Metodo para btener el idtipocatálogo seleccionado//usado para el metodo
+	// editar
+	public Admtipocatalogo findOne(Integer codigotipocatalogo) {
+		Query q = em.createQuery("select a from Admtipocatalogo a where a.idtipocatalogo = " + codigotipocatalogo);
+		return (Admtipocatalogo) q.getSingleResult();
+	}
+}

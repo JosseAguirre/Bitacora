@@ -1,0 +1,68 @@
+package com.scm.modelo.centroefectivo;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.sql.Timestamp;
+
+
+/**
+ * The persistent class for the ce_serie_especie database table.
+ * 
+ */
+@Entity
+@Table(name="ce_serie_especie", schema="java")
+@NamedQuery(name="CeSerieEspecie.findAll", query="SELECT c FROM CeSerieEspecie c")
+public class CeSerieEspecie implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_serie", unique=true, nullable=false)
+	private Integer idSerie;
+
+	@Column(name="fecha_registra")
+	private Timestamp fechaRegistra;
+
+	@Column(length=50)
+	private String serie;
+
+	//bi-directional many-to-one association to CeEspecie
+	@ManyToOne
+	@JoinColumn(name="id_especie")
+	private CeEspecie idespecie;
+
+	public CeSerieEspecie() {
+	}
+
+	public Integer getIdSerie() {
+		return this.idSerie;
+	}
+
+	public void setIdSerie(Integer idSerie) {
+		this.idSerie = idSerie;
+	}
+
+	public Timestamp getFechaRegistra() {
+		return this.fechaRegistra;
+	}
+
+	public void setFechaRegistra(Timestamp fechaRegistra) {
+		this.fechaRegistra = fechaRegistra;
+	}
+
+	public String getSerie() {
+		return this.serie;
+	}
+
+	public void setSerie(String serie) {
+		this.serie = serie;
+	}
+
+	public CeEspecie getIdespecie() {
+		return this.idespecie;
+	}
+
+	public void setIdespecie(CeEspecie idespecie) {
+		this.idespecie = idespecie;
+	}
+
+}

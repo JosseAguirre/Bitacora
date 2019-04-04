@@ -1,0 +1,78 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.centroefectivo.CeEspecie;
+
+
+/**
+ * The persistent class for the bov_detalle_transferencia database table.
+ * 
+ */
+@Entity
+@Table(name="bov_detalle_transferencia", schema="java")
+@NamedQuery(name="BovDetalleTransferencia.findAll", query="SELECT b FROM BovDetalleTransferencia b")
+public class BovDetalleTransferencia implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_detalle_transferencia", unique=true, nullable=false)
+	private Integer idDetalleTransferencia;
+
+	private Integer cantidad;
+	private double subtotal;
+	//bi-directional many-to-one association to BovCabezeratransferencia
+	@ManyToOne
+	@JoinColumn(name="id_bov_transferencia")
+	private BovCabezeratransferencia idbovtransferencia;
+
+	//bi-directional many-to-one association to CeEspecie
+	@ManyToOne
+	@JoinColumn(name="id_especie")
+	private CeEspecie idespecie;
+
+	public BovDetalleTransferencia() {
+	}
+
+	public Integer getIdDetalleTransferencia() {
+		return this.idDetalleTransferencia;
+	}
+
+	public void setIdDetalleTransferencia(Integer idDetalleTransferencia) {
+		this.idDetalleTransferencia = idDetalleTransferencia;
+	}
+
+	public Integer getCantidad() {
+		return this.cantidad;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public BovCabezeratransferencia getIdbovtransferencia() {
+		return this.idbovtransferencia;
+	}
+
+	public void setIdbovtransferencia(BovCabezeratransferencia idbovtransferencia) {
+		this.idbovtransferencia = idbovtransferencia;
+	}
+
+	public CeEspecie getIdespecie() {
+		return this.idespecie;
+	}
+
+	public void setIdespecie(CeEspecie idespecie) {
+		this.idespecie = idespecie;
+	}
+
+	public double getSubtotal() {
+		return subtotal;
+	}
+
+	public void setSubtotal(double subtotal) {
+		this.subtotal = subtotal;
+	}
+
+}

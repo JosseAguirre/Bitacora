@@ -1,0 +1,86 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.administracion.Admagencia;
+
+@Stateless
+public class ServicioAdmAgencia {
+	@PersistenceContext
+	private EntityManager em;
+
+	public void create(Admagencia admagencia) {
+		em.persist(admagencia);
+	}
+
+	public void delete(Admagencia admagencia) {
+		em.remove(em.merge(admagencia));
+	}
+
+	public void update(Admagencia admagencia) {
+
+		em.merge(admagencia);
+	}
+
+	// GENERO UNA LISTA PARA OBTENER TOSOD LOS VALORES DE LA TABLA AGENCIA QUE
+	// NO SE ENCUENTREN COMO ELIMINADO (NADA SE ELIMINA SOLO CAMBIA COMO
+	// SYSDELETE)
+	@SuppressWarnings("unchecked")
+	public List<Admagencia> findAll() {
+		Query q = em.createQuery("select f from Admagencia f  where f.sysdelete = false");
+		return q.getResultList();
+	}
+
+	public Integer findPk() {
+
+		Query q = em.createQuery("select max(id) from Admagencia");
+		return (Integer) q.getSingleResult();
+
+	}
+
+	// GENER UNA BUSQUEDA PARA OBTENER EL ID DE MAYOR VALOR
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from Admagencia ");
+		codigo = (Integer) q.getSingleResult();
+		if (codigo == null) {
+			codigo = 1;
+			// SI EL CODIGO ES MAYOR A NADA SE LE SUMA 1 Y ME DEVUELVE EL NUEVO
+			// CODIGO
+		} else {
+			codigo++;
+		}
+		return codigo;
+	}
+
+	// GENERO UNA BUSQUEDA PARA ENCONTAR EL ID DE LA AGENCIA
+	public Admagencia findOne(Integer codigoadmagencia) {
+		Query q = em.createQuery("select f from Admagencia f where f.idagencia = " + codigoadmagencia);
+		return (Admagencia) q.getSingleResult();
+	}
+
+	// GENERO UNA BUSQUEDA POR MEDIO DE UNA LISTA PARA FILTRAR UNA BUSQUEDA.
+	public List<Admagencia> pornombresemejante(String nombre) {
+		return em.createQuery("select f from Admagencia f where c.nombres like :nombres", Admagencia.class)
+				.setParameter("nombres", "%" + nombre + "%").getResultList();
+	}
+
+	// GENERO UNA BUSQUEDA PARA ENCONTRAR TODOS LOS IDAGENCIAPADRE QUE TENGAN UN
+	// VALOR 0 (PRA SABER QUE SON AGENCIAS SIN PADRE)
+	@SuppressWarnings("unchecked")
+	public List<Admagencia> agenciaspadres() {
+		Query q = em.createQuery("select g from Admagencia g  where g.idagenciapadre = 0");
+		return q.getResultList();
+	}
+
+	// Metodo para buscar todos los agencias cuyo idagencia sea 0 es decir la
+	// aencia padre por defecto
+	public Integer findPadreagencia() {
+		Query q = em.createQuery("select idagencia from Admagencia g where g.idagencia = 0");
+		return (Integer) q.getSingleResult();
+	}
+}

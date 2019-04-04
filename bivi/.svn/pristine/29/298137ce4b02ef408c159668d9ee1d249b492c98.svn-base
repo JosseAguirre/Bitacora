@@ -1,0 +1,391 @@
+package com.scm.bean.sac;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.AdmServicio;
+import com.scm.modelo.administracion.AdmTipoServicio;
+import com.scm.modelo.administracion.Admagencia;
+import com.scm.modelo.administracion.Admcliente;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admempleado;
+import com.scm.modelo.sac.SacCabezeratransaccione;
+import com.scm.servicio.administracion.ServicioAdmAgencia;
+import com.scm.servicio.administracion.ServicioAdmCliente;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+import com.scm.servicio.administracion.ServicioAdmEmpleado;
+import com.scm.servicio.administracion.ServicioAdmServicio;
+import com.scm.servicio.administracion.ServicioAdmTipoServicio;
+import com.scm.servicio.sac.ServicioSacCabeceraTransaccion;
+
+@ManagedBean
+@ViewScoped
+public class SacCabeceraTransaccionesBean implements Interface {
+
+	private static final long serialVersionUID = 1L;
+	private SacCabezeratransaccione sacCabezeratransaccione;
+	private Admdetallecatalogo detallecatalogo;
+	private Admcliente admcliente;
+	private Admagencia admagencia;
+	private AdmServicio admServicio;
+	private AdmTipoServicio admTipoServicio;
+
+	private List<SacCabezeratransaccione> listaCabeceraTransacciones;
+	private List<SacCabezeratransaccione> transaccionFiltrada;
+	private List<SacCabezeratransaccione> listaTransaccionServicios;
+	private List<SacCabezeratransaccione> listaQuejasReclamos;
+
+	private List<Admdetallecatalogo> listaLineaNegocio;
+	private List<AdmTipoServicio> listaTipoServicio;
+	private List<AdmServicio> listaServicio;
+	private List<Admagencia> listaAgencia;
+	public static List<Admcliente> listaCliente;
+	private List<Admcliente> clienteFiltrado;
+	private List<Admempleado> listaEmpleado;
+
+	private Integer bandera;
+	private int idLineaNegocio;
+	private int idCliente;
+	private int idAgencia;
+	private Integer idTipoServicio;
+	private int idServicio;
+	private int idCiudad;
+	
+
+
+	@EJB
+	private ServicioSacCabeceraTransaccion servicioSacCabeceraTransaccion;
+	@EJB
+	private ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+	@EJB
+	private ServicioAdmTipoServicio serviciotiposervicio;
+	@EJB
+	private ServicioAdmServicio servicioservicios;
+	@EJB
+	private ServicioAdmAgencia servicioagencia;
+	@EJB
+	private ServicioAdmCliente serviciocliente;
+	@EJB
+	private ServicioAdmEmpleado servicioempleado;
+
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+		
+	}
+
+	@Override
+	public void guardar() {
+
+		sacCabezeratransaccione.setIdCabezeratransaccion(servicioSacCabeceraTransaccion.getPK());
+		
+		sacCabezeratransaccione.setNumeroticket(servicioSacCabeceraTransaccion.getNumeroTicket());//Setea el numero de ticket
+
+		buscaIdCombos();
+
+		servicioSacCabeceraTransaccion.create(sacCabezeratransaccione);
+		
+		cancelar();
+
+	}
+
+	public void buscaIdCombos() { // Busca el id de los combo box seleccionados
+									// en la pantalla
+
+		detallecatalogo = serviciodetallecatalogo.findOne(idLineaNegocio);
+		sacCabezeratransaccione.setIdlineanegociodc(detallecatalogo);
+		
+		admTipoServicio = serviciotiposervicio.findOne(idTipoServicio);
+		sacCabezeratransaccione.setIdtiposervicio(admTipoServicio);
+
+		admServicio = servicioservicios.findOne(idServicio);
+		sacCabezeratransaccione.setIdservicio(admServicio);
+
+		admagencia = servicioagencia.findOne(idAgencia);
+		sacCabezeratransaccione.setIdagencia(admagencia);
+
+		admcliente = serviciocliente.findOne(idCliente);
+		sacCabezeratransaccione.setIdcliente(admcliente);
+
+	}
+
+	@Override
+	public void eliminar() {
+		servicioSacCabeceraTransaccion.delete(sacCabezeratransaccione);
+		cancelar();
+
+	}
+
+	@Override
+	public void actualizar() {
+
+		servicioSacCabeceraTransaccion.update(sacCabezeratransaccione);
+		cancelar();
+
+	}
+	
+	
+	public void consultaClienteCiudad(){		
+		
+		detallecatalogo = serviciodetallecatalogo.findOne(idCiudad);
+		admcliente.setIdciudaddc(detallecatalogo);
+		
+		listaCliente = new ArrayList<>();		
+		listaCliente = serviciocliente.findCliente(idCiudad);		
+		
+	}
+
+	
+	
+	public List<Admcliente> clienteBuscado(String query) {
+		clienteFiltrado = new ArrayList<>();
+		for (int i = 0; i < listaCliente.size(); i++) {
+			Admcliente cliente = listaCliente.get(i);
+			if (cliente.getRazonsocial().contains(query.toUpperCase())) { // Comparo si el nombre contiene la caadena escrita en la vista
+				clienteFiltrado.add(cliente);
+			}
+		}
+
+		return clienteFiltrado; // devuelve los usuarios encontrado segun lo escrito en la vista
+	}
+	
+	
+	
+	public void onRowSelectTodo(SelectEvent event) {
+		sacCabezeratransaccione = (SacCabezeratransaccione) event.getObject();
+
+		idCliente = sacCabezeratransaccione.getIdcliente().getIdcliente();
+		idAgencia = sacCabezeratransaccione.getIdagencia().getIdagencia();
+		idLineaNegocio = sacCabezeratransaccione.getIdlineanegociodc().getIddetallecatalogo();
+		idTipoServicio = sacCabezeratransaccione.getIdtiposervicio().getIdtipoServicio();
+		idServicio = sacCabezeratransaccione.getIdservicio().getIdservicio();
+
+	}
+
+	public void onRowSelectCliente(SelectEvent event) {
+
+		admcliente = (Admcliente) event.getObject();
+		RequestContext.getCurrentInstance().closeDialog((Admcliente) event.getObject());
+
+	}
+
+	@Override
+	public void consultar() {
+		listaTransaccionServicios = new ArrayList<>();
+		listaTransaccionServicios = servicioSacCabeceraTransaccion.findServicios();
+
+		listaQuejasReclamos = new ArrayList<>();
+		listaQuejasReclamos = servicioSacCabeceraTransaccion.findQuejasReclamos();
+
+		listaCabeceraTransacciones = new ArrayList<>();
+		listaCabeceraTransacciones = servicioSacCabeceraTransaccion.findAll();
+
+		listaLineaNegocio = new ArrayList<>();
+		listaLineaNegocio = serviciodetallecatalogo.lineasnegocio();
+
+		listaTipoServicio = new ArrayList<>();
+		listaTipoServicio = serviciotiposervicio.findAll();
+
+		listaServicio = new ArrayList<>();
+		listaServicio = servicioservicios.findAll();
+
+		listaAgencia = new ArrayList<>();
+		listaAgencia = servicioagencia.findAll();
+
+		listaEmpleado = new ArrayList<>();
+		listaEmpleado = servicioempleado.findAll();
+		
+		
+
+	}
+
+	public void clienteSeleccionado(SelectEvent event) {
+		
+		admcliente = (Admcliente) event.getObject();
+		sacCabezeratransaccione.setIdcliente(admcliente);
+
+	}
+
+	
+
+	@Override
+	public void cancelar() {
+		sacCabezeratransaccione = new SacCabezeratransaccione();
+		
+		consultar();
+		
+		bandera = 0;
+		idLineaNegocio = -1;
+		idTipoServicio = -1;
+		idServicio = -1;
+		idCliente = -1;
+		idAgencia = -1;
+
+	}
+
+	public void transaccionSeleccionada() {
+		
+		idLineaNegocio = sacCabezeratransaccione.getIdlineanegociodc().getIddetallecatalogo();
+		idCliente = sacCabezeratransaccione.getIdcliente().getIdcliente();
+		idAgencia = sacCabezeratransaccione.getIdagencia().getIdagencia();
+		
+		bandera = 1;
+
+	}
+
+	public void persitir() {
+		if (bandera == 1) {
+
+			actualizar();
+
+		} else {
+			guardar();
+
+		}
+
+	}
+
+	public SacCabezeratransaccione getSacCabezeratransaccione() {
+		return sacCabezeratransaccione;
+	}
+
+	public void setSacCabezeratransaccione(SacCabezeratransaccione sacCabezeratransaccione) {
+		this.sacCabezeratransaccione = sacCabezeratransaccione;
+	}
+
+	public int getIdCliente() {
+		return idCliente;
+	}
+
+	public void setIdCliente(int idCliente) {
+		this.idCliente = idCliente;
+	}
+
+	public int getIdAgencia() {
+		return idAgencia;
+	}
+
+	public void setIdAgencia(int idAgencia) {
+		this.idAgencia = idAgencia;
+	}
+
+	public int getIdLineaNegocio() {
+		return idLineaNegocio;
+	}
+
+	public void setIdLineaNegocio(int idLineaNegocio) {
+		this.idLineaNegocio = idLineaNegocio;
+	}
+
+	public Integer getIdTipoServicio() {
+		return idTipoServicio;
+	}
+
+	public void setIdTipoServicio(Integer idTipoServicio) {
+		this.idTipoServicio = idTipoServicio;
+	}
+
+	public List<AdmTipoServicio> getListaTipoServicio() {
+		return listaTipoServicio;
+	}
+
+	public void setListaTipoServicio(List<AdmTipoServicio> listaTipoServicio) {
+		this.listaTipoServicio = listaTipoServicio;
+	}
+
+	public int getIdServicio() {
+		return idServicio;
+	}
+
+	public void setIdServicio(int idServicio) {
+		this.idServicio = idServicio;
+	}
+
+	public List<AdmServicio> getListaServicio() {
+		return listaServicio;
+	}
+
+	public void setListaServicio(List<AdmServicio> listaServicio) {
+		this.listaServicio = listaServicio;
+	}
+
+	public List<SacCabezeratransaccione> getTransaccionFiltrada() {
+		return transaccionFiltrada;
+	}
+
+	public void setTransaccionFiltrada(List<SacCabezeratransaccione> transaccionFiltrada) {
+		this.transaccionFiltrada = transaccionFiltrada;
+	}
+
+	public List<SacCabezeratransaccione> getListaCabeceraTransacciones() {
+		return listaCabeceraTransacciones;
+	}
+
+	public void setListaCabeceraTransacciones(List<SacCabezeratransaccione> listaCabeceraTransacciones) {
+		this.listaCabeceraTransacciones = listaCabeceraTransacciones;
+	}
+
+	public List<SacCabezeratransaccione> getListaTransaccionServicios() {
+		return listaTransaccionServicios;
+	}
+
+	public void setListaTransaccionServicios(List<SacCabezeratransaccione> listaTransaccionServicios) {
+		this.listaTransaccionServicios = listaTransaccionServicios;
+	}
+
+	public List<SacCabezeratransaccione> getListaQuejasReclamos() {
+		return listaQuejasReclamos;
+	}
+
+	public void setListaQuejasReclamos(List<SacCabezeratransaccione> listaQuejasReclamos) {
+		this.listaQuejasReclamos = listaQuejasReclamos;
+	}
+
+	public List<Admdetallecatalogo> getListaLineaNegocio() {
+		return listaLineaNegocio;
+	}
+
+	public void setListaLineaNegocio(List<Admdetallecatalogo> listaLineaNegocio) {
+		this.listaLineaNegocio = listaLineaNegocio;
+	}
+
+	public List<Admagencia> getListaAgencia() {
+		return listaAgencia;
+	}
+
+	public void setListaAgencia(List<Admagencia> listaAgencia) {
+		this.listaAgencia = listaAgencia;
+	}
+
+	public static List<Admcliente> getListaCliente() {
+		return listaCliente;
+	}
+
+	public static void setListaCliente(List<Admcliente> listaCliente) {
+		SacCabeceraTransaccionesBean.listaCliente = listaCliente;
+	}
+
+	public List<Admempleado> getListaEmpleado() {
+		return listaEmpleado;
+	}
+
+	public void setListaEmpleado(List<Admempleado> listaEmpleado) {
+		this.listaEmpleado = listaEmpleado;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	
+}

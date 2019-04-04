@@ -1,0 +1,138 @@
+package com.scm.modelo.sac;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.AdmAtributo;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admempleado;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the sac_detalle_transaccion database table.
+ * 
+ */
+@Entity
+@Table(name="sac_detalle_transaccion", schema="java")
+@NamedQuery(name="SacDetalleTransaccion.findAll", query="SELECT s FROM SacDetalleTransaccion s")
+public class SacDetalleTransaccion implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_detalle_transaccion", unique=true, nullable=false)
+	private Integer idDetalleTransaccion;
+
+
+	//bi-directional many-to-one association to AdmAtributo
+	@ManyToOne
+	@JoinColumn(name="id_atributo")
+	private AdmAtributo idatributo;
+	
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="id_cabezeraTransaccion")
+	private SacCabezeratransaccione id_cabezeraTransaccion;
+	
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="id_detalleespeciesac")
+	private SacDetalleespecie idDetalleespeciesac;
+	
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="id_Empleado")
+	private Admempleado idEmpleado;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idniveltransaciondetallecatalogo")
+	private Admdetallecatalogo idniveltransaciondetallecatalogo;
+
+	//bi-directional many-to-one association to SacDetalleespecie
+	@OneToMany(mappedBy="iddetalletransaccion")
+	private List<SacDetalleespecie> iddetalletransaccion_sacDetalleespecies;
+
+	public SacDetalleTransaccion() {
+	}
+
+	public Integer getIdDetalleTransaccion() {
+		return this.idDetalleTransaccion;
+	}
+
+	public void setIdDetalleTransaccion(Integer idDetalleTransaccion) {
+		this.idDetalleTransaccion = idDetalleTransaccion;
+	}
+
+	public SacCabezeratransaccione getId_cabezeraTransaccion() {
+		return id_cabezeraTransaccion;
+	}
+
+	public void setId_cabezeraTransaccion(SacCabezeratransaccione id_cabezeraTransaccion) {
+		this.id_cabezeraTransaccion = id_cabezeraTransaccion;
+	}
+
+	public Admempleado getIdEmpleado() {
+		return idEmpleado;
+	}
+
+	public void setIdEmpleado(Admempleado idEmpleado) {
+		this.idEmpleado = idEmpleado;
+	}
+
+	public SacDetalleespecie getIdDetalleespeciesac() {
+		return idDetalleespeciesac;
+	}
+
+	public void setIdDetalleespeciesac(SacDetalleespecie idDetalleespeciesac) {
+		this.idDetalleespeciesac = idDetalleespeciesac;
+	}
+
+	public AdmAtributo getIdatributo() {
+		return this.idatributo;
+	}
+
+	public void setIdatributo(AdmAtributo idatributo) {
+		this.idatributo = idatributo;
+	}
+
+	public Admdetallecatalogo getIdniveltransaciondetallecatalogo() {
+		return this.idniveltransaciondetallecatalogo;
+	}
+
+	public void setIdniveltransaciondetallecatalogo(Admdetallecatalogo idniveltransaciondetallecatalogo) {
+		this.idniveltransaciondetallecatalogo = idniveltransaciondetallecatalogo;
+	}
+
+	public List<SacDetalleespecie> getIddetalletransaccion_sacDetalleespecies() {
+		return this.iddetalletransaccion_sacDetalleespecies;
+	}
+
+	public void setIddetalletransaccion_sacDetalleespecies(List<SacDetalleespecie> iddetalletransaccion_sacDetalleespecies) {
+		this.iddetalletransaccion_sacDetalleespecies = iddetalletransaccion_sacDetalleespecies;
+	}
+
+	public SacDetalleespecie addIddetalletransaccion_sacDetalleespecy(SacDetalleespecie iddetalletransaccion_sacDetalleespecy) {
+		getIddetalletransaccion_sacDetalleespecies().add(iddetalletransaccion_sacDetalleespecy);
+		iddetalletransaccion_sacDetalleespecy.setIddetalletransaccion(this);
+
+		return iddetalletransaccion_sacDetalleespecy;
+	}
+
+	public SacDetalleespecie removeIddetalletransaccion_sacDetalleespecy(SacDetalleespecie iddetalletransaccion_sacDetalleespecy) {
+		getIddetalletransaccion_sacDetalleespecies().remove(iddetalletransaccion_sacDetalleespecy);
+		iddetalletransaccion_sacDetalleespecy.setIddetalletransaccion(null);
+
+		return iddetalletransaccion_sacDetalleespecy;
+	}
+
+	public Admempleado getIdEmpleado_admempleado() {
+		return idEmpleado;
+	}
+
+	public void setIdEmpleado_admempleado(Admempleado idEmpleado_admempleado) {
+		this.idEmpleado = idEmpleado_admempleado;
+	}
+	
+}

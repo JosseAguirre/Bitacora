@@ -1,0 +1,314 @@
+package com.scm.bean.sac;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admempleado;
+import com.scm.modelo.sac.SacUsuarioReferido;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+import com.scm.servicio.administracion.ServicioAdmEmpleado;
+import com.scm.servicio.sac.ServicioSacReferido;
+
+
+@ManagedBean
+@ViewScoped
+public class SacReferidoBean implements Interface {
+	
+	private static final long serialVersionUID = 1L;
+	
+	//Variables de de tipo SacUsuarioReferido y Admdetallecatalogo
+	private SacUsuarioReferido sacUsuarioReferido;
+	private Admdetallecatalogo detallecatalogo;
+	private Admempleado admempleado;
+	
+	//Variable de tipo SacUsuarioReferido de las listas para la busqueda de los selectOneMenu
+	private List<SacUsuarioReferido> listaUsuarioReferido;
+	private List<SacUsuarioReferido> referidoFiltrado;
+	
+	//Variable de tipo Admdetallecatalogo de la lista de ciudades para la busqueda de los selectOneMenu
+	private List<Admdetallecatalogo> listaciudad;
+	
+	//Variables que van a ser usadas
+	private Integer bandera;
+	private int iddetallecatalogo;
+	private int idestado;
+	private int idciudad;
+	private int idempleado;
+	
+	private Date date;
+	
+	//Variables necesarias para la coneccion con los servicios
+	@EJB
+	private ServicioSacReferido servicioReferido;
+	@EJB
+	private ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+	@EJB
+	private ServicioAdmEmpleado servicioAdmEmpleado;
+	
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+		date = new Date();
+       
+	}
+	
+	@Override	
+	public void guardar() {//Crea un nuevo registro en la tabla sacUsuarioReferido
+
+		sacUsuarioReferido.setIdreferido(servicioReferido.getPK());//Setea el Primary key del registro a crear
+		
+		sacUsuarioReferido.setNumeroticket(servicioReferido.getNumeroTicket());//Setea el numero de ticket
+		
+		buscaIdComboCiudad();//llama al metodo para tener el id del combo
+
+		servicioReferido.create(sacUsuarioReferido);//Crea un nuevo registro en la tabla sacUsuarioReferido
+		cancelar();
+		
+	}
+	
+	public void guardarAsignacion() {//Crea un nuevo registro en la tabla sacUsuarioReferido
+
+		sacUsuarioReferido.setIdreferido(servicioReferido.getPK());//Setea el Primary key del registro a crear
+		
+		
+		buscaIdCombos();//llama al metodo para tener el id del combo
+
+		servicioReferido.create(sacUsuarioReferido);//Crea un nuevo registro en la tabla sacUsuarioReferido
+		cancelar();
+		
+	}
+	
+	public void buscaIdComboCiudad(){//Busca el id de los combos seleccionados en la pantalla Referido
+		
+		//Se obtiene el id seleccionado en el selectOneMenu de las ciudades
+		detallecatalogo = serviciodetallecatalogo.findOne(idciudad);
+		//Se setea el id de la ciudad
+		sacUsuarioReferido.setIdciudaddc(detallecatalogo);
+		
+	}	
+	
+	public void buscaIdCombos(){//Busca el id de los combos seleccionados en la pantalla Referido
+		
+		//Se obtiene el id seleccionado en el selectOneMenu de las ciudades
+		detallecatalogo = serviciodetallecatalogo.findOne(idestado);
+		//Se setea el id de la ciudad
+		
+		//Se obtiene el id seleccionado en el selectOneMenu de las ciudades
+		admempleado = servicioAdmEmpleado.findOne(idempleado);
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	public void onRowSelect(SelectEvent event) {
+		sacUsuarioReferido = (SacUsuarioReferido) event.getObject();
+		
+	
+	}
+	
+	@Override
+	public void eliminar() {
+		servicioReferido.delete(sacUsuarioReferido);//Borra un registro de la tabla sacUsuarioReferido
+		cancelar();
+		
+	}
+
+	@Override
+	public void actualizar() {
+		buscaIdCombos();//Llama al metodo para tener los id de los combos
+
+		servicioReferido.update(sacUsuarioReferido);//Genera un update
+		cancelar();
+		
+	}
+
+	@Override
+	public void consultar() {		
+		
+	    listaUsuarioReferido = new ArrayList<>();
+		listaUsuarioReferido = servicioReferido.findAll();
+		
+		listaciudad = new ArrayList<>();
+		listaciudad = serviciodetallecatalogo.ciudades();		
+		
+	
+	}
+
+	@Override
+	public void cancelar() {
+		sacUsuarioReferido = new SacUsuarioReferido();
+		consultar();
+		bandera = 0;
+		idciudad = -1;
+		
+		
+	}
+	
+	public void clienteSeleccionado() {
+		
+		
+		
+		
+		bandera = 1;	
+		
+	}
+	
+	public void persistir(){
+		if(bandera==1){
+			
+			actualizar();
+			
+		}else{
+			
+			guardar();
+			
+		}
+		
+		
+	}
+
+	public SacUsuarioReferido getSacUsuarioReferido() {
+		return sacUsuarioReferido;
+	}
+
+	public void setSacUsuarioReferido(SacUsuarioReferido sacUsuarioReferido) {
+		this.sacUsuarioReferido = sacUsuarioReferido;
+	}
+
+	public Admdetallecatalogo getDetallecatalogo() {
+		return detallecatalogo;
+	}
+
+	public void setDetallecatalogo(Admdetallecatalogo detallecatalogo) {
+		this.detallecatalogo = detallecatalogo;
+	}
+
+	public List<SacUsuarioReferido> getListaUsuarioReferido() {
+		return listaUsuarioReferido;
+	}
+
+	public void setListaUsuarioReferido(List<SacUsuarioReferido> listaUsuarioReferido) {
+		this.listaUsuarioReferido = listaUsuarioReferido;
+	}
+
+	public List<SacUsuarioReferido> getReferidoFiltrado() {
+		return referidoFiltrado;
+	}
+
+	public void setReferidoFiltrado(List<SacUsuarioReferido> referidoFiltrado) {
+		this.referidoFiltrado = referidoFiltrado;
+	}
+
+	public List<Admdetallecatalogo> getListaciudad() {
+		return listaciudad;
+	}
+
+	public void setListaciudad(List<Admdetallecatalogo> listaciudad) {
+		this.listaciudad = listaciudad;
+	}
+
+
+	public Integer getBandera() {
+		return bandera;
+	}
+
+	public void setBandera(Integer bandera) {
+		this.bandera = bandera;
+	}
+
+	public int getIddetallecatalogo() {
+		return iddetallecatalogo;
+	}
+
+	public void setIddetallecatalogo(int iddetallecatalogo) {
+		this.iddetallecatalogo = iddetallecatalogo;
+	}
+
+	public int getIdciudad() {
+		return idciudad;
+	}
+	
+	public int getIdestado() {
+		return idestado;
+	}
+	
+	public Admempleado getAdmempleado() {
+		return admempleado;
+	}
+
+	public void setAdmempleado(Admempleado admempleado) {
+		this.admempleado = admempleado;
+	}
+
+	public int getIdempleado() {
+		return idempleado;
+	}
+
+	public void setIdempleado(int idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public ServicioAdmEmpleado getServicioAdmEmpleado() {
+		return servicioAdmEmpleado;
+	}
+
+	public void setServicioAdmEmpleado(ServicioAdmEmpleado servicioAdmEmpleado) {
+		this.servicioAdmEmpleado = servicioAdmEmpleado;
+	}
+
+	public void setIdestado(int idestado) {
+		this.idestado = idestado;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public void setIdciudad(int idciudad) {
+		this.idciudad = idciudad;
+	}
+
+
+	public ServicioSacReferido getServicioReferido() {
+		return servicioReferido;
+	}
+
+	public void setServicioReferido(ServicioSacReferido servicioReferido) {
+		this.servicioReferido = servicioReferido;
+	}
+
+	public ServicioAdmDetalleCatalogo getServiciodetallecatalogo() {
+		return serviciodetallecatalogo;
+	}
+
+	public void setServiciodetallecatalogo(ServicioAdmDetalleCatalogo serviciodetallecatalogo) {
+		this.serviciodetallecatalogo = serviciodetallecatalogo;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
+	
+	
+}

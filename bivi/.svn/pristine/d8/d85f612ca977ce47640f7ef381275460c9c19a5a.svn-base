@@ -1,0 +1,384 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.preboveda.BovBovedaCliente;
+import com.scm.modelo.sac.SacCabezeratransaccione;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the admcliente database table.
+ * 
+ */
+@Entity
+@Table(name="admcliente", schema="java")
+@NamedQuery(name="Admcliente.findAll", query="SELECT a FROM Admcliente a")
+public class Admcliente implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idcliente;
+
+	@Column(length=100)
+	private String correoelectronico;
+
+	@Column(length=100)
+	private String direccion;
+
+	@Column(length=50)
+	private String nombrecomercial;
+
+	@Column(length=50)
+	private String razonsocial;
+
+	@Column(length=13)
+	private String ruc;
+
+	private Boolean sysdelete;
+
+	@Column(length=14)
+	private String telefono;
+
+	@Column(length=100)
+	private String urllogo;
+
+	//bi-directional many-to-one association to AdmClienteAgenciaSistema
+	@OneToMany(mappedBy="idcliente")
+	private List<AdmClienteAgenciaSistema> idcliente_adm_cliente_agencia_sistemas;
+
+	//bi-directional many-to-one association to AdmClienteEmpleado
+	@OneToMany(mappedBy="idcliente")
+	private List<AdmClienteEmpleado> idcliente_admClienteEmpleados;
+
+	//bi-directional many-to-one association to AdmClienteLineaDeNegocio
+	@OneToMany(mappedBy="idcliente")
+	private List<AdmClienteLineaDeNegocio> idcliente_admClienteLineaDeNegocios;
+
+	//bi-directional many-to-one association to Admagencia
+	@OneToMany(mappedBy="idcliente")
+	private List<Admagencia> idcliente_admagencia;
+
+	//bi-directional many-to-one association to Admcliente
+	@ManyToOne
+	@JoinColumn(name="idclientepadre")
+	private Admcliente idclientepadre;
+
+	//bi-directional many-to-one association to Admcliente
+	@OneToMany(mappedBy="idclientepadre")
+	private List<Admcliente> idclientepadre_admcliente;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idciudaddc")
+	private Admdetallecatalogo idciudaddc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idactividaddc")
+	private Admdetallecatalogo idactividaddc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idestadodc")
+	private Admdetallecatalogo idestadodc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idprioridaddc")
+	private Admdetallecatalogo idprioridaddc;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idtipoclientedc")
+	private Admdetallecatalogo idtipoclientedc;
+
+	//bi-directional many-to-one association to BovBovedaCliente
+	@OneToMany(mappedBy="idcliente")
+	private List<BovBovedaCliente> idcliente_bovboveda_cliente;
+
+	//bi-directional many-to-one association to SacCabezeratransaccione
+	@OneToMany(mappedBy="idcliente")
+	private List<SacCabezeratransaccione> idcliente_sacCabezeratransacciones;
+
+	public Admcliente() {
+	}
+
+	public Integer getIdcliente() {
+		return this.idcliente;
+	}
+
+	public void setIdcliente(Integer idcliente) {
+		this.idcliente = idcliente;
+	}
+
+	public String getCorreoelectronico() {
+		return this.correoelectronico;
+	}
+
+	public void setCorreoelectronico(String correoelectronico) {
+		this.correoelectronico = correoelectronico;
+	}
+
+	public String getDireccion() {
+		return this.direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getNombrecomercial() {
+		return this.nombrecomercial;
+	}
+
+	public void setNombrecomercial(String nombrecomercial) {
+		this.nombrecomercial = nombrecomercial;
+	}
+
+	public String getRazonsocial() {
+		return this.razonsocial;
+	}
+
+	public void setRazonsocial(String razonsocial) {
+		this.razonsocial = razonsocial;
+	}
+
+	public String getRuc() {
+		return this.ruc;
+	}
+
+	public void setRuc(String ruc) {
+		this.ruc = ruc;
+	}
+
+	public Boolean getSysdelete() {
+		return this.sysdelete;
+	}
+
+	public void setSysdelete(Boolean sysdelete) {
+		this.sysdelete = sysdelete;
+	}
+
+	public String getTelefono() {
+		return this.telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public String getUrllogo() {
+		return this.urllogo;
+	}
+
+	public void setUrllogo(String urllogo) {
+		this.urllogo = urllogo;
+	}
+
+	public List<AdmClienteAgenciaSistema> getIdcliente_adm_cliente_agencia_sistemas() {
+		return this.idcliente_adm_cliente_agencia_sistemas;
+	}
+
+	public void setIdcliente_adm_cliente_agencia_sistemas(List<AdmClienteAgenciaSistema> idcliente_adm_cliente_agencia_sistemas) {
+		this.idcliente_adm_cliente_agencia_sistemas = idcliente_adm_cliente_agencia_sistemas;
+	}
+
+	public AdmClienteAgenciaSistema addIdcliente_adm_cliente_agencia_sistema(AdmClienteAgenciaSistema idcliente_adm_cliente_agencia_sistema) {
+		getIdcliente_adm_cliente_agencia_sistemas().add(idcliente_adm_cliente_agencia_sistema);
+		idcliente_adm_cliente_agencia_sistema.setIdcliente(this);
+
+		return idcliente_adm_cliente_agencia_sistema;
+	}
+
+	public AdmClienteAgenciaSistema removeIdcliente_adm_cliente_agencia_sistema(AdmClienteAgenciaSistema idcliente_adm_cliente_agencia_sistema) {
+		getIdcliente_adm_cliente_agencia_sistemas().remove(idcliente_adm_cliente_agencia_sistema);
+		idcliente_adm_cliente_agencia_sistema.setIdcliente(null);
+
+		return idcliente_adm_cliente_agencia_sistema;
+	}
+
+	public List<AdmClienteEmpleado> getIdcliente_admClienteEmpleados() {
+		return this.idcliente_admClienteEmpleados;
+	}
+
+	public void setIdcliente_admClienteEmpleados(List<AdmClienteEmpleado> idcliente_admClienteEmpleados) {
+		this.idcliente_admClienteEmpleados = idcliente_admClienteEmpleados;
+	}
+
+	public AdmClienteEmpleado addIdcliente_admClienteEmpleado(AdmClienteEmpleado idcliente_admClienteEmpleado) {
+		getIdcliente_admClienteEmpleados().add(idcliente_admClienteEmpleado);
+		idcliente_admClienteEmpleado.setIdcliente(this);
+
+		return idcliente_admClienteEmpleado;
+	}
+
+	public AdmClienteEmpleado removeIdcliente_admClienteEmpleado(AdmClienteEmpleado idcliente_admClienteEmpleado) {
+		getIdcliente_admClienteEmpleados().remove(idcliente_admClienteEmpleado);
+		idcliente_admClienteEmpleado.setIdcliente(null);
+
+		return idcliente_admClienteEmpleado;
+	}
+
+	public List<AdmClienteLineaDeNegocio> getIdcliente_admClienteLineaDeNegocios() {
+		return this.idcliente_admClienteLineaDeNegocios;
+	}
+
+	public void setIdcliente_admClienteLineaDeNegocios(List<AdmClienteLineaDeNegocio> idcliente_admClienteLineaDeNegocios) {
+		this.idcliente_admClienteLineaDeNegocios = idcliente_admClienteLineaDeNegocios;
+	}
+
+	public AdmClienteLineaDeNegocio addIdcliente_admClienteLineaDeNegocio(AdmClienteLineaDeNegocio idcliente_admClienteLineaDeNegocio) {
+		getIdcliente_admClienteLineaDeNegocios().add(idcliente_admClienteLineaDeNegocio);
+		idcliente_admClienteLineaDeNegocio.setIdcliente(this);
+
+		return idcliente_admClienteLineaDeNegocio;
+	}
+
+	public AdmClienteLineaDeNegocio removeIdcliente_admClienteLineaDeNegocio(AdmClienteLineaDeNegocio idcliente_admClienteLineaDeNegocio) {
+		getIdcliente_admClienteLineaDeNegocios().remove(idcliente_admClienteLineaDeNegocio);
+		idcliente_admClienteLineaDeNegocio.setIdcliente(null);
+
+		return idcliente_admClienteLineaDeNegocio;
+	}
+
+	public List<Admagencia> getIdcliente_admagencia() {
+		return this.idcliente_admagencia;
+	}
+
+	public void setIdcliente_admagencia(List<Admagencia> idcliente_admagencia) {
+		this.idcliente_admagencia = idcliente_admagencia;
+	}
+
+	public Admagencia addIdcliente_admagencia(Admagencia idcliente_admagencia) {
+		getIdcliente_admagencia().add(idcliente_admagencia);
+		idcliente_admagencia.setIdcliente(this);
+
+		return idcliente_admagencia;
+	}
+
+	public Admagencia removeIdcliente_admagencia(Admagencia idcliente_admagencia) {
+		getIdcliente_admagencia().remove(idcliente_admagencia);
+		idcliente_admagencia.setIdcliente(null);
+
+		return idcliente_admagencia;
+	}
+
+	public Admcliente getIdclientepadre() {
+		return this.idclientepadre;
+	}
+
+	public void setIdclientepadre(Admcliente idclientepadre) {
+		this.idclientepadre = idclientepadre;
+	}
+
+	public List<Admcliente> getIdclientepadre_admcliente() {
+		return this.idclientepadre_admcliente;
+	}
+
+	public void setIdclientepadre_admcliente(List<Admcliente> idclientepadre_admcliente) {
+		this.idclientepadre_admcliente = idclientepadre_admcliente;
+	}
+
+	public Admcliente addIdclientepadre_admcliente(Admcliente idclientepadre_admcliente) {
+		getIdclientepadre_admcliente().add(idclientepadre_admcliente);
+		idclientepadre_admcliente.setIdclientepadre(this);
+
+		return idclientepadre_admcliente;
+	}
+
+	public Admcliente removeIdclientepadre_admcliente(Admcliente idclientepadre_admcliente) {
+		getIdclientepadre_admcliente().remove(idclientepadre_admcliente);
+		idclientepadre_admcliente.setIdclientepadre(null);
+
+		return idclientepadre_admcliente;
+	}
+
+	public Admdetallecatalogo getIdciudaddc() {
+		return this.idciudaddc;
+	}
+
+	public void setIdciudaddc(Admdetallecatalogo idciudaddc) {
+		this.idciudaddc = idciudaddc;
+	}
+
+	public Admdetallecatalogo getIdactividaddc() {
+		return this.idactividaddc;
+	}
+
+	public void setIdactividaddc(Admdetallecatalogo idactividaddc) {
+		this.idactividaddc = idactividaddc;
+	}
+
+	public Admdetallecatalogo getIdestadodc() {
+		return this.idestadodc;
+	}
+
+	public void setIdestadodc(Admdetallecatalogo idestadodc) {
+		this.idestadodc = idestadodc;
+	}
+
+	public Admdetallecatalogo getIdprioridaddc() {
+		return this.idprioridaddc;
+	}
+
+	public void setIdprioridaddc(Admdetallecatalogo idprioridaddc) {
+		this.idprioridaddc = idprioridaddc;
+	}
+
+	public Admdetallecatalogo getIdtipoclientedc() {
+		return this.idtipoclientedc;
+	}
+
+	public void setIdtipoclientedc(Admdetallecatalogo idtipoclientedc) {
+		this.idtipoclientedc = idtipoclientedc;
+	}
+
+	public List<BovBovedaCliente> getIdcliente_bovboveda_cliente() {
+		return this.idcliente_bovboveda_cliente;
+	}
+
+	public void setIdcliente_bovboveda_cliente(List<BovBovedaCliente> idcliente_bovboveda_cliente) {
+		this.idcliente_bovboveda_cliente = idcliente_bovboveda_cliente;
+	}
+
+	public BovBovedaCliente addIdcliente_bovboveda_cliente(BovBovedaCliente idcliente_bovboveda_cliente) {
+		getIdcliente_bovboveda_cliente().add(idcliente_bovboveda_cliente);
+		idcliente_bovboveda_cliente.setIdcliente(this);
+
+		return idcliente_bovboveda_cliente;
+	}
+
+	public BovBovedaCliente removeIdcliente_bovboveda_cliente(BovBovedaCliente idcliente_bovboveda_cliente) {
+		getIdcliente_bovboveda_cliente().remove(idcliente_bovboveda_cliente);
+		idcliente_bovboveda_cliente.setIdcliente(null);
+
+		return idcliente_bovboveda_cliente;
+	}
+
+	public List<SacCabezeratransaccione> getIdcliente_sacCabezeratransacciones() {
+		return this.idcliente_sacCabezeratransacciones;
+	}
+
+	public void setIdcliente_sacCabezeratransacciones(List<SacCabezeratransaccione> idcliente_sacCabezeratransacciones) {
+		this.idcliente_sacCabezeratransacciones = idcliente_sacCabezeratransacciones;
+	}
+
+	public SacCabezeratransaccione addIdcliente_sacCabezeratransaccione(SacCabezeratransaccione idcliente_sacCabezeratransaccione) {
+		getIdcliente_sacCabezeratransacciones().add(idcliente_sacCabezeratransaccione);
+		idcliente_sacCabezeratransaccione.setIdcliente(this);
+
+		return idcliente_sacCabezeratransaccione;
+	}
+
+	public SacCabezeratransaccione removeIdcliente_sacCabezeratransaccione(SacCabezeratransaccione idcliente_sacCabezeratransaccione) {
+		getIdcliente_sacCabezeratransacciones().remove(idcliente_sacCabezeratransaccione);
+		idcliente_sacCabezeratransaccione.setIdcliente(null);
+
+		return idcliente_sacCabezeratransaccione;
+	}
+
+}

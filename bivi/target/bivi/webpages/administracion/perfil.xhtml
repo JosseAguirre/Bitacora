@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/templates/menuT.xhtml">
+        <ui:define name="content">
+            <p:messages id="mensaje" autoUpdate="false" />
+             <p:tabView id = "tab">
+                <p:tab id="tab1" title="ROLES A USUARIOS">
+            
+                    <p:panel id = "pnl"  header="ASIGNACION DE ROLES A USUARIOS"  >
+                        <p:panelGrid id="pnlUsuario" columns="2" styleClass="ui-panelgrid-blank" >
+                            <p:outputLabel value="Usuario:" />
+                            <p:autoComplete id="usuariox" placeholder="Escriba aqui..."
+                                            inputStyle="background-color: #ffffb3"
+                                            value="#{admPerfilBean.admusuario}"
+                                            completeMethod="#{admPerfilBean.usuarioBuscado}"
+                                            converter="usuarioConverter" cache="false" var="item"
+                                            itemLabel="#{item.nombreusuario}" itemValue="#{item}"
+                                            forceSelection="true">
+                                <p:ajax event="itemSelect"
+                                        listener="#{admPerfilBean.onSelectItemUsuario}"
+                                         update=":frm:tab:PojoPickList"/>
+
+                            </p:autoComplete>
+                        </p:panelGrid>
+                        <br />
+                        <p:panelGrid id="pnl2" columns="1"  columnClasses="ui-grid-col-2" styleClass="ui-panelgrid-blank"  style="width: 400px;"  >
+                            <p:pickList id="PojoPickList" value="#{admPerfilBean.dualListRoles}" var="theme"   showCheckbox="true"
+                                        itemValue="#{theme}" itemLabel="#{theme.nombre}" 
+                                        addLabel="A&nacute;adir" addAllLabel="A&nacute;adir todos"
+                                        removeLabel="Quitar" removeAllLabel="Quitar todos"
+                                        converter="rolConverter" >
+
+                                <f:facet name="sourceCaption">Roles Disponibles</f:facet>
+                                <f:facet name="targetCaption">Roles Asignados</f:facet>
+                                <p:ajax event="transfer" listener="#{admPerfilBean.onTransferRol}" />
+
+                            </p:pickList >
+                        </p:panelGrid>
+                        <br />
+                        <p:commandButton value="guardar" action="#{admPerfilBean.guardarRol()}" update=":frm:growl"/> 
+                    </p:panel>
+                    
+                     </p:tab>
+                
+                
+                 <!-- TAB ROLES A MENU-->
+                <p:tab title="MENUES A ROLES" >
+    
+                     <p:panel id = "pnl3"  header="ASIGNACION DE MENUES A ROLES"  >
+                        <p:panelGrid id="pnlG" columns="2" styleClass="ui-panelgrid-blank" >
+                            <p:outputLabel value="Rol: " />
+                            <p:autoComplete id="rol" placeholder="Escriba aqui..."
+                                            inputStyle="background-color: #ffffb3"
+                                            value="#{admPerfilBean.admrol}"
+                                            completeMethod="#{admPerfilBean.rolBuscado}"
+                                            converter="rolConverter" cache="false" var="item"
+                                            itemLabel="#{item.nombre}" itemValue="#{item}"
+                                            forceSelection="true">
+                                <p:ajax event="itemSelect"
+                                        listener="#{admPerfilBean.onSelectItemRol}"
+                                        update=":frm:tab:PojoPickList2"/>
+
+                            </p:autoComplete>
+                        </p:panelGrid>
+                        <br />
+                        <p:panelGrid id="pnl4" columns="1"  columnClasses="ui-grid-col-2" styleClass="ui-panelgrid-blank"  style="width: 400px;"  >
+                            <p:pickList id="PojoPickList2" value="#{admPerfilBean.dualListMenu}" var="theme"   showCheckbox="true"
+                                        itemValue="#{theme}" itemLabel="#{theme.nombre}" 
+                                        addLabel="A&nacute;adir" addAllLabel="A&nacute;adir todos"
+                                        removeLabel="Quitar" removeAllLabel="Quitar todos"
+                                        converter="menuConverter" >
+
+                                <f:facet name="sourceCaption">Menu Disponibles</f:facet>
+                                <f:facet name="targetCaption">Menu Asignados</f:facet>
+                                <p:ajax event="transfer" listener="#{admPerfilBean.onTransferMenu}" />
+
+                            </p:pickList >
+                        </p:panelGrid>
+                        <br />
+                        <p:commandButton value="Guardar" action="#{admPerfilBean.guardarRolMenu()}" update=":frm:growl"/> 
+                    </p:panel>
+                      
+                      </p:tab>     
+                
+             </p:tabView> 
+        </ui:define>
+
+    </ui:composition>
+
+</html>

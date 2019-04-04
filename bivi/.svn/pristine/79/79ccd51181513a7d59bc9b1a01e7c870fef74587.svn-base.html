@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui">
+	  
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+		<ui:define name="content">
+		<p:messages id="mensaje" autoUpdate="false"/>	
+		<p:fieldset id="fst" legend="Insumos">
+			<h:panelGrid id="pnl" columns="3" border="0">
+			
+				<p:outputLabel value="Insumo" for="insumo"/>
+				<p:inputText id="insumo"
+				             value="#{admClienteBean.admcliente.nombrecomercial}"
+				             required="true" requiredMessage="Requerido"
+				             onkeyup="this.value = this.value.toUpperCase();" >                            				
+				</p:inputText>
+				<p:message for="insumo" />
+				
+				<p:outputLabel value="Tipo" for="tipo"/>
+				<p:inputText id="tipo"
+				             value=""
+				             required="true" requiredMessage="Requerido"
+				             onkeyup="this.value = this.value.toUpperCase();" >                            				
+				</p:inputText>
+				<p:message for="tipo" />
+				
+				<p:outputLabel value="Tiempo de respuesta" for="tiempoderespuesta"/>
+				<p:inputText id="tiempoderespuesta"
+				             value=""
+				             required="true" requiredMessage="Requerido"
+				             onkeyup="this.value = this.value.toUpperCase();" >                            				
+				</p:inputText>
+				<p:message for="tiempoderespuesta" />
+				
+				<p:outputLabel value="Descripción"/>
+				<p:inputTextarea rows="2" cols="33" id="descripcion"
+				             value="#{null}"
+				             required="true" requiredMessage="Requerido" maxlength="100">
+				</p:inputTextarea>
+				<p:message for="descripcion" />	
+			
+				<p:outputLabel value="Estado" for="estado" />
+				<p:selectOneMenu id="estado" value="#{sacTransaccionesBean.idServicio}" required="true" requiredMessage="Requerido">
+					<f:selectItem itemLabel="Seleccionar" itemValue="#{null}" />
+					<f:selectItems value="#{sacTransaccionesBean.listaServicio}" var="item"
+						itemLabel="#{item.nombre}" itemValue="#{item.idservicio}">
+					</f:selectItems>
+				</p:selectOneMenu>
+				<p:message for="estado" />				
+			</h:panelGrid>
+		</p:fieldset>
+		
+			<p:commandButton value="Guardar"
+				action="#{sacTransaccionesBean.persitir()}"
+				update=":frm:fst  :frm:growl" icon="ui-icon-disk" oncomplete="PF('dlg').show();">
+			</p:commandButton>
+			<p:dialog header="Modal Dialog" widgetVar="dlg" modal="true" height="100">
+    			<h:outputText value="Cliente ingresado exitosamente"/>
+			</p:dialog>	
+					
+	</ui:define>
+	<ui:define name="content2">
+		<p:fieldset id="fst" legend="Atributos">
+			<p:dataTable id="tbl2" value="#{admAtributoBean.listaAtributo}" var="item2" paginator="true" rows="5"
+			 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			 paginatorPosition="bottom" editable="true" tableStyle="width: auto; white-space: nowrap"
+			 widgetVar="carsTable2" filteredValue="#{admAtributoBean.atributoFiltrado}"
+			 emptyMessage="No existen registros con ese criterio">
+			 
+				<f:facet name="header">
+					<p:outputPanel style="width:300px">
+						<h:outputText value="Buscar Todo  "/>
+						<p:inputText id="globalFilter" onkeyup="PF('carsTable2').filter()" style="width:150px"/>
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column headerText="Id" filterBy="#{item2.idatributo}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idatributo}" />
+				</p:column>
+        		
+        		<p:column headerText="Nombre" filterBy="#{item2.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.nombre}" />
+				</p:column>
+        		
+        		<p:column headerText="Tipo" filterBy="#{item2.tipo}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.tipo}" />
+				</p:column>
+        		
+        		<p:column headerText="Tiempo de Respuesta" filterBy="#{item2.tiempoRespuesta}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.tiempoRespuesta}" />
+				</p:column>				
+				
+				<p:column headerText="Estado" filterBy="#{item2.idestado_dc.nombre}"
+					filterStyle="display:none">
+					<h:outputText value="#{item2.idestado_dc.nombre}" />
+				</p:column>
+				
+								
+			</p:dataTable>	
+		</p:fieldset>	
+	</ui:define>
+	</ui:composition>
+</html>

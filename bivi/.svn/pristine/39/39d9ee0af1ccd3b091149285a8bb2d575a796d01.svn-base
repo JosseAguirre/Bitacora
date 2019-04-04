@@ -1,0 +1,361 @@
+package com.scm.bean.preboveda;
+
+import java.io.Serializable;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.Admempleado;
+import com.scm.modelo.administracion.Admusuario;
+import com.scm.modelo.preboveda.BovBoveda;
+import com.scm.modelo.preboveda.BovBovedaBovedaCliente;
+import com.scm.modelo.preboveda.BovCambioTurno;
+import com.scm.servicio.administracion.ServicioAdmCatalogo;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+import com.scm.servicio.administracion.ServicioAdmEmpleado;
+import com.scm.servicio.administracion.ServicioAdmTipoCatalogo;
+import com.scm.servicio.boveda.ServicioBovBoveda;
+import com.scm.servicio.boveda.ServicioBovBovedaBovedaCliente;
+import com.scm.servicio.boveda.ServicioBovCambioTurno;
+
+@ManagedBean
+@ViewScoped
+public class BovCambioTurnoBean implements Interface, Serializable {
+
+	private static final long serialVersionUID = 1L;
+	// crear clase para usar las listas
+	private BovCambioTurno bovcambioturno;
+	private List<BovCambioTurno> listacambioturno;
+	private List<BovCambioTurno> cambioturnofiltrado;
+	private Admempleado admempleado;
+	private List<Admempleado> listaempleado;
+	private List<Admempleado> listaempeadocambioturno;
+	private BovBoveda bovboveda;
+	private List<BovBoveda> listaboveda;
+	private BovBovedaBovedaCliente bovbovedabovedacliente;
+	private List<BovBovedaBovedaCliente> bovedaclienteseleccionada;
+	//coneccion a los servicios por los ejb
+	@EJB
+	private ServicioAdmEmpleado servicioadmempleado;
+	@EJB
+	private ServicioBovCambioTurno serviciobovcambioturno;
+	@EJB 	
+	private ServicioAdmCatalogo servicioadmcatalogo;
+	@EJB
+	private ServicioAdmDetalleCatalogo servicioadmdetallecatalogo;
+	@EJB
+	private ServicioAdmTipoCatalogo servicioadmtipocatalogo;
+	@EJB
+	private ServicioBovBoveda serviciobovboveda;
+	@EJB
+	private ServicioBovBovedaBovedaCliente serviciobovbovedabovedacliente;
+	//creo las variables que necesitare
+	private Integer bandera;
+	private Integer idempleado = mostrarid();
+	private Integer idempleado2;
+	private String nombre;
+	private String nominativo;
+	private String apellido;
+	private Integer id_boveda;
+	private Date date;
+	private Time time;
+	//formato para fecha y hora     //sin usar   
+	DateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
+    DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+    //crear hora
+    Calendar Time = Calendar.getInstance();
+    int hora = Time.get(Calendar.HOUR_OF_DAY);
+    int minuto = Time.get(Calendar.MINUTE);
+    int segundo = Time.get(Calendar.SECOND);
+	//metodo que inicia el proceso
+
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+		date = new Date();
+		time = new Time(hora, minuto, segundo);
+	}
+//metodo guardar cambio turno
+	@Override
+	public void guardar() {
+
+		bovcambioturno.setIdBovCambioTurno(serviciobovcambioturno.getPK());
+		bovcambioturno.setNumeroCambioTurno(serviciobovcambioturno.getcod());
+		bovcambioturno.setFecha(date);
+		bovcambioturno.setHora(time);
+
+		buscaIdCombos();
+
+		serviciobovcambioturno.create(bovcambioturno);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso",
+				"Se registró el Tipo Catálogo: " + bovcambioturno.getIdBovCambioTurno()));
+		cancelar();
+	}
+//busca la información necesaria para llenar el campo crear cambio turno
+	private void buscaIdCombos() {
+
+		bovboveda = serviciobovboveda.findOne(id_boveda);
+		bovcambioturno.setIdboveda(bovboveda);
+
+		admempleado = servicioadmempleado.findOne(idempleado);
+		bovcambioturno.setIdempleado(admempleado);
+
+		admempleado = servicioadmempleado.findOne(idempleado2);
+		bovcambioturno.setIdempleado2(admempleado);
+	
+	}
+
+	public void persitir() {
+	}
+
+	@Override
+	public void eliminar() {
+
+	}
+
+	@Override
+	public void actualizar() {
+
+	}
+//metodo consultar consulta toda la información necesaria por medio de listas
+	@Override
+	public void consultar() {
+
+		listaempeadocambioturno = new ArrayList<>();
+		listaempeadocambioturno = servicioadmempleado.empleadocambioturno();
+
+		listaempleado = new ArrayList<>();
+		listaempleado = servicioadmempleado.findAll();
+
+		listacambioturno = new ArrayList<>();
+		listacambioturno = serviciobovcambioturno.findAll();
+
+		listaempleado = new ArrayList<>();
+		listaempleado = servicioadmempleado.findAll();
+
+		listaboveda = new ArrayList<>();
+		listaboveda = serviciobovboveda.findAll();
+
+	}
+//cancela la creacion de cambio turno
+	@Override
+	public void cancelar() {
+		bovcambioturno = new BovCambioTurno();
+		bovboveda = new BovBoveda();
+		admempleado = new Admempleado();
+		consultar();
+
+	}
+
+	// trae el nombre y apellido del usuario logeado
+	public String mostrarnombre() {
+		Admusuario us = (Admusuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("usuario"); // obtengo el usuario logueado
+		return us.getIdempleado().getNombres() + " " + us.getIdempleado().getApellidos() + " "; // retorno el nombre
+	}
+	
+	public Integer mostrarid() {
+		Admusuario us = (Admusuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("usuario"); // obtengo el usuario logueado
+		return us.getIdempleado().getIdempleado() ; // retorno el nombre
+	}
+	
+
+	public BovCambioTurno getBovcambioturno() {
+		return bovcambioturno;
+	}
+
+	public void setBovcambioturno(BovCambioTurno bovcambioturno) {
+		this.bovcambioturno = bovcambioturno;
+	}
+
+	public List<BovCambioTurno> getListacambioturno() {
+		return listacambioturno;
+	}
+
+	public void setListacambioturno(List<BovCambioTurno> listacambioturno) {
+		this.listacambioturno = listacambioturno;
+	}
+
+	public Admempleado getAdmempleado() {
+		return admempleado;
+	}
+
+	public void setAdmempleado(Admempleado admempleado) {
+		this.admempleado = admempleado;
+	}
+
+	public List<Admempleado> getListaempleado() {
+		return listaempleado;
+	}
+
+	public void setListaempleado(List<Admempleado> listaempleado) {
+		this.listaempleado = listaempleado;
+	}
+
+	public List<Admempleado> getListaempeadocambioturno() {
+		return listaempeadocambioturno;
+	}
+
+	public void setListaempeadocambioturno(List<Admempleado> listaempeadocambioturno) {
+		this.listaempeadocambioturno = listaempeadocambioturno;
+	}
+
+	public ServicioAdmEmpleado getServicioadmempleado() {
+		return servicioadmempleado;
+	}
+
+	public void setServicioadmempleado(ServicioAdmEmpleado servicioadmempleado) {
+		this.servicioadmempleado = servicioadmempleado;
+	}
+
+	public ServicioBovCambioTurno getServiciobovcambioturno() {
+		return serviciobovcambioturno;
+	}
+
+	public void setServiciobovcambioturno(ServicioBovCambioTurno serviciobovcambioturno) {
+		this.serviciobovcambioturno = serviciobovcambioturno;
+	}
+
+	public Integer getIdempleado() {
+		return idempleado;
+	}
+
+	public void setIdempleado(Integer idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public Integer getIdempleado2() {
+		return idempleado2;
+	}
+
+	public void setIdempleado2(Integer idempleado2) {
+		this.idempleado2 = idempleado2;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getNominativo() {
+		return nominativo;
+	}
+
+	public void setNominativo(String nominativo) {
+		this.nominativo = nominativo;
+	}
+
+	public String getApellido() {
+		return apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
+
+	public ServicioAdmCatalogo getServicioadmcatalogo() {
+		return servicioadmcatalogo;
+	}
+
+	public void setServicioadmcatalogo(ServicioAdmCatalogo servicioadmcatalogo) {
+		this.servicioadmcatalogo = servicioadmcatalogo;
+	}
+
+	public ServicioAdmDetalleCatalogo getServicioadmdetallecatalogo() {
+		return servicioadmdetallecatalogo;
+	}
+
+	public void setServicioadmdetallecatalogo(ServicioAdmDetalleCatalogo servicioadmdetallecatalogo) {
+		this.servicioadmdetallecatalogo = servicioadmdetallecatalogo;
+	}
+
+	public ServicioAdmTipoCatalogo getServicioadmtipocatalogo() {
+		return servicioadmtipocatalogo;
+	}
+
+	public void setServicioadmtipocatalogo(ServicioAdmTipoCatalogo servicioadmtipocatalogo) {
+		this.servicioadmtipocatalogo = servicioadmtipocatalogo;
+	}
+
+	public List<BovCambioTurno> getCambioturnofiltrado() {
+		return cambioturnofiltrado;
+	}
+
+	public void setCambioturnofiltrado(List<BovCambioTurno> cambioturnofiltrado) {
+		this.cambioturnofiltrado = cambioturnofiltrado;
+	}
+
+	public BovBoveda getBovboveda() {
+		return bovboveda;
+	}
+
+	public void setBovboveda(BovBoveda bovboveda) {
+		this.bovboveda = bovboveda;
+	}
+
+	public List<BovBoveda> getListaboveda() {
+		return listaboveda;
+	}
+
+	public void setListaboveda(List<BovBoveda> listaboveda) {
+		this.listaboveda = listaboveda;
+	}
+
+	public Integer getIdBoveda() {
+		return id_boveda;
+	}
+
+	public void setIdBoveda(Integer idBoveda) {
+		this.id_boveda = idBoveda;
+	}
+
+	public Integer getBandera() {
+		return bandera;
+	}
+
+	public void setBandera(Integer bandera) {
+		this.bandera = bandera;
+	}
+
+	public ServicioBovBoveda getServiciobovboveda() {
+		return serviciobovboveda;
+	}
+
+	public void setServiciobovboveda(ServicioBovBoveda serviciobovboveda) {
+		this.serviciobovboveda = serviciobovboveda;
+	}
+
+	public BovBovedaBovedaCliente getBovbovedabovedacliente() {
+		return bovbovedabovedacliente;
+	}
+
+	public void setBovbovedabovedacliente(BovBovedaBovedaCliente bovbovedabovedacliente) {
+		this.bovbovedabovedacliente = bovbovedabovedacliente;
+	}
+
+	public List<BovBovedaBovedaCliente> getBovedaclienteseleccionada() {
+		return bovedaclienteseleccionada;
+	}
+
+	public void setBovedaclienteseleccionada(List<BovBovedaBovedaCliente> bovedaclienteseleccionada) {
+		this.bovedaclienteseleccionada = bovedaclienteseleccionada;
+	}
+
+}

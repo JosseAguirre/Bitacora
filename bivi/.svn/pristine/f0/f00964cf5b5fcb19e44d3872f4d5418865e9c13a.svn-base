@@ -1,0 +1,205 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.AdmSucursal;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the bov_boveda database table.
+ * 
+ */
+@Entity
+@Table(name="bov_boveda", schema="java")
+@NamedQuery(name="BovBoveda.findAll", query="SELECT b FROM BovBoveda b")
+public class BovBoveda implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_boveda", unique=true, nullable=false)
+	private Integer idBoveda;
+
+	private double altura;
+
+	private double ancho;
+
+	private double largo;
+
+	@Column(name="monto_maximo")
+	private double montoMaximo;
+
+	@Column(length=30)
+	private String nombre;
+
+	//bi-directional many-to-one association to AdmSucursal
+	@ManyToOne
+	@JoinColumn(name="id_sucursal_empresa")
+	private AdmSucursal idsucursal;
+
+	//bi-directional many-to-one association to BovBovedaBovedaCliente
+	@OneToMany(mappedBy="idboveda")
+	private List<BovBovedaBovedaCliente> idboveda_bovboveda_boveda_cliente;
+
+	//bi-directional many-to-one association to BovCambioTurno
+	@OneToMany(mappedBy="idboveda")
+	private List<BovCambioTurno> idboveda_bov_cambio_turno;
+
+	//bi-directional many-to-one association to BovContadorBoveda
+	@OneToMany(mappedBy="idboveda")
+	private List<BovContadorBoveda> idboveda_bovcontadorboveda;
+
+	//bi-directional many-to-one association to BovDetalleBoveda
+	@OneToMany(mappedBy="idboveda")
+	private List<BovDetalleBoveda> idboveda_bovdetalleboveda;
+
+	public BovBoveda() {
+	}
+
+	public Integer getIdBoveda() {
+		return this.idBoveda;
+	}
+
+	public void setIdBoveda(Integer idBoveda) {
+		this.idBoveda = idBoveda;
+	}
+
+	public double getAltura() {
+		return this.altura;
+	}
+
+	public void setAltura(double altura) {
+		this.altura = altura;
+	}
+
+	public double getAncho() {
+		return this.ancho;
+	}
+
+	public void setAncho(double ancho) {
+		this.ancho = ancho;
+	}
+
+	public double getLargo() {
+		return this.largo;
+	}
+
+	public void setLargo(double largo) {
+		this.largo = largo;
+	}
+
+	public double getMontoMaximo() {
+		return this.montoMaximo;
+	}
+
+	public void setMontoMaximo(double montoMaximo) {
+		this.montoMaximo = montoMaximo;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public AdmSucursal getIdsucursal() {
+		return this.idsucursal;
+	}
+
+	public void setIdsucursal(AdmSucursal idsucursal) {
+		this.idsucursal = idsucursal;
+	}
+
+	public List<BovBovedaBovedaCliente> getIdboveda_bovboveda_boveda_cliente() {
+		return this.idboveda_bovboveda_boveda_cliente;
+	}
+
+	public void setIdboveda_bovboveda_boveda_cliente(List<BovBovedaBovedaCliente> idboveda_bovboveda_boveda_cliente) {
+		this.idboveda_bovboveda_boveda_cliente = idboveda_bovboveda_boveda_cliente;
+	}
+
+	public BovBovedaBovedaCliente addIdboveda_bovboveda_boveda_cliente(BovBovedaBovedaCliente idboveda_bovboveda_boveda_cliente) {
+		getIdboveda_bovboveda_boveda_cliente().add(idboveda_bovboveda_boveda_cliente);
+		idboveda_bovboveda_boveda_cliente.setIdboveda(this);
+
+		return idboveda_bovboveda_boveda_cliente;
+	}
+
+	public BovBovedaBovedaCliente removeIdboveda_bovboveda_boveda_cliente(BovBovedaBovedaCliente idboveda_bovboveda_boveda_cliente) {
+		getIdboveda_bovboveda_boveda_cliente().remove(idboveda_bovboveda_boveda_cliente);
+		idboveda_bovboveda_boveda_cliente.setIdboveda(null);
+
+		return idboveda_bovboveda_boveda_cliente;
+	}
+
+	public List<BovCambioTurno> getIdboveda_bov_cambio_turno() {
+		return this.idboveda_bov_cambio_turno;
+	}
+
+	public void setIdboveda_bov_cambio_turno(List<BovCambioTurno> idboveda_bov_cambio_turno) {
+		this.idboveda_bov_cambio_turno = idboveda_bov_cambio_turno;
+	}
+
+	public BovCambioTurno addIdboveda_bov_cambio_turno(BovCambioTurno idboveda_bov_cambio_turno) {
+		getIdboveda_bov_cambio_turno().add(idboveda_bov_cambio_turno);
+		idboveda_bov_cambio_turno.setIdboveda(this);
+
+		return idboveda_bov_cambio_turno;
+	}
+
+	public BovCambioTurno removeIdboveda_bov_cambio_turno(BovCambioTurno idboveda_bov_cambio_turno) {
+		getIdboveda_bov_cambio_turno().remove(idboveda_bov_cambio_turno);
+		idboveda_bov_cambio_turno.setIdboveda(null);
+
+		return idboveda_bov_cambio_turno;
+	}
+
+	public List<BovContadorBoveda> getIdboveda_bovcontadorboveda() {
+		return this.idboveda_bovcontadorboveda;
+	}
+
+	public void setIdboveda_bovcontadorboveda(List<BovContadorBoveda> idboveda_bovcontadorboveda) {
+		this.idboveda_bovcontadorboveda = idboveda_bovcontadorboveda;
+	}
+
+	public BovContadorBoveda addIdboveda_bovcontadorboveda(BovContadorBoveda idboveda_bovcontadorboveda) {
+		getIdboveda_bovcontadorboveda().add(idboveda_bovcontadorboveda);
+		idboveda_bovcontadorboveda.setIdboveda(this);
+
+		return idboveda_bovcontadorboveda;
+	}
+
+	public BovContadorBoveda removeIdboveda_bovcontadorboveda(BovContadorBoveda idboveda_bovcontadorboveda) {
+		getIdboveda_bovcontadorboveda().remove(idboveda_bovcontadorboveda);
+		idboveda_bovcontadorboveda.setIdboveda(null);
+
+		return idboveda_bovcontadorboveda;
+	}
+
+	public List<BovDetalleBoveda> getIdboveda_bovdetalleboveda() {
+		return this.idboveda_bovdetalleboveda;
+	}
+
+	public void setIdboveda_bovdetalleboveda(List<BovDetalleBoveda> idboveda_bovdetalleboveda) {
+		this.idboveda_bovdetalleboveda = idboveda_bovdetalleboveda;
+	}
+
+	public BovDetalleBoveda addIdboveda_bovdetalleboveda(BovDetalleBoveda idboveda_bovdetalleboveda) {
+		getIdboveda_bovdetalleboveda().add(idboveda_bovdetalleboveda);
+		idboveda_bovdetalleboveda.setIdboveda(this);
+
+		return idboveda_bovdetalleboveda;
+	}
+
+	public BovDetalleBoveda removeIdboveda_bovdetalleboveda(BovDetalleBoveda idboveda_bovdetalleboveda) {
+		getIdboveda_bovdetalleboveda().remove(idboveda_bovdetalleboveda);
+		idboveda_bovdetalleboveda.setIdboveda(null);
+
+		return idboveda_bovdetalleboveda;
+	}
+
+}

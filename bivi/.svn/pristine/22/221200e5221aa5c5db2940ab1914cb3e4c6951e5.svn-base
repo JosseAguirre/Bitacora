@@ -1,0 +1,466 @@
+package com.scm.bean.administracion;
+
+import java.io.Serializable;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.AdmClienteAgenciaSistema;
+import com.scm.modelo.administracion.Admagencia;
+import com.scm.modelo.administracion.Admcliente;
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admsistema;
+import com.scm.servicio.administracion.ServicioAdmAgencia;
+import com.scm.servicio.administracion.ServicioAdmCliente;
+import com.scm.servicio.administracion.ServicioAdmClienteAgenciaSistemas;
+import com.scm.servicio.administracion.ServicioAdmDetalleCatalogo;
+import com.scm.servicio.administracion.ServicioAdmSistema;
+
+@ManagedBean
+@ViewScoped
+public class AdmAgenciaBean implements Interface, Serializable {
+
+	private static final long serialVersionUID = 1L;
+	// crear clases para poder utilizar las listas
+	private Admagencia admagencia;
+	private List<Admagencia> listaagencia;
+	private List<Admagencia> agenciafiltrado;
+	private List<Admagencia> listaagenciapadre;
+
+	private Admcliente admcliente;
+	private List<Admcliente> listacliente;
+	private List<Admcliente> clientefiltrado;
+
+	private Admdetallecatalogo admdetallecatalogo;
+	private List<Admdetallecatalogo> listaciudad;
+	private List<Admdetallecatalogo> listaestado;
+
+	private AdmClienteAgenciaSistema admclienteagenciasistemas;
+	private List<AdmClienteAgenciaSistema> listaadmclienteagenciasistema;
+	private List<AdmClienteAgenciaSistema> filtroclienteagenciasistema;
+	private List<AdmClienteAgenciaSistema> listaagencias;
+
+	private Admsistema admsistema;
+	private List<Admsistema> listasistema;
+
+	// creo las variables a usar que pertenecen a otras tablas que necesitaremos
+	private int idagencia;
+	private Date date;
+	private Integer idcliente;
+	private int idciudad;
+	private int idestado;
+	private int idagenciapadre;
+	private int idsistemas;
+	private Long valor;
+	private int idcliente_agencia_sistemas;
+	private Integer padreagencia;
+	Integer bandera;
+
+	// creo las clases servicios que necesito (dependiendo las relaciones que
+	// tenga la tabla),por medio de los @EBJ (interfaces que proveen datos del
+	// servidor)
+	@EJB
+	private ServicioAdmCliente serviciocliente;
+	@EJB
+	private ServicioAdmAgencia servicioagencia;
+	@EJB
+	private ServicioAdmDetalleCatalogo serviciodetallecatalogo;
+	@EJB
+	private ServicioAdmClienteAgenciaSistemas servicioadmclienteagenciasistemas;
+	@EJB
+	private ServicioAdmSistema servicioadmsistema;
+
+	// metodo que empieza el funcionamiento del controlador
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+	}
+
+	// metodo para guardar los dtos ingresados
+	@Override
+	public void guardar() {
+
+		admagencia.setIdagencia(servicioagencia.getPK());
+		admagencia.setSysdelete(false);
+
+		buscaIdCombos();
+
+		servicioagencia.create(admagencia);
+		//mensaje que se muestra al guardar la agencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+		"Aviso", "Se registró la Agencia: " + admagencia.getNombre()));
+		cancelar();
+	}
+
+	// clase que ermite cargar los datos al editar
+	public void onRowSelect(SelectEvent event) {
+		admagencia = (Admagencia) event.getObject();
+
+		idcliente = admagencia.getIdcliente().getIdcliente();
+		idagenciapadre = admagencia.getIdagenciapadre().getIdagencia();
+		idciudad = admagencia.getIdciudaddc().getIddetallecatalogo();
+		idestado = admagencia.getIdestadodc().getIddetallecatalogo();
+		bandera = 1;
+	}
+
+	public void persitir() {
+		if (bandera == 1) {
+
+			actualizar();
+
+		} else {
+			guardar();
+
+		}
+	}
+
+	// clase que nos tra los datos de otras tablas relacionados de las cuales
+	// necesitamos algun campo
+	public void buscaIdCombos() {
+
+		admcliente = serviciocliente.findOne(idcliente);
+		admagencia.setIdcliente(admcliente);
+
+		Admagencia idAgenciaPadre = new Admagencia();
+		idAgenciaPadre.setIdagencia(idagenciapadre);
+		admagencia.setIdagenciapadre(idAgenciaPadre);
+
+		admdetallecatalogo = serviciodetallecatalogo.findOne(idciudad);
+		admagencia.setIdciudaddc(admdetallecatalogo);
+
+		admdetallecatalogo = serviciodetallecatalogo.findOne(idestado);
+		admagencia.setIdestadodc(admdetallecatalogo);
+
+	}
+
+	// este metodo no elimina la informacion mas bien la cambia a un sysdelete
+	// verdadero
+	@Override
+	public void eliminar() {
+		admagencia.setSysdelete(true);
+		servicioagencia.update(admagencia);
+		//mensaje al eliminar la agencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+		"Aviso", "Se elimino la Agencia: " + admagencia.getNombre()));
+		cancelar();
+	}
+
+	// esta clase nos permite actualizar la tabla admagencia de manera
+	// automatica sin tener que modificar la base de datos
+	@Override
+	public void actualizar() {
+		buscaIdCombos();
+
+		servicioagencia.update(admagencia);
+		//mensaje al actuaizar la agencia
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+	    "Aviso", "Se actualizo la Agencia: " + admagencia.getNombre()));
+		cancelar();
+	}
+
+	// consulta en la informacion en las tablas,por medio de las lista creadas
+	// por medio de una sentencia qpa en los servicios.
+	@Override
+	public void consultar() {
+		listaagencia = new ArrayList<>();
+		listaagencia = servicioagencia.findAll();
+
+		listaagenciapadre = new ArrayList<>();
+		listaagenciapadre = servicioagencia.agenciaspadres();//query creado en
+															 //servicioagencia
+
+		listacliente = new ArrayList<>();
+		listacliente = serviciocliente.findcli();
+
+		listaciudad = new ArrayList<>();
+		listaciudad = serviciodetallecatalogo.ciudades();
+
+		listaestado = new ArrayList<>();
+		listaestado = serviciodetallecatalogo.estadoagencia();
+
+		listaadmclienteagenciasistema = new ArrayList<>();
+		listaadmclienteagenciasistema = servicioadmclienteagenciasistemas.findagencia();
+
+		listasistema = new ArrayList<>();
+		listasistema = servicioadmsistema.findAll();
+
+		padreagencia = servicioagencia.findPadreagencia();
+	}
+
+	// metodo para cancelar el guardado 
+	@Override
+	public void cancelar() {
+		admagencia = new Admagencia();
+		admcliente = new Admcliente();
+		idestado = -1;// paara volver el id al valor anterior
+		consultar();
+		bandera = 0;
+
+	}
+
+	// set y get de las clases y metodos creados
+	public Admcliente getAdmcliente() {
+		return admcliente;
+	}
+
+	public void setAdmcliente(Admcliente admcliente) {
+		this.admcliente = admcliente;
+	}
+
+	public Admagencia getAdmagencia() {
+		return admagencia;
+	}
+
+	public void setAdmagencia(Admagencia admagencia) {
+		this.admagencia = admagencia;
+	}
+
+	public List<Admcliente> getListacliente() {
+		return listacliente;
+	}
+
+	public void setListacliente(List<Admcliente> listacliente) {
+		this.listacliente = listacliente;
+	}
+
+	public List<Admcliente> getClientefiltrado() {
+		return clientefiltrado;
+	}
+
+	public void setClientefiltrado(List<Admcliente> clientefiltrado) {
+		this.clientefiltrado = clientefiltrado;
+	}
+
+	public List<Admagencia> getListaagencia() {
+		return listaagencia;
+	}
+
+	public void setListaagencia(List<Admagencia> listaagencia) {
+		this.listaagencia = listaagencia;
+	}
+
+	public List<Admagencia> getAgenciafiltrado() {
+		return agenciafiltrado;
+	}
+
+	public void setAgenciafiltrado(List<Admagencia> agenciafiltrado) {
+		this.agenciafiltrado = agenciafiltrado;
+	}
+
+	public Admdetallecatalogo getAdmdetallecatalogo() {
+		return admdetallecatalogo;
+	}
+
+	public void setAdmdetallecatalogo(Admdetallecatalogo admdetallecatalogo) {
+		this.admdetallecatalogo = admdetallecatalogo;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Integer getIdcliente() {
+		return idcliente;
+	}
+
+	public void setIdcliente(Integer idcliente) {
+		this.idcliente = idcliente;
+	}
+
+	public int getIdciudad() {
+		return idciudad;
+	}
+
+	public Integer getBandera() {
+		return bandera;
+	}
+
+	public void setBandera(Integer bandera) {
+		this.bandera = bandera;
+	}
+
+	public ServicioAdmCliente getServiciocliente() {
+		return serviciocliente;
+	}
+
+	public void setServiciocliente(ServicioAdmCliente serviciocliente) {
+		this.serviciocliente = serviciocliente;
+	}
+
+	public ServicioAdmAgencia getServicioagencia() {
+		return servicioagencia;
+	}
+
+	public void setServicioagencia(ServicioAdmAgencia servicioagencia) {
+		this.servicioagencia = servicioagencia;
+	}
+
+	public ServicioAdmDetalleCatalogo getServiciodetallecatalogo() {
+		return serviciodetallecatalogo;
+	}
+
+	public void setServiciodetallecatalogo(ServicioAdmDetalleCatalogo serviciodetallecatalogo) {
+		this.serviciodetallecatalogo = serviciodetallecatalogo;
+	}
+
+	public List<Admdetallecatalogo> getListaciudad() {
+		return listaciudad;
+	}
+
+	public void setListaciudad(List<Admdetallecatalogo> listaciudad) {
+		this.listaciudad = listaciudad;
+	}
+
+	public void setIdciudad(int idciudad) {
+		this.idciudad = idciudad;
+	}
+
+	public int getIdagencia() {
+		return idagencia;
+	}
+
+	public void setIdagencia(int idagencia) {
+		this.idagencia = idagencia;
+	}
+
+	public Integer getIdagenciapadre() {
+		return idagenciapadre;
+	}
+
+	public void setIdagenciapadre(Integer idagenciapadre) {
+		this.idagenciapadre = idagenciapadre;
+	}
+
+	public int getIdestado() {
+		return idestado;
+	}
+
+	public void setIdestado(int idestado) {
+		this.idestado = idestado;
+	}
+
+	public List<Admdetallecatalogo> getListaestado() {
+		return listaestado;
+	}
+
+	public void setListaestado(List<Admdetallecatalogo> listaestado) {
+		this.listaestado = listaestado;
+	}
+
+	public List<Admagencia> getListaagenciapadre() {
+		return listaagenciapadre;
+	}
+
+	public void setListaagenciapadre(List<Admagencia> listaagenciapadre) {
+		this.listaagenciapadre = listaagenciapadre;
+	}
+
+	public AdmClienteAgenciaSistema getAdmclienteagenciasistemas() {
+		return admclienteagenciasistemas;
+	}
+
+	public void setAdmclienteagenciasistemas(AdmClienteAgenciaSistema admclienteagenciasistemas) {
+		this.admclienteagenciasistemas = admclienteagenciasistemas;
+	}
+
+	public List<AdmClienteAgenciaSistema> getListaadmclienteagenciasistema() {
+		return listaadmclienteagenciasistema;
+	}
+
+	public void setListaadmclienteagenciasistema(List<AdmClienteAgenciaSistema> listaadmclienteagenciasistema) {
+		this.listaadmclienteagenciasistema = listaadmclienteagenciasistema;
+	}
+
+	public ServicioAdmClienteAgenciaSistemas getSrvicioadmclienteagenciasistemas() {
+		return servicioadmclienteagenciasistemas;
+	}
+
+	public void setSrvicioadmclienteagenciasistemas(
+			ServicioAdmClienteAgenciaSistemas srvicioadmclienteagenciasistemas) {
+		this.servicioadmclienteagenciasistemas = srvicioadmclienteagenciasistemas;
+	}
+
+	public void setIdagenciapadre(int idagenciapadre) {
+		this.idagenciapadre = idagenciapadre;
+	}
+
+	public int getIdsistemas() {
+		return idsistemas;
+	}
+
+	public void setIdsistemas(int idsistemas) {
+		this.idsistemas = idsistemas;
+	}
+
+	public Admsistema getAdmsistema() {
+		return admsistema;
+	}
+
+	public void setAdmsistema(Admsistema admsistema) {
+		this.admsistema = admsistema;
+	}
+
+	public List<Admsistema> getListasistema() {
+		return listasistema;
+	}
+
+	public void setListasistema(List<Admsistema> listasistema) {
+		this.listasistema = listasistema;
+	}
+
+	public Long getValor() {
+		return valor;
+	}
+
+	public void setValor(Long valor) {
+		this.valor = valor;
+	}
+
+	public List<AdmClienteAgenciaSistema> getFiltroclienteagenciasistema() {
+		return filtroclienteagenciasistema;
+	}
+
+	public void setFiltroclienteagenciasistema(List<AdmClienteAgenciaSistema> filtroclienteagenciasistema) {
+		this.filtroclienteagenciasistema = filtroclienteagenciasistema;
+	}
+
+	public List<AdmClienteAgenciaSistema> getListaagencias() {
+		return listaagencias;
+	}
+
+	public void setListaagencias(List<AdmClienteAgenciaSistema> listaagencias) {
+		this.listaagencias = listaagencias;
+	}
+
+	public int getIdcliente_agencia_sistemas() {
+		return idcliente_agencia_sistemas;
+	}
+
+	public void setIdcliente_agencia_sistemas(int idcliente_agencia_sistemas) {
+		this.idcliente_agencia_sistemas = idcliente_agencia_sistemas;
+	}
+
+	public Integer getPadreagencia() {
+		return padreagencia;
+	}
+
+	public void setPadreagencia(Integer padreagencia) {
+		this.padreagencia = padreagencia;
+	}
+
+}

@@ -1,0 +1,214 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admcliente;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+
+/**
+ * The persistent class for the bov_boveda_cliente database table.
+ * 
+ */
+@Entity
+@Table(name="bov_boveda_cliente" , schema="java")
+@NamedQuery(name="BovBovedaCliente.findAll", query="SELECT b FROM BovBovedaCliente b")
+public class BovBovedaCliente implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_boveda_cliente", unique=true, nullable=false)
+	private Integer idBovedaCliente;
+
+	@Column(length=30)
+	private String nombre;
+
+	@Column(name="valor_actual", precision=131089)
+	private BigDecimal valorActual;
+
+	@Column(name="valor_nuevo", precision=131089)
+	private BigDecimal valorNuevo;
+
+	//bi-directional many-to-one association to BovBovedaBovedaCliente
+	@OneToMany(mappedBy="idbovedacliente")
+	private List<BovBovedaBovedaCliente> idbovedacliente_bovboveda_boveda_cliente;
+
+	//bi-directional many-to-one association to Admcliente
+	@ManyToOne
+	@JoinColumn(name="idcliente")
+	private Admcliente idcliente;
+
+	//bi-directional many-to-one association to BovBovedaValidacion
+	@OneToMany(mappedBy="idbovedacliente")
+	private List<BovBovedaValidacion> idbovedacliente_bovboveda_validacion;
+
+	//bi-directional many-to-one association to BovCabezeratransferencia
+	@OneToMany(mappedBy="idobvsaliente")
+	private List<BovCabezeratransferencia> idobvsaliente_bovCabezeratransferencias;
+
+	//bi-directional many-to-one association to BovCabezeratransferencia
+	@OneToMany(mappedBy="idboventrante")
+	private List<BovCabezeratransferencia> idboventrante_bovCabezeratransferencias;
+
+	//bi-directional many-to-one association to BovDetalleBovedaCliente
+	@OneToMany(mappedBy="idbovedacliente")
+	private List<BovDetalleBovedaCliente> idbovedacliente_bovdetalle_bovedacliente;
+
+	public BovBovedaCliente() {
+	}
+
+	public Integer getIdBovedaCliente() {
+		return this.idBovedaCliente;
+	}
+
+	public void setIdBovedaCliente(Integer idBovedaCliente) {
+		this.idBovedaCliente = idBovedaCliente;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public BigDecimal getValorActual() {
+		return this.valorActual;
+	}
+
+	public void setValorActual(BigDecimal valorActual) {
+		this.valorActual = valorActual;
+	}
+
+	public BigDecimal getValorNuevo() {
+		return this.valorNuevo;
+	}
+
+	public void setValorNuevo(BigDecimal valorNuevo) {
+		this.valorNuevo = valorNuevo;
+	}
+
+	public List<BovBovedaBovedaCliente> getIdbovedacliente_bovboveda_boveda_cliente() {
+		return this.idbovedacliente_bovboveda_boveda_cliente;
+	}
+
+	public void setIdbovedacliente_bovboveda_boveda_cliente(List<BovBovedaBovedaCliente> idbovedacliente_bovboveda_boveda_cliente) {
+		this.idbovedacliente_bovboveda_boveda_cliente = idbovedacliente_bovboveda_boveda_cliente;
+	}
+
+	public BovBovedaBovedaCliente addIdbovedacliente_bovboveda_boveda_cliente(BovBovedaBovedaCliente idbovedacliente_bovboveda_boveda_cliente) {
+		getIdbovedacliente_bovboveda_boveda_cliente().add(idbovedacliente_bovboveda_boveda_cliente);
+		idbovedacliente_bovboveda_boveda_cliente.setIdbovedacliente(this);
+
+		return idbovedacliente_bovboveda_boveda_cliente;
+	}
+
+	public BovBovedaBovedaCliente removeIdbovedacliente_bovboveda_boveda_cliente(BovBovedaBovedaCliente idbovedacliente_bovboveda_boveda_cliente) {
+		getIdbovedacliente_bovboveda_boveda_cliente().remove(idbovedacliente_bovboveda_boveda_cliente);
+		idbovedacliente_bovboveda_boveda_cliente.setIdbovedacliente(null);
+
+		return idbovedacliente_bovboveda_boveda_cliente;
+	}
+
+	public Admcliente getIdcliente() {
+		return this.idcliente;
+	}
+
+	public void setIdcliente(Admcliente idcliente) {
+		this.idcliente = idcliente;
+	}
+
+	public List<BovBovedaValidacion> getIdbovedacliente_bovboveda_validacion() {
+		return this.idbovedacliente_bovboveda_validacion;
+	}
+
+	public void setIdbovedacliente_bovboveda_validacion(List<BovBovedaValidacion> idbovedacliente_bovboveda_validacion) {
+		this.idbovedacliente_bovboveda_validacion = idbovedacliente_bovboveda_validacion;
+	}
+
+	public BovBovedaValidacion addIdbovedacliente_bovboveda_validacion(BovBovedaValidacion idbovedacliente_bovboveda_validacion) {
+		getIdbovedacliente_bovboveda_validacion().add(idbovedacliente_bovboveda_validacion);
+		idbovedacliente_bovboveda_validacion.setIdbovedacliente(this);
+
+		return idbovedacliente_bovboveda_validacion;
+	}
+
+	public BovBovedaValidacion removeIdbovedacliente_bovboveda_validacion(BovBovedaValidacion idbovedacliente_bovboveda_validacion) {
+		getIdbovedacliente_bovboveda_validacion().remove(idbovedacliente_bovboveda_validacion);
+		idbovedacliente_bovboveda_validacion.setIdbovedacliente(null);
+
+		return idbovedacliente_bovboveda_validacion;
+	}
+
+	public List<BovCabezeratransferencia> getIdobvsaliente_bovCabezeratransferencias() {
+		return this.idobvsaliente_bovCabezeratransferencias;
+	}
+
+	public void setIdobvsaliente_bovCabezeratransferencias(List<BovCabezeratransferencia> idobvsaliente_bovCabezeratransferencias) {
+		this.idobvsaliente_bovCabezeratransferencias = idobvsaliente_bovCabezeratransferencias;
+	}
+
+	public BovCabezeratransferencia addIdobvsaliente_bovCabezeratransferencia(BovCabezeratransferencia idobvsaliente_bovCabezeratransferencia) {
+		getIdobvsaliente_bovCabezeratransferencias().add(idobvsaliente_bovCabezeratransferencia);
+		idobvsaliente_bovCabezeratransferencia.setIdobvsaliente(this);
+
+		return idobvsaliente_bovCabezeratransferencia;
+	}
+
+	public BovCabezeratransferencia removeIdobvsaliente_bovCabezeratransferencia(BovCabezeratransferencia idobvsaliente_bovCabezeratransferencia) {
+		getIdobvsaliente_bovCabezeratransferencias().remove(idobvsaliente_bovCabezeratransferencia);
+		idobvsaliente_bovCabezeratransferencia.setIdobvsaliente(null);
+
+		return idobvsaliente_bovCabezeratransferencia;
+	}
+
+	public List<BovCabezeratransferencia> getIdboventrante_bovCabezeratransferencias() {
+		return this.idboventrante_bovCabezeratransferencias;
+	}
+
+	public void setIdboventrante_bovCabezeratransferencias(List<BovCabezeratransferencia> idboventrante_bovCabezeratransferencias) {
+		this.idboventrante_bovCabezeratransferencias = idboventrante_bovCabezeratransferencias;
+	}
+
+	public BovCabezeratransferencia addIdboventrante_bovCabezeratransferencia(BovCabezeratransferencia idboventrante_bovCabezeratransferencia) {
+		getIdboventrante_bovCabezeratransferencias().add(idboventrante_bovCabezeratransferencia);
+		idboventrante_bovCabezeratransferencia.setIdboventrante(this);
+
+		return idboventrante_bovCabezeratransferencia;
+	}
+
+	public BovCabezeratransferencia removeIdboventrante_bovCabezeratransferencia(BovCabezeratransferencia idboventrante_bovCabezeratransferencia) {
+		getIdboventrante_bovCabezeratransferencias().remove(idboventrante_bovCabezeratransferencia);
+		idboventrante_bovCabezeratransferencia.setIdboventrante(null);
+
+		return idboventrante_bovCabezeratransferencia;
+	}
+
+	public List<BovDetalleBovedaCliente> getIdbovedacliente_bovdetalle_bovedacliente() {
+		return this.idbovedacliente_bovdetalle_bovedacliente;
+	}
+
+	public void setIdbovedacliente_bovdetalle_bovedacliente(List<BovDetalleBovedaCliente> idbovedacliente_bovdetalle_bovedacliente) {
+		this.idbovedacliente_bovdetalle_bovedacliente = idbovedacliente_bovdetalle_bovedacliente;
+	}
+
+	public BovDetalleBovedaCliente addIdbovedacliente_bovdetalle_bovedacliente(BovDetalleBovedaCliente idbovedacliente_bovdetalle_bovedacliente) {
+		getIdbovedacliente_bovdetalle_bovedacliente().add(idbovedacliente_bovdetalle_bovedacliente);
+		idbovedacliente_bovdetalle_bovedacliente.setIdbovedacliente(this);
+
+		return idbovedacliente_bovdetalle_bovedacliente;
+	}
+
+	public BovDetalleBovedaCliente removeIdbovedacliente_bovdetalle_bovedacliente(BovDetalleBovedaCliente idbovedacliente_bovdetalle_bovedacliente) {
+		getIdbovedacliente_bovdetalle_bovedacliente().remove(idbovedacliente_bovdetalle_bovedacliente);
+		idbovedacliente_bovdetalle_bovedacliente.setIdbovedacliente(null);
+
+		return idbovedacliente_bovdetalle_bovedacliente;
+	}
+
+
+}

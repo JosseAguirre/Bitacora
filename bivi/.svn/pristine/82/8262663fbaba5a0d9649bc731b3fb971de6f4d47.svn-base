@@ -1,0 +1,225 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.sac.SacCabezeratransaccione;
+import com.scm.modelo.sac.SacContadorTicket;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the adm_servicios database table.
+ * 
+ */
+@Entity
+@Table(name="adm_servicios", schema="java")
+@NamedQuery(name="AdmServicio.findAll", query="SELECT a FROM AdmServicio a")
+public class AdmServicio implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idservicio;
+
+	@Column(length=50)
+	private String descripcion;
+
+	@Column(length=30)
+	private String nombre;
+
+	private Boolean sysdelete;
+
+	//bi-directional many-to-one association to AdmAgenciaServicio
+	@OneToMany(mappedBy="idservicio")
+	private List<AdmAgenciaServicio> idservicio_admAgenciaServicios;
+
+	//bi-directional many-to-one association to AdmServicioAtributo
+	@OneToMany(mappedBy="idservicio")
+	private List<AdmServicioAtributo> idservicio_admServicioAtributos;
+
+	//bi-directional many-to-one association to AdmTipoServicio
+	@ManyToOne
+	@JoinColumn(name="idtipo_servicio")
+	private AdmTipoServicio idtiposervicio;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idlinea_negocio_dc")
+	private Admdetallecatalogo idlineanegociodc;
+
+	//bi-directional many-to-one association to AdmSucursalServicio
+	@OneToMany(mappedBy="idservicio")
+	private List<AdmSucursalServicio> idservicio_admSucursalServicios;
+
+	//bi-directional many-to-one association to SacCabezeratransaccione
+	@OneToMany(mappedBy="idservicio")
+	private List<SacCabezeratransaccione> idservicio_sacCabezeratransacciones;
+
+	//bi-directional many-to-one association to SacContadorTicket
+	@OneToMany(mappedBy="idservicio")
+	private List<SacContadorTicket> idservicio_sacContadorTickets;
+
+	public AdmServicio() {
+	}
+
+	public Integer getIdservicio() {
+		return this.idservicio;
+	}
+
+	public void setIdservicio(Integer idservicio) {
+		this.idservicio = idservicio;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public Boolean getSysdelete() {
+		return this.sysdelete;
+	}
+
+	public void setSysdelete(Boolean sysdelete) {
+		this.sysdelete = sysdelete;
+	}
+
+	public List<AdmAgenciaServicio> getIdservicio_admAgenciaServicios() {
+		return this.idservicio_admAgenciaServicios;
+	}
+
+	public void setIdservicio_admAgenciaServicios(List<AdmAgenciaServicio> idservicio_admAgenciaServicios) {
+		this.idservicio_admAgenciaServicios = idservicio_admAgenciaServicios;
+	}
+
+	public AdmAgenciaServicio addIdservicio_admAgenciaServicio(AdmAgenciaServicio idservicio_admAgenciaServicio) {
+		getIdservicio_admAgenciaServicios().add(idservicio_admAgenciaServicio);
+		idservicio_admAgenciaServicio.setIdservicio(this);
+
+		return idservicio_admAgenciaServicio;
+	}
+
+	public AdmAgenciaServicio removeIdservicio_admAgenciaServicio(AdmAgenciaServicio idservicio_admAgenciaServicio) {
+		getIdservicio_admAgenciaServicios().remove(idservicio_admAgenciaServicio);
+		idservicio_admAgenciaServicio.setIdservicio(null);
+
+		return idservicio_admAgenciaServicio;
+	}
+
+	public List<AdmServicioAtributo> getIdservicio_admServicioAtributos() {
+		return this.idservicio_admServicioAtributos;
+	}
+
+	public void setIdservicio_admServicioAtributos(List<AdmServicioAtributo> idservicio_admServicioAtributos) {
+		this.idservicio_admServicioAtributos = idservicio_admServicioAtributos;
+	}
+
+	public AdmServicioAtributo addIdservicio_admServicioAtributo(AdmServicioAtributo idservicio_admServicioAtributo) {
+		getIdservicio_admServicioAtributos().add(idservicio_admServicioAtributo);
+		idservicio_admServicioAtributo.setIdservicio(this);
+
+		return idservicio_admServicioAtributo;
+	}
+
+	public AdmServicioAtributo removeIdservicio_admServicioAtributo(AdmServicioAtributo idservicio_admServicioAtributo) {
+		getIdservicio_admServicioAtributos().remove(idservicio_admServicioAtributo);
+		idservicio_admServicioAtributo.setIdservicio(null);
+
+		return idservicio_admServicioAtributo;
+	}
+
+	public AdmTipoServicio getIdtiposervicio() {
+		return this.idtiposervicio;
+	}
+
+	public void setIdtiposervicio(AdmTipoServicio idtiposervicio) {
+		this.idtiposervicio = idtiposervicio;
+	}
+
+	public Admdetallecatalogo getIdlineanegociodc() {
+		return this.idlineanegociodc;
+	}
+
+	public void setIdlineanegociodc(Admdetallecatalogo idlineanegociodc) {
+		this.idlineanegociodc = idlineanegociodc;
+	}
+
+	public List<AdmSucursalServicio> getIdservicio_admSucursalServicios() {
+		return this.idservicio_admSucursalServicios;
+	}
+
+	public void setIdservicio_admSucursalServicios(List<AdmSucursalServicio> idservicio_admSucursalServicios) {
+		this.idservicio_admSucursalServicios = idservicio_admSucursalServicios;
+	}
+
+	public AdmSucursalServicio addIdservicio_admSucursalServicio(AdmSucursalServicio idservicio_admSucursalServicio) {
+		getIdservicio_admSucursalServicios().add(idservicio_admSucursalServicio);
+		idservicio_admSucursalServicio.setIdservicio(this);
+
+		return idservicio_admSucursalServicio;
+	}
+
+	public AdmSucursalServicio removeIdservicio_admSucursalServicio(AdmSucursalServicio idservicio_admSucursalServicio) {
+		getIdservicio_admSucursalServicios().remove(idservicio_admSucursalServicio);
+		idservicio_admSucursalServicio.setIdservicio(null);
+
+		return idservicio_admSucursalServicio;
+	}
+
+	public List<SacCabezeratransaccione> getIdservicio_sacCabezeratransacciones() {
+		return this.idservicio_sacCabezeratransacciones;
+	}
+
+	public void setIdservicio_sacCabezeratransacciones(List<SacCabezeratransaccione> idservicio_sacCabezeratransacciones) {
+		this.idservicio_sacCabezeratransacciones = idservicio_sacCabezeratransacciones;
+	}
+
+	public SacCabezeratransaccione addIdservicio_sacCabezeratransaccione(SacCabezeratransaccione idservicio_sacCabezeratransaccione) {
+		getIdservicio_sacCabezeratransacciones().add(idservicio_sacCabezeratransaccione);
+		idservicio_sacCabezeratransaccione.setIdservicio(this);
+
+		return idservicio_sacCabezeratransaccione;
+	}
+
+	public SacCabezeratransaccione removeIdservicio_sacCabezeratransaccione(SacCabezeratransaccione idservicio_sacCabezeratransaccione) {
+		getIdservicio_sacCabezeratransacciones().remove(idservicio_sacCabezeratransaccione);
+		idservicio_sacCabezeratransaccione.setIdservicio(null);
+
+		return idservicio_sacCabezeratransaccione;
+	}
+
+	public List<SacContadorTicket> getIdservicio_sacContadorTickets() {
+		return this.idservicio_sacContadorTickets;
+	}
+
+	public void setIdservicio_sacContadorTickets(List<SacContadorTicket> idservicio_sacContadorTickets) {
+		this.idservicio_sacContadorTickets = idservicio_sacContadorTickets;
+	}
+
+	public SacContadorTicket addIdservicio_sacContadorTicket(SacContadorTicket idservicio_sacContadorTicket) {
+		getIdservicio_sacContadorTickets().add(idservicio_sacContadorTicket);
+		idservicio_sacContadorTicket.setIdservicio(this);
+
+		return idservicio_sacContadorTicket;
+	}
+
+	public SacContadorTicket removeIdservicio_sacContadorTicket(SacContadorTicket idservicio_sacContadorTicket) {
+		getIdservicio_sacContadorTickets().remove(idservicio_sacContadorTicket);
+		idservicio_sacContadorTicket.setIdservicio(null);
+
+		return idservicio_sacContadorTicket;
+	}
+
+}

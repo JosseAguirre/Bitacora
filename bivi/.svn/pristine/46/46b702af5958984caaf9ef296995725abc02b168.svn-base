@@ -1,0 +1,58 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the admrolmenu database table.
+ * 
+ */
+@Entity
+@Table(name="admrolmenu", schema="java")
+@NamedQuery(name="Admrolmenu.findAll", query="SELECT a FROM Admrolmenu a")
+public class Admrolmenu implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idrolmenu;
+
+	//bi-directional many-to-one association to Admmenu
+	@ManyToOne
+	@JoinColumn(name="idmenu")
+	private Admmenu idmenu;
+
+	//bi-directional many-to-one association to Admrol
+	@ManyToOne
+	@JoinColumn(name="idrol")
+	private Admrol idrol;
+
+	public Admrolmenu() {
+	}
+
+	public Integer getIdrolmenu() {
+		return this.idrolmenu;
+	}
+
+	public void setIdrolmenu(Integer idrolmenu) {
+		this.idrolmenu = idrolmenu;
+	}
+
+	public Admmenu getIdmenu() {
+		return this.idmenu;
+	}
+
+	public void setIdmenu(Admmenu idmenu) {
+		this.idmenu = idmenu;
+	}
+
+	public Admrol getIdrol() {
+		return this.idrol;
+	}
+
+	public void setIdrol(Admrol idrol) {
+		this.idrol = idrol;
+	}
+
+}

@@ -1,0 +1,162 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * The persistent class for the admusuario database table.
+ * 
+ */
+@Entity
+@Table(name="admusuario", schema="java")
+@NamedQuery(name="Admusuario.findAll", query="SELECT a FROM Admusuario a")
+public class Admusuario implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idusuario;
+
+	@Column(length=200)
+	private String contrasenia;
+
+	@Temporal(TemporalType.DATE)
+	private Date fechacaducidad;
+
+	@Temporal(TemporalType.DATE)
+	private Date fechacreacion;
+
+	@Temporal(TemporalType.DATE)
+	private Date fechamodificacion;
+
+	@Temporal(TemporalType.DATE)
+	private Date fechaultimoacceso;
+
+	@Column(length=50)
+	private String nombreusuario;
+
+	private Boolean sysdelete;
+
+	//bi-directional many-to-one association to Admrolusuario
+	@OneToMany(mappedBy="idusuario")
+	private List<Admrolusuario> idusuario_admrolusuario;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idestadodc")
+	private Admdetallecatalogo idestadodc;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado")
+	private Admempleado idempleado;
+
+	public Admusuario() {
+	}
+
+	public Integer getIdusuario() {
+		return this.idusuario;
+	}
+
+	public void setIdusuario(Integer idusuario) {
+		this.idusuario = idusuario;
+	}
+
+	public String getContrasenia() {
+		return this.contrasenia;
+	}
+
+	public void setContrasenia(String contrasenia) {
+		this.contrasenia = contrasenia;
+	}
+
+	public Date getFechacaducidad() {
+		return this.fechacaducidad;
+	}
+
+	public void setFechacaducidad(Date fechacaducidad) {
+		this.fechacaducidad = fechacaducidad;
+	}
+
+	public Date getFechacreacion() {
+		return this.fechacreacion;
+	}
+
+	public void setFechacreacion(Date fechacreacion) {
+		this.fechacreacion = fechacreacion;
+	}
+
+	public Date getFechamodificacion() {
+		return this.fechamodificacion;
+	}
+
+	public void setFechamodificacion(Date fechamodificacion) {
+		this.fechamodificacion = fechamodificacion;
+	}
+
+	public Date getFechaultimoacceso() {
+		return this.fechaultimoacceso;
+	}
+
+	public void setFechaultimoacceso(Date fechaultimoacceso) {
+		this.fechaultimoacceso = fechaultimoacceso;
+	}
+
+	public String getNombreusuario() {
+		return this.nombreusuario;
+	}
+
+	public void setNombreusuario(String nombreusuario) {
+		this.nombreusuario = nombreusuario;
+	}
+
+	public Boolean getSysdelete() {
+		return this.sysdelete;
+	}
+
+	public void setSysdelete(Boolean sysdelete) {
+		this.sysdelete = sysdelete;
+	}
+
+	public List<Admrolusuario> getIdusuario_admrolusuario() {
+		return this.idusuario_admrolusuario;
+	}
+
+	public void setIdusuario_admrolusuario(List<Admrolusuario> idusuario_admrolusuario) {
+		this.idusuario_admrolusuario = idusuario_admrolusuario;
+	}
+
+	public Admrolusuario addIdusuario_admrolusuario(Admrolusuario idusuario_admrolusuario) {
+		getIdusuario_admrolusuario().add(idusuario_admrolusuario);
+		idusuario_admrolusuario.setIdusuario(this);
+
+		return idusuario_admrolusuario;
+	}
+
+	public Admrolusuario removeIdusuario_admrolusuario(Admrolusuario idusuario_admrolusuario) {
+		getIdusuario_admrolusuario().remove(idusuario_admrolusuario);
+		idusuario_admrolusuario.setIdusuario(null);
+
+		return idusuario_admrolusuario;
+	}
+
+	public Admdetallecatalogo getIdestadodc() {
+		return this.idestadodc;
+	}
+
+	public void setIdestadodc(Admdetallecatalogo idestadodc) {
+		this.idestadodc = idestadodc;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+}

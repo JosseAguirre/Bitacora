@@ -1,0 +1,86 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admdetallecatalogo;
+
+import java.sql.Time;
+import java.util.Date;
+
+
+/**
+ * The persistent class for the bov_transferencia database table.
+ * 
+ */
+@Entity
+@Table(name="bov_transferencia", schema="java")
+@NamedQuery(name="BovTransferencia.findAll", query="SELECT b FROM BovTransferencia b")
+public class BovTransferencia implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_transferencia", unique=true, nullable=false)
+	private Integer idTransferencia;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="\"Fecha\"")
+	private Date fecha;
+
+	@Column(name="\"Hora\"")
+	private Time hora;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="id_estadotrasferencia")
+	private Admdetallecatalogo idestadotransferenciadc;
+
+	//bi-directional many-to-one association to BovCabezeratransferencia
+	@ManyToOne
+	@JoinColumn(name="id_cabezeratransferencia")
+	private BovCabezeratransferencia idcabezeratransferencia;
+
+	public BovTransferencia() {
+	}
+
+	public Integer getIdTransferencia() {
+		return this.idTransferencia;
+	}
+
+	public void setIdTransferencia(Integer idTransferencia) {
+		this.idTransferencia = idTransferencia;
+	}
+
+	public Date getFecha() {
+		return this.fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public Time getHora() {
+		return this.hora;
+	}
+
+	public void setHora(Time hora) {
+		this.hora = hora;
+	}
+
+	public Admdetallecatalogo getIdestadotransferenciadc() {
+		return this.idestadotransferenciadc;
+	}
+
+	public void setIdestadotransferenciadc(Admdetallecatalogo idestadotransferenciadc) {
+		this.idestadotransferenciadc = idestadotransferenciadc;
+	}
+
+	public BovCabezeratransferencia getIdcabezeratransferencia() {
+		return this.idcabezeratransferencia;
+	}
+
+	public void setIdcabezeratransferencia(BovCabezeratransferencia idcabezeratransferencia) {
+		this.idcabezeratransferencia = idcabezeratransferencia;
+	}
+
+}

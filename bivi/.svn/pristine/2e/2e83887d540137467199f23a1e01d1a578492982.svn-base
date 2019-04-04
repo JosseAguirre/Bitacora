@@ -1,0 +1,71 @@
+package com.scm.servicio.sac;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.sac.SacDetalleTransaccion;
+
+ 
+
+
+
+@Stateless
+public class ServicioSacDetalleTransaccion {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(SacDetalleTransaccion sacDetalleTransaccion) {
+		em.persist(sacDetalleTransaccion);
+	}
+	
+	public void delete (SacDetalleTransaccion sacDetalleTransaccion) {
+		em.remove(em.merge(sacDetalleTransaccion));
+	}
+	
+	public void update (SacDetalleTransaccion sacDetalleTransaccion) {
+		em.merge(sacDetalleTransaccion);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SacDetalleTransaccion> findAll() {
+		Query q = em.createQuery("select b from SacDetalleTransaccion b");
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SacDetalleTransaccion> findTransaccionesNoAsignadas() {
+		Query q = em.createQuery("select b from SacDetalleTransaccion b where b.idniveltransaciondetallecatalogo=null"
+				+ " and b.id_Empleado=null ");
+		return q.getResultList();
+	}
+	
+	public Integer getPK() {
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from SacDetalleTransaccion ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	
+	public SacDetalleTransaccion findOne(Integer codigoSacTransaccione){
+		Query q = em.createQuery("select b from SacDetalleTransaccion b where b.idDetalleTransaccion = " + codigoSacTransaccione);
+		return (SacDetalleTransaccion) q.getSingleResult();
+	}
+	
+	public List<SacDetalleTransaccion> pornombresemejante(String idtransaccion) {
+		return em.createQuery("select b from SacDetalleTransaccion b where b.idDetalleTransaccion like :idDetalleTransaccion", SacDetalleTransaccion.class)
+				.setParameter("idDetalleTransaccion", "%" + idtransaccion + "%")
+				.getResultList();
+	}
+	
+}
+

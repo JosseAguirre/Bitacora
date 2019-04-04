@@ -1,0 +1,134 @@
+package com.scm.bean.administracion;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.Admmenu;
+import com.scm.servicio.administracion.ServicioAdmMenu;
+
+@ManagedBean
+@ViewScoped
+public class AdmMenuBean implements Interface, Serializable {
+	private static final long serialVersionUID = 1L;
+	private Admmenu admmenu;
+	private List<Admmenu>listamenu;
+	private List<Admmenu>menufiltrado;
+	private int bandera ;
+	
+	
+	
+	@EJB
+	private ServicioAdmMenu serviciomenu;
+
+	@Override
+	@PostConstruct
+	public void init() {
+		cancelar();
+
+	}
+
+	@Override
+	public void guardar() {
+		admmenu.setIdmenu(serviciomenu.getPK());
+		serviciomenu.create(admmenu);
+		cancelar();
+
+	}
+
+	@Override
+	public void eliminar() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void actualizar() {
+		serviciomenu.update(admmenu);
+		cancelar();
+
+	}
+	
+
+	@Override
+	public void consultar() {
+		listamenu = new ArrayList<>();
+		listamenu = serviciomenu.findAll();
+		
+		
+		
+
+	}
+
+	@Override
+	public void cancelar() {
+		admmenu = new Admmenu();
+		consultar();
+		bandera = 0;
+
+	}
+	
+	public void persitir() {
+		System.out.println("e persistir bandera vale : "+bandera);
+		if(bandera == 1){ 
+			
+			actualizar();
+			
+		}else{
+			guardar();
+			
+			
+		}
+		
+	}
+		
+		public void onRowSelect(SelectEvent event) {
+			admmenu =(Admmenu) event.getObject();
+			
+			
+			bandera = 1;	
+			
+			System.out.println("en rowselect  bandera vale : "+bandera);
+			
+	        
+			
+			
+	    }
+
+		public List<Admmenu> getListamenu() {
+			return listamenu;
+		}
+
+		public void setListamenu(List<Admmenu> listamenu) {
+			this.listamenu = listamenu;
+		}
+
+		public Admmenu getAdmmenu() {
+			return admmenu;
+		}
+
+		public void setAdmmenu(Admmenu admmenu) {
+			this.admmenu = admmenu;
+		}
+
+		public List<Admmenu> getMenufiltrado() {
+			return menufiltrado;
+		}
+
+		public void setMenufiltrado(List<Admmenu> menufiltrado) {
+			this.menufiltrado = menufiltrado;
+		}
+		
+		
+	
+
+}

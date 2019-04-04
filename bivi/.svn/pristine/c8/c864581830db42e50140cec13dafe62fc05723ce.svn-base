@@ -1,0 +1,71 @@
+package com.scm.modelo.sac;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admdetallecatalogo;
+import com.scm.modelo.administracion.Admempleado;
+
+
+/**
+ * The persistent class for the sac_transaccion_referido database table.
+ * 
+ */
+@Entity
+@Table(name="sac_transaccion_referido", schema="java")
+@NamedQuery(name="SacTransaccionReferido.findAll", query="SELECT s FROM SacTransaccionReferido s")
+public class SacTransaccionReferido implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="idtransaccion_referido", unique=true, nullable=false)
+	private Integer idtransaccionReferido;
+
+	private Boolean sysdelete;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idestado_dc")
+	private Admdetallecatalogo idestadodc;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado")
+	private Admempleado idempleado;
+
+	public SacTransaccionReferido() {
+	}
+
+	public Integer getIdtransaccionReferido() {
+		return this.idtransaccionReferido;
+	}
+
+	public void setIdtransaccionReferido(Integer idtransaccionReferido) {
+		this.idtransaccionReferido = idtransaccionReferido;
+	}
+
+	public Boolean getSysdelete() {
+		return this.sysdelete;
+	}
+
+	public void setSysdelete(Boolean sysdelete) {
+		this.sysdelete = sysdelete;
+	}
+
+	public Admdetallecatalogo getIdestadodc() {
+		return this.idestadodc;
+	}
+
+	public void setIdestadodc(Admdetallecatalogo idestadodc) {
+		this.idestadodc = idestadodc;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+}

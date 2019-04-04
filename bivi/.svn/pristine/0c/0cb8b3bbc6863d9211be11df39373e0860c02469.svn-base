@@ -1,0 +1,415 @@
+package com.scm.bean.administracion;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.SelectEvent;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.administracion.AdmClienteAgenciaSistema;
+import com.scm.modelo.administracion.Admagencia;
+import com.scm.modelo.administracion.Admcliente;
+import com.scm.modelo.administracion.Admsistema;
+import com.scm.servicio.administracion.ServicioAdmAgencia;
+import com.scm.servicio.administracion.ServicioAdmCliente;
+import com.scm.servicio.administracion.ServicioAdmClienteAgenciaSistemas;
+import com.scm.servicio.administracion.ServicioAdmSistema;
+
+@ManagedBean 
+@ViewScoped
+public class AdmClienteAgenciaSistemaBean implements Interface, Serializable {
+	private static final long serialVersionUID = 1L;
+
+	//crear clases para poder utilizar las listas
+	
+	private AdmClienteAgenciaSistema admclienteagenciasistema;
+	private List<AdmClienteAgenciaSistema> listaadmclienteagenciasistema;
+	private List<AdmClienteAgenciaSistema> admclienteagenciasistemafiltrado;
+	private List<AdmClienteAgenciaSistema> listaClienteSistema;
+	
+	private Admagencia admagencia;
+	private List<Admagencia> listaagencia;
+	private List<Admagencia> agenciafiltrado;
+	
+	private Admsistema admsistema;
+	private List<Admsistema> listasistema;
+	private List<Admsistema> sistemafiltrado;
+	
+	private Admcliente admcliente;
+	private List<Admcliente> listaCliente;
+	private List<Admcliente> clienteFiltrado;
+	
+	
+	//creo las variables a usar que pertenecen a otras tablas que necesitaremos
+	
+	private int idcliente;
+	private int idagencia;
+	private Integer idsistema;
+	private Long valor;
+	private int idcliente_agencia_sistemas;
+    Integer bandera ;
+    
+  //creo las clases servicios que necesito (dependiendo las relaciones que tenga la tabla),por medio de los @EBJ (interfaces que proveen datos del servidor)
+    
+	@EJB
+	private ServicioAdmAgencia servicioagencia;
+	@EJB	
+	private ServicioAdmClienteAgenciaSistemas servicioadmclienteagenciasistemas;
+	@EJB	
+	private ServicioAdmSistema servicioadmsistema;
+	@EJB
+	private ServicioAdmCliente serviciocliente;
+	
+	
+	@Override
+	@PostConstruct
+	public void init() {
+		// TODO Auto-generated method stub
+		cancelar ();	
+	}
+
+	//Metodo que permite guardar la agencia
+	@Override
+	public void guardar() {
+		admclienteagenciasistema.setIdclienteAgenciaSistemas(servicioadmclienteagenciasistemas.getPK());	
+		buscaIdCombos();
+		
+		servicioadmclienteagenciasistemas.create(admclienteagenciasistema);
+		//mensaje al asignar un código
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+		"Aviso", "Se asigno el código: " + admclienteagenciasistema.getValor() +"al sistema: "+ admclienteagenciasistema.getIdsistemas().getNombre()+"de la Agencia: "+ admclienteagenciasistema.getIdagencia().getNombre()));
+		
+		cancelar();
+		
+	}
+	
+	public void guardarClienteSistemas() {
+		admclienteagenciasistema.setIdclienteAgenciaSistemas(servicioadmclienteagenciasistemas.getPK());	
+
+		buscaIdCombosClienteSistema();
+		
+		servicioadmclienteagenciasistemas.create(admclienteagenciasistema);
+		cancelar();
+		
+	}
+	
+	public void clientesistemaSeleccionado() { 
+		idcliente = admclienteagenciasistema.getIdcliente().getIdcliente();
+		idsistema = admclienteagenciasistema.getIdsistemas().getIdsistemas(); 
+		//establece que es un valor ya existente es decir  lo estamos modificando
+		bandera = 1;	 
+		}
+	
+	//Metodo que permite cargar los datos de la fila seleccionada
+	 public void onRowSelect(SelectEvent event) {
+	  admclienteagenciasistema = (AdmClienteAgenciaSistema) event.getObject();
+	  
+	  idagencia = admclienteagenciasistema.getIdagencia().getIdagencia();
+	  idsistema = admclienteagenciasistema.getIdsistemas().getIdsistemas(); 
+	  //establece que es un valor ya existente es decir  lo estamos modificando
+	  bandera = 1;  
+	  }
+	
+	//es el primer metodo que se realiza
+	public void persitir() {
+		if(bandera == 1){  
+			
+		actualizar();
+			
+		}else{
+			guardar();
+			
+		}
+	}
+	
+	public void persitirCliente() {
+		if(bandera == 1){  
+			
+		actualizarClienteSistemas();
+			
+		}else{
+			guardarClienteSistemas();
+			
+		}
+	}
+	
+	//clase que nos tra los datos de otras tablas relacionados de las cuales necesitamos algun campo
+		public void buscaIdCombosClienteSistema(){
+			
+			admcliente = serviciocliente.findOne(idcliente);
+			admclienteagenciasistema.setIdcliente(admcliente);;
+			
+			admsistema = servicioadmsistema.findOne(idsistema);
+			admclienteagenciasistema.setIdsistemas(admsistema);
+
+		}
+	
+	//clase que nos tra los datos de otras tablas relacionados de las cuales necesitamos algun campo
+	public void buscaIdCombos(){
+		
+		admagencia = servicioagencia.findOne(idagencia);
+		admclienteagenciasistema.setIdagencia(admagencia);
+		
+		admsistema = servicioadmsistema.findOne(idsistema);
+		admclienteagenciasistema.setIdsistemas(admsistema);
+	}
+	
+	//Metodo que permite eliminar el código asignado
+	@Override
+	public void eliminar() {
+		servicioadmclienteagenciasistemas.delete(admclienteagenciasistema);
+		//mensaje mostrado al  código asignado
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+		"Aviso", "Se Elimino el código: " + admclienteagenciasistema.getValor() +"al Sistema: "+ admclienteagenciasistema.getIdsistemas().getNombre()+"de la Agencia: "+ admclienteagenciasistema.getIdagencia().getNombre()));
+		cancelar();
+	}
+
+	public void actualizarClienteSistemas() {
+		buscaIdCombosClienteSistema();
+		
+		servicioadmclienteagenciasistemas.update(admclienteagenciasistema);
+		cancelar();
+		
+	}
+	
+
+	//Metodo que permite eliminar el código asignado
+	@Override
+	public void actualizar() {
+		buscaIdCombos();		
+		servicioadmclienteagenciasistemas.update(admclienteagenciasistema);
+		//mensaje al actualizar el código asignado
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+		"Aviso", "Se actualizó el código: " + admclienteagenciasistema.getValor() +"al Sistema: "+ admclienteagenciasistema.getIdsistemas().getNombre()+"a la Agencia: "+ admclienteagenciasistema.getIdagencia().getNombre()));
+		cancelar();
+		
+	}
+	
+	public void onRowSelectCliente(SelectEvent event) {
+		admclienteagenciasistema = (AdmClienteAgenciaSistema) event.getObject();
+		
+		idcliente = admclienteagenciasistema.getIdcliente().getIdcliente();
+		idsistema = admclienteagenciasistema.getIdsistemas().getIdsistemas(); 
+				
+		bandera = 1;
+		
+		
+	}
+
+	//Metodo que realiza busquedas de los datos necesarios
+	@Override
+	public void consultar() {
+		listaCliente = new ArrayList<>();
+		listaCliente = serviciocliente.findAll();
+		
+		listaagencia = new ArrayList<>();
+		listaagencia = servicioagencia.findAll();
+		
+		listasistema = new ArrayList<>();
+		listasistema = servicioadmsistema.findAll();
+		
+		listaadmclienteagenciasistema = new ArrayList<>();
+		listaadmclienteagenciasistema = servicioadmclienteagenciasistemas.findAll();
+		
+		listaClienteSistema = new ArrayList<>();
+		listaClienteSistema = servicioadmclienteagenciasistemas.findCliente();
+		
+		
+	}
+
+	//Metodo cancelar
+	@Override
+	public void cancelar() {
+		admclienteagenciasistema = new AdmClienteAgenciaSistema();
+		idcliente_agencia_sistemas= -1;// paara volver el id al valor anterior
+		consultar();
+		bandera = 0;
+		
+	}
+
+	public AdmClienteAgenciaSistema getAdmclienteagenciasistema() {
+		return admclienteagenciasistema;
+	}
+
+	public void setAdmclienteagenciasistema(AdmClienteAgenciaSistema admclienteagenciasistema) {
+		this.admclienteagenciasistema = admclienteagenciasistema;
+	}
+
+	public List<AdmClienteAgenciaSistema> getListaadmclienteagenciasistema() {
+		return listaadmclienteagenciasistema;
+	}
+
+	public void setListaadmclienteagenciasistema(List<AdmClienteAgenciaSistema> listaadmclienteagenciasistema) {
+		this.listaadmclienteagenciasistema = listaadmclienteagenciasistema;
+	}
+
+	public List<AdmClienteAgenciaSistema> getAdmclienteagenciasistemafiltrado() {
+		return admclienteagenciasistemafiltrado;
+	}
+
+	public void setAdmclienteagenciasistemafiltrado(List<AdmClienteAgenciaSistema> admclienteagenciasistemafiltrado) {
+		this.admclienteagenciasistemafiltrado = admclienteagenciasistemafiltrado;
+	}
+
+	public Admagencia getAdmagencia() {
+		return admagencia;
+	}
+
+	public void setAdmagencia(Admagencia admagencia) {
+		this.admagencia = admagencia;
+	}
+
+	public List<Admagencia> getListaagencia() {
+		return listaagencia;
+	}
+
+	public void setListaagencia(List<Admagencia> listaagencia) {
+		this.listaagencia = listaagencia;
+	}
+
+	public List<Admagencia> getAgenciafiltrado() {
+		return agenciafiltrado;
+	}
+
+	public void setAgenciafiltrado(List<Admagencia> agenciafiltrado) {
+		this.agenciafiltrado = agenciafiltrado;
+	}
+
+	public Admsistema getAdmsistema() {
+		return admsistema;
+	}
+
+	public void setAdmsistema(Admsistema admsistema) {
+		this.admsistema = admsistema;
+	}
+
+	public List<Admsistema> getListasistema() {
+		return listasistema;
+	}
+
+	public void setListasistema(List<Admsistema> listasistema) {
+		this.listasistema = listasistema;
+	}
+
+	public List<Admsistema> getSistemafiltrado() {
+		return sistemafiltrado;
+	}
+
+	public void setSistemafiltrado(List<Admsistema> sistemafiltrado) {
+		this.sistemafiltrado = sistemafiltrado;
+	}
+
+	public int getIdagencia() {
+		return idagencia;
+	}
+
+	public void setIdagencia(int idagencia) {
+		this.idagencia = idagencia;
+	}
+
+	public Integer getIdsistema() {
+		return idsistema;
+	}
+
+	public void setIdsistema(Integer idsistema) {
+		this.idsistema = idsistema;
+	}
+
+	public Long getValor() {
+		return valor;
+	}
+
+	public void setValor(Long valor) {
+		this.valor = valor;
+	}
+
+	public int getIdcliente_agencia_sistemas() {
+		return idcliente_agencia_sistemas;
+	}
+
+	public void setIdcliente_agencia_sistemas(int idcliente_agencia_sistemas) {
+		this.idcliente_agencia_sistemas = idcliente_agencia_sistemas;
+	}
+
+	public Integer getBandera() {
+		return bandera;
+	}
+
+	public void setBandera(Integer bandera) {
+		this.bandera = bandera;
+	}
+
+	public ServicioAdmAgencia getServicioagencia() {
+		return servicioagencia;
+	}
+
+	public void setServicioagencia(ServicioAdmAgencia servicioagencia) {
+		this.servicioagencia = servicioagencia;
+	}
+
+	public ServicioAdmClienteAgenciaSistemas getServicioadmclienteagenciasistemas() {
+		return servicioadmclienteagenciasistemas;
+	}
+
+	public void setServicioadmclienteagenciasistemas(ServicioAdmClienteAgenciaSistemas servicioadmclienteagenciasistemas) {
+		this.servicioadmclienteagenciasistemas = servicioadmclienteagenciasistemas;
+	}
+
+	public ServicioAdmSistema getServicioadmsistema() {
+		return servicioadmsistema;
+	}
+
+	public void setServicioadmsistema(ServicioAdmSistema servicioadmsistema) {
+		this.servicioadmsistema = servicioadmsistema;
+	}
+
+	public Admcliente getAdmcliente() {
+		return admcliente;
+	}
+
+	public void setAdmcliente(Admcliente admcliente) {
+		this.admcliente = admcliente;
+	}
+
+	public List<Admcliente> getListaCliente() {
+		return listaCliente;
+	}
+
+	public void setListaCliente(List<Admcliente> listaCliente) {
+		this.listaCliente = listaCliente;
+	}
+
+	public List<Admcliente> getClienteFiltrado() {
+		return clienteFiltrado;
+	}
+
+	public void setClienteFiltrado(List<Admcliente> clienteFiltrado) {
+		this.clienteFiltrado = clienteFiltrado;
+	}
+
+	public int getIdcliente() {
+		return idcliente;
+	}
+
+	public void setIdcliente(int idcliente) {
+		this.idcliente = idcliente;
+	}
+
+	public List<AdmClienteAgenciaSistema> getListaClienteSistema() {
+		return listaClienteSistema;
+	}
+
+	public void setListaClienteSistema(List<AdmClienteAgenciaSistema> listaClienteSistema) {
+		this.listaClienteSistema = listaClienteSistema;
+	}
+	
+	
+}

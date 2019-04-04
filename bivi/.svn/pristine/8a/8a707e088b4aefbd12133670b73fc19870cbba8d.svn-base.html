@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/menuT.xhtml">
+	<ui:define name="panel"></ui:define>
+	<ui:define name="content">
+
+
+		<p:messages id="mensaje" autoUpdate="false" />
+		<p:fieldset legend="Datos Cargo">
+			<h:panelGrid id="pnl" columns="3" border="0">
+				<p:outputLabel value="Nombre" for="nombre" />
+				<p:inputText id="nombre"
+					value="#{controladorAdmCargo.admcargo.nombre}" required="true"
+					requiredMessage="Requerido">
+				</p:inputText>
+				<p:message for="nombre" />
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="Guardar"
+				action="#{controladorAdmCargo.persitir()}"
+				update=":frm:pnl :frm2:tbl" icon="ui-icon-disk" />
+		
+		</p:fieldset>
+		
+		</ui:define>
+<ui:define name="content2">
+		<p:fieldset legend="lista de Cargos">
+
+			<p:dataTable id="tbl" value="#{controladorAdmCargo.listacargo}"
+				var="item" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				paginatorPosition="bottom" editable="true"
+				tableStyle="width: auto; white-space: nowrap">
+				<p:column headerText="Codigo">
+					<h:outputText value="#{item.idCargo}" />
+				</p:column>
+				<p:column headerText="Nombre">
+					<h:outputText value="#{item.nombre}" />
+				</p:column>
+				<p:column headerText="Editar">
+					<p:commandButton action="#{controladorAdmCargo.TipoIngreso()}"
+						process="@this" update=":frm:pnl" icon="ui-icon-pencil">
+						<p:resetInput target=":frm:pnl" />
+						<f:setPropertyActionListener value="#{item}"
+							target="#{controladorAdmCargo.admcargo}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:fieldset>
+	</ui:define>
+</ui:composition>
+</html>

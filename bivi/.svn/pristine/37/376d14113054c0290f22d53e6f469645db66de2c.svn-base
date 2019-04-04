@@ -1,0 +1,65 @@
+package com.scm.servicio.administracion;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import com.scm.modelo.administracion.AdmAtributo;
+import com.scm.modelo.administracion.Admcliente;
+
+@Stateless
+public class ServicioAdmAtributo {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public void create(AdmAtributo admAtributo) {
+		em.persist(admAtributo);
+	}
+	
+	public void delete (AdmAtributo admAtributo) {
+		em.remove(em.merge(admAtributo));
+	}
+	
+	public void update (AdmAtributo admAtributo) {
+		em.merge(admAtributo);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AdmAtributo> findAll() { // Busca todo de la tabla AdmAtributo
+		Query q = em.createQuery("select b from AdmAtributo b where b.sysdelete = false");
+		return q.getResultList();
+	}
+	
+	public Integer getPK() { //Busca la primary key mas alta de la tabla AdmAtributo y se le suma 1
+		Integer codigo = 0;
+		Query q = em.createQuery("select max(id) from AdmAtributo ");
+		codigo = (Integer) q.getSingleResult();
+		if(codigo == null){
+			codigo = 1;
+		}else{
+			codigo++;
+		}
+		return codigo;
+	}
+	
+	public Integer findPk(){
+		Query q = em.createQuery("select max(id) from AdmAtributo");
+		return (Integer) q.getSingleResult();
+	}
+	
+	//Selecciona todo de la tabla Admcliente donde el id de la primary key sea igual a la del id seleccionado
+	public AdmAtributo findOne(Integer codigoAdmAtributo){
+		Query q = em.createQuery("select b from AdmAtributo b where b.idatributo = " + codigoAdmAtributo);
+		return (AdmAtributo) q.getSingleResult();
+	}
+	
+	public List<Admcliente> pornombresemejante(String razonsocial) {
+		return em.createQuery("select b from Admcliente b where b.razonsocial like :razonsocial", Admcliente.class)
+				.setParameter("razonsocial", "%" + razonsocial + "%")
+				.getResultList();
+	}
+	
+}

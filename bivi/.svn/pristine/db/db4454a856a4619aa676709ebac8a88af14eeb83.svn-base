@@ -1,0 +1,156 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.sac.SacDetalleTransaccion;
+
+import java.sql.Time;
+import java.util.List;
+
+
+/**
+ * The persistent class for the adm_atributo database table.
+ * 
+ */
+@Entity
+@Table(name="adm_atributo", schema="java")
+@NamedQuery(name="AdmAtributo.findAll", query="SELECT a FROM AdmAtributo a")
+public class AdmAtributo implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idatributo;
+
+	@Column(length=100)
+	private String descripcion;
+
+	@Column(length=30)
+	private String nombre;
+
+	private Boolean sysdelete;
+
+	@Column(name="tiempo_respuesta")
+	private Time tiempoRespuesta;
+
+	@Column(length=30)
+	private String tipo;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idestado_dc")
+	private Admdetallecatalogo idestadodc;
+
+	//bi-directional many-to-one association to AdmServicioAtributo
+	@OneToMany(mappedBy="idatributo")
+	private List<AdmServicioAtributo> idatributo_admServicioAtributos;
+
+	//bi-directional many-to-one association to SacDetalleTransaccion
+	@OneToMany(mappedBy="idatributo")
+	private List<SacDetalleTransaccion> idatributo_sacDetalleTransaccions;
+
+	public AdmAtributo() {
+	}
+
+	public Integer getIdatributo() {
+		return this.idatributo;
+	}
+
+	public void setIdatributo(Integer idatributo) {
+		this.idatributo = idatributo;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public Boolean getSysdelete() {
+		return this.sysdelete;
+	}
+
+	public void setSysdelete(Boolean sysdelete) {
+		this.sysdelete = sysdelete;
+	}
+
+	public Time getTiempoRespuesta() {
+		return this.tiempoRespuesta;
+	}
+
+	public void setTiempoRespuesta(Time tiempoRespuesta) {
+		this.tiempoRespuesta = tiempoRespuesta;
+	}
+
+	public String getTipo() {
+		return this.tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public Admdetallecatalogo getIdestadodc() {
+		return this.idestadodc;
+	}
+
+	public void setIdestadodc(Admdetallecatalogo idestadodc) {
+		this.idestadodc = idestadodc;
+	}
+
+	public List<AdmServicioAtributo> getIdatributo_admServicioAtributos() {
+		return this.idatributo_admServicioAtributos;
+	}
+
+	public void setIdatributo_admServicioAtributos(List<AdmServicioAtributo> idatributo_admServicioAtributos) {
+		this.idatributo_admServicioAtributos = idatributo_admServicioAtributos;
+	}
+
+	public AdmServicioAtributo addIdatributo_admServicioAtributo(AdmServicioAtributo idatributo_admServicioAtributo) {
+		getIdatributo_admServicioAtributos().add(idatributo_admServicioAtributo);
+		idatributo_admServicioAtributo.setIdatributo(this);
+
+		return idatributo_admServicioAtributo;
+	}
+
+	public AdmServicioAtributo removeIdatributo_admServicioAtributo(AdmServicioAtributo idatributo_admServicioAtributo) {
+		getIdatributo_admServicioAtributos().remove(idatributo_admServicioAtributo);
+		idatributo_admServicioAtributo.setIdatributo(null);
+
+		return idatributo_admServicioAtributo;
+	}
+
+	public List<SacDetalleTransaccion> getIdatributo_sacDetalleTransaccions() {
+		return this.idatributo_sacDetalleTransaccions;
+	}
+
+	public void setIdatributo_sacDetalleTransaccions(List<SacDetalleTransaccion> idatributo_sacDetalleTransaccions) {
+		this.idatributo_sacDetalleTransaccions = idatributo_sacDetalleTransaccions;
+	}
+
+	public SacDetalleTransaccion addIdatributo_sacDetalleTransaccion(SacDetalleTransaccion idatributo_sacDetalleTransaccion) {
+		getIdatributo_sacDetalleTransaccions().add(idatributo_sacDetalleTransaccion);
+		idatributo_sacDetalleTransaccion.setIdatributo(this);
+
+		return idatributo_sacDetalleTransaccion;
+	}
+
+	public SacDetalleTransaccion removeIdatributo_sacDetalleTransaccion(SacDetalleTransaccion idatributo_sacDetalleTransaccion) {
+		getIdatributo_sacDetalleTransaccions().remove(idatributo_sacDetalleTransaccion);
+		idatributo_sacDetalleTransaccion.setIdatributo(null);
+
+		return idatributo_sacDetalleTransaccion;
+	}
+
+}

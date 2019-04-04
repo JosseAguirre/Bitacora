@@ -1,0 +1,175 @@
+package com.scm.bean.preboveda;
+
+import java.io.Serializable;
+import java.util.Scanner;
+
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import com.scm.interfaces.Interface;
+import com.scm.modelo.centroefectivo.CeEspecie;
+import com.scm.servicio.centroefectivo.ServicioCeEspecie;
+@ManagedBean
+@ViewScoped
+public class TransferenciaDineroBean implements Interface, Serializable{
+	private static final long serialVersionUID = 1L;
+	
+	public static void Billetes(Float[] args) { 
+        float dinero = 0;
+        int cien = 0,cincuenta = 0, veinte = 0, diez = 0, cinco = 0,uno = 0; 
+        Scanner entrada = new Scanner(System.in); 
+        System.out.println("Introduce dinero a repartir:"); 
+        dinero = entrada.nextFloat(); 
+ 
+        while (dinero >= 100) { 
+            cien++; 
+            dinero = dinero - 100; 
+        } 
+ 
+        while (dinero >= 50) { 
+            cincuenta++; 
+            dinero = dinero - 50; 
+        } 
+ 
+        while (dinero >= 20) { 
+            veinte++; 
+            dinero = dinero - 20; 
+        } 
+ 
+        while (dinero >= 10) { 
+            diez++; 
+            dinero = dinero - 10; 
+        } 
+ 
+        while (dinero >= 5) { 
+            cinco++; 
+            dinero = dinero - 5; 
+        } 
+
+        while (dinero >= 1) { 
+            uno++; 
+            dinero = dinero - 1; 
+        } 
+    } 
+	
+	
+	public static void Monedas(Float[] args) { 
+        float dinero = 0;
+        int undolar = 0,cincuentacnt = 0, veinteycincocnt = 0, diezcnt = 0, cincocnt = 0,uncnt = 0; 
+        Scanner entrada = new Scanner(System.in); 
+        System.out.println("Introduce dinero a repartir:"); 
+        dinero = entrada.nextFloat(); 
+ 
+        while (dinero >= 100) { 
+        	undolar++; 
+            dinero = dinero - 100; 
+        } 
+ 
+        while (dinero >= 50) { 
+        	cincuentacnt++; 
+            dinero = dinero - 50; 
+        } 
+ 
+        while (dinero >= 20) { 
+        	veinteycincocnt++; 
+            dinero = dinero - 20; 
+        } 
+ 
+        while (dinero >= 10) { 
+        	diezcnt++; 
+            dinero = dinero - 10; 
+        } 
+ 
+        while (dinero >= 5) { 
+        	cincocnt++; 
+            dinero = dinero - 5; 
+        } 
+
+        while (dinero >= 1) { 
+        	uncnt++; 
+            dinero = dinero - 1; 
+        } 
+    } 
+	
+	
+	private Integer idespecie;
+	@EJB
+	ServicioCeEspecie servicioceespecie;
+	private CeEspecie ceespecie;
+
+
+public static void calcularfajos(String args[]){
+	
+	Scanner lector = new Scanner(System.in);
+	
+	int b = 100;
+	int a = lector.nextInt();
+	lector.close();
+	
+	int division =a/b;
+	
+	System.out.println("los fajos son:"+ division);
+}
+	
+public static void calcularbala(String args[]){
+	
+	Scanner lector = new Scanner(System.in);
+	
+	int b = 1000;
+	int a = lector.nextInt();
+	lector.close();
+	
+	int division1 =a/b;
+	
+	System.out.println("las balas son:"+ division1);
+}
+	
+	
+	
+	@Override
+	public void init() {
+		cancelar();
+		
+	}
+
+
+	@Override
+	public void guardar() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void eliminar() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void actualizar() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void consultar() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void cancelar() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
+	
+	
+}

@@ -1,0 +1,69 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the bov_contador_boveda database table.
+ * 
+ */
+@Entity
+@Table(name="bov_contador_boveda", schema="java")
+@NamedQuery(name="BovContadorBoveda.findAll", query="SELECT b FROM BovContadorBoveda b")
+public class BovContadorBoveda implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_contador_boveda", unique=true, nullable=false)
+	private Integer idContadorBoveda;
+
+	@Column(name="numero_de_transaccion", length=20)
+	private String numeroDeTransaccion;
+
+	//bi-directional many-to-one association to BovBoveda
+	@ManyToOne
+	@JoinColumn(name="id_boveda")
+	private BovBoveda idboveda;
+
+	//bi-directional many-to-one association to BovCabezeratransferencia
+	@ManyToOne
+	@JoinColumn(name="id_bovcabezeratransferencia")
+	private BovCabezeratransferencia idbovcabezeratransferencia;
+
+	public BovContadorBoveda() {
+	}
+
+	public Integer getIdContadorBoveda() {
+		return this.idContadorBoveda;
+	}
+
+	public void setIdContadorBoveda(Integer idContadorBoveda) {
+		this.idContadorBoveda = idContadorBoveda;
+	}
+
+	public String getNumeroDeTransaccion() {
+		return this.numeroDeTransaccion;
+	}
+
+	public void setNumeroDeTransaccion(String numeroDeTransaccion) {
+		this.numeroDeTransaccion = numeroDeTransaccion;
+	}
+
+	public BovBoveda getIdboveda() {
+		return this.idboveda;
+	}
+
+	public void setIdboveda(BovBoveda idboveda) {
+		this.idboveda = idboveda;
+	}
+
+	public BovCabezeratransferencia getIdbovcabezeratransferencia() {
+		return this.idbovcabezeratransferencia;
+	}
+
+	public void setIdbovcabezeratransferencia(BovCabezeratransferencia idbovcabezeratransferencia) {
+		this.idbovcabezeratransferencia = idbovcabezeratransferencia;
+	}
+
+}

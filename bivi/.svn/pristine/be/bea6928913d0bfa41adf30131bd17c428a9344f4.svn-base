@@ -1,0 +1,86 @@
+package com.scm.modelo.sac;
+
+import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.*;
+
+import com.scm.modelo.centroefectivo.CeEspecie;
+
+
+/**
+ * The persistent class for the sac_detalleespecie database table.
+ * 
+ */
+@Entity
+@Table(name="sac_detalleespecie", schema="java")
+@NamedQuery(name="SacDetalleespecie.findAll", query="SELECT s FROM SacDetalleespecie s")
+public class SacDetalleespecie implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_detalleespeciesac", unique=true, nullable=false)
+	private Integer idDetalleespeciesac;
+
+	private Integer cantidad;
+
+	//bi-directional many-to-one association to CeEspecie
+	@ManyToOne
+	@JoinColumn(name="idespecie")
+	private CeEspecie idespecie;
+
+	//bi-directional many-to-one association to SacDetalleTransaccion
+	@ManyToOne
+	@JoinColumn(name="id_detalle_transaccion")
+	private SacDetalleTransaccion iddetalletransaccion;
+	
+	//bi-directional many-to-one association to SacDetalleespecie
+	@OneToMany(mappedBy="idDetalleespeciesac")
+	private List<SacDetalleTransaccion> idDetalleespeciesac_SacDetalleTransaccion;
+
+	public SacDetalleespecie() {
+	}
+
+	public Integer getIdDetalleespeciesac() {
+		return this.idDetalleespeciesac;
+	}
+
+	public void setIdDetalleespeciesac(Integer idDetalleespeciesac) {
+		this.idDetalleespeciesac = idDetalleespeciesac;
+	}
+
+	public Integer getCantidad() {
+		return this.cantidad;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public CeEspecie getIdespecie() {
+		return this.idespecie;
+	}
+
+	public void setIdespecie(CeEspecie idespecie) {
+		this.idespecie = idespecie;
+	}
+
+	public SacDetalleTransaccion getIddetalletransaccion() {
+		return this.iddetalletransaccion;
+	}
+
+	public void setIddetalletransaccion(SacDetalleTransaccion iddetalletransaccion) {
+		this.iddetalletransaccion = iddetalletransaccion;
+	}
+
+	public List<SacDetalleTransaccion> getIdDetalleespeciesac_SacDetalleTransaccion() {
+		return idDetalleespeciesac_SacDetalleTransaccion;
+	}
+
+	public void setIdDetalleespeciesac_SacDetalleTransaccion(
+			List<SacDetalleTransaccion> idDetalleespeciesac_SacDetalleTransaccion) {
+		this.idDetalleespeciesac_SacDetalleTransaccion = idDetalleespeciesac_SacDetalleTransaccion;
+	}
+	
+	
+}

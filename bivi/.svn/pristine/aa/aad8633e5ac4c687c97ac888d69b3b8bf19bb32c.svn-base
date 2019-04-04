@@ -1,0 +1,20 @@
+package com.scm.interfaces;
+
+public interface Interface {
+	void init();
+	void guardar();
+	//void guardartipocatalogo();
+	//void guardarcatalogo();
+	//void guardardetallecatalogo();
+	void eliminar();
+	void actualizar();
+	void consultar();
+	void cancelar();
+	//void actualizartipocatalogo();
+	//void actualizarcatalogo();
+	//void actualizardetallecatalogo();
+	//void eliminartipocatalogo();
+	//Boolean validar();
+	
+
+}

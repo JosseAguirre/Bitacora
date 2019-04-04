@@ -1,0 +1,60 @@
+package com.scm.modelo.preboveda;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admempleado;
+
+
+/**
+ * The persistent class for the bov_detalle_boveda database table.
+ * 
+ */
+@Entity
+@Table(name="bov_detalle_boveda", schema="java")
+@NamedQuery(name="BovDetalleBoveda.findAll", query="SELECT b FROM BovDetalleBoveda b")
+public class BovDetalleBoveda implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="id_detalle_boveda", unique=true, nullable=false)
+	private Integer idDetalleBoveda;
+
+	//bi-directional many-to-one association to Admempleado
+	@ManyToOne
+	@JoinColumn(name="idempleado")
+	private Admempleado idempleado;
+
+	//bi-directional many-to-one association to BovBoveda
+	@ManyToOne
+	@JoinColumn(name="id_boveda")
+	private BovBoveda idboveda;
+
+	public BovDetalleBoveda() {
+	}
+
+	public Integer getIdDetalleBoveda() {
+		return this.idDetalleBoveda;
+	}
+
+	public void setIdDetalleBoveda(Integer idDetalleBoveda) {
+		this.idDetalleBoveda = idDetalleBoveda;
+	}
+
+	public Admempleado getIdempleado() {
+		return this.idempleado;
+	}
+
+	public void setIdempleado(Admempleado idempleado) {
+		this.idempleado = idempleado;
+	}
+
+	public BovBoveda getIdboveda() {
+		return this.idboveda;
+	}
+
+	public void setIdboveda(BovBoveda idboveda) {
+		this.idboveda = idboveda;
+	}
+
+}

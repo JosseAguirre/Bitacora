@@ -1,0 +1,58 @@
+package com.scm.modelo.administracion;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the adm_agencia_servicio database table.
+ * 
+ */
+@Entity
+@Table(name="adm_agencia_servicio", schema="java")
+@NamedQuery(name="AdmAgenciaServicio.findAll", query="SELECT a FROM AdmAgenciaServicio a")
+public class AdmAgenciaServicio implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="idagencia_servicio", unique=true, nullable=false)
+	private Integer idagenciaServicio;
+
+	//bi-directional many-to-one association to AdmServicio
+	@ManyToOne
+	@JoinColumn(name="idservicio")
+	private AdmServicio idservicio;
+
+	//bi-directional many-to-one association to Admagencia
+	@ManyToOne
+	@JoinColumn(name="idagencia")
+	private Admagencia idagencia;
+
+	public AdmAgenciaServicio() {
+	}
+
+	public Integer getIdagenciaServicio() {
+		return this.idagenciaServicio;
+	}
+
+	public void setIdagenciaServicio(Integer idagenciaServicio) {
+		this.idagenciaServicio = idagenciaServicio;
+	}
+
+	public AdmServicio getIdservicio() {
+		return this.idservicio;
+	}
+
+	public void setIdservicio(AdmServicio idservicio) {
+		this.idservicio = idservicio;
+	}
+
+	public Admagencia getIdagencia() {
+		return this.idagencia;
+	}
+
+	public void setIdagencia(Admagencia idagencia) {
+		this.idagencia = idagencia;
+	}
+
+}

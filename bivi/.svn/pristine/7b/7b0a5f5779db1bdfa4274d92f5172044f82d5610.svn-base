@@ -1,0 +1,166 @@
+package com.scm.modelo.sac;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.scm.modelo.administracion.Admdetallecatalogo;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the sac_usuario_referido database table.
+ * 
+ */
+@Entity
+@Table(name="sac_usuario_referido", schema="java")
+@NamedQuery(name="SacUsuarioReferido.findAll", query="SELECT s FROM SacUsuarioReferido s")
+public class SacUsuarioReferido implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	private Integer idreferido;
+
+	@Column(length=30)
+	private String apellido;
+
+	@Column(length=100)
+	private String correo;
+
+	@Column(length=200)
+	private String descripcion;
+
+	@Column(length=30)
+	private String nombre;
+
+	private Integer numeroticket;
+
+	@Column(length=14)
+	private String telefono;
+
+	//bi-directional many-to-one association to SaEstadosreferido
+	@OneToMany(mappedBy="idreferido")
+	private List<SaEstadosreferido> idreferido_saEstadosreferidos;
+
+	//bi-directional many-to-one association to SacDetallereferido
+	@OneToMany(mappedBy="idreferido")
+	private List<SacDetallereferido> idreferido_sacDetallereferidos;
+
+	//bi-directional many-to-one association to Admdetallecatalogo
+	@ManyToOne
+	@JoinColumn(name="idciudad_dc")
+	private Admdetallecatalogo idciudaddc;
+
+	public SacUsuarioReferido() {
+	}
+
+	public Integer getIdreferido() {
+		return this.idreferido;
+	}
+
+	public void setIdreferido(Integer idreferido) {
+		this.idreferido = idreferido;
+	}
+
+	public String getApellido() {
+		return this.apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
+
+	public String getCorreo() {
+		return this.correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public Integer getNumeroticket() {
+		return this.numeroticket;
+	}
+
+	public void setNumeroticket(Integer numeroticket) {
+		this.numeroticket = numeroticket;
+	}
+
+	public String getTelefono() {
+		return this.telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public List<SaEstadosreferido> getIdreferido_saEstadosreferidos() {
+		return this.idreferido_saEstadosreferidos;
+	}
+
+	public void setIdreferido_saEstadosreferidos(List<SaEstadosreferido> idreferido_saEstadosreferidos) {
+		this.idreferido_saEstadosreferidos = idreferido_saEstadosreferidos;
+	}
+
+	public SaEstadosreferido addIdreferido_saEstadosreferido(SaEstadosreferido idreferido_saEstadosreferido) {
+		getIdreferido_saEstadosreferidos().add(idreferido_saEstadosreferido);
+		idreferido_saEstadosreferido.setIdreferido(this);
+
+		return idreferido_saEstadosreferido;
+	}
+
+	public SaEstadosreferido removeIdreferido_saEstadosreferido(SaEstadosreferido idreferido_saEstadosreferido) {
+		getIdreferido_saEstadosreferidos().remove(idreferido_saEstadosreferido);
+		idreferido_saEstadosreferido.setIdreferido(null);
+
+		return idreferido_saEstadosreferido;
+	}
+
+	public List<SacDetallereferido> getIdreferido_sacDetallereferidos() {
+		return this.idreferido_sacDetallereferidos;
+	}
+
+	public void setIdreferido_sacDetallereferidos(List<SacDetallereferido> idreferido_sacDetallereferidos) {
+		this.idreferido_sacDetallereferidos = idreferido_sacDetallereferidos;
+	}
+
+	public SacDetallereferido addIdreferido_sacDetallereferido(SacDetallereferido idreferido_sacDetallereferido) {
+		getIdreferido_sacDetallereferidos().add(idreferido_sacDetallereferido);
+		idreferido_sacDetallereferido.setIdreferido(this);
+
+		return idreferido_sacDetallereferido;
+	}
+
+	public SacDetallereferido removeIdreferido_sacDetallereferido(SacDetallereferido idreferido_sacDetallereferido) {
+		getIdreferido_sacDetallereferidos().remove(idreferido_sacDetallereferido);
+		idreferido_sacDetallereferido.setIdreferido(null);
+
+		return idreferido_sacDetallereferido;
+	}
+
+	public Admdetallecatalogo getIdciudaddc() {
+		return this.idciudaddc;
+	}
+
+	public void setIdciudaddc(Admdetallecatalogo idciudaddc) {
+		this.idciudaddc = idciudaddc;
+	}
+
+}
