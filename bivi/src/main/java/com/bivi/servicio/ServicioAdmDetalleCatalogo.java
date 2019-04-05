@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import com.bivi.modelo.*;
-import com.scl.administracion.modelo.AdmDetalleCatalogo;
 
 
 
