@@ -3,6 +3,7 @@ package com.bivi.modelo;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.List;
+import com.bivi.modelo.*;
 
 
 /**
@@ -23,9 +24,11 @@ public class AdmAgencia implements Serializable {
 	private String celularAdministrador;
 
 	private String direccion;
-
-	@Column(name="id_ciudad")
-	private Integer idCiudad;
+	
+	//bi-directional many-to-one association to AdmDetalleCatalogo
+	@ManyToOne
+	@JoinColumn(name="id_ciudad")
+	private AdmDetalleCatalogo idCiudad;
 
 	private String nombre;
 
@@ -72,11 +75,11 @@ public class AdmAgencia implements Serializable {
 		this.direccion = direccion;
 	}
 
-	public Integer getIdCiudad() {
+	public AdmDetalleCatalogo getIdCiudad() {
 		return this.idCiudad;
 	}
 
-	public void setIdCiudad(Integer idCiudad) {
+	public void setIdCiudad(AdmDetalleCatalogo idCiudad) {
 		this.idCiudad = idCiudad;
 	}
 

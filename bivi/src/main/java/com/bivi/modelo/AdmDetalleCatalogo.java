@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 
+
+
 /**
  * The persistent class for the adm_detalle_catalogo database table.
  * 
@@ -20,8 +22,10 @@ public class AdmDetalleCatalogo implements Serializable {
 
 	private String descripcion;
 
-	@Column(name="id_detalle_catalogo_padre")
-	private Integer idDetalleCatalogoPadre;
+	//bi-directional many-to-one association to AdmDetalleCatalogo
+	@ManyToOne
+	@JoinColumn(name="id_detalle_catalogo_padre")
+	private AdmDetalleCatalogo idDetalleCatalogoPadre;
 
 	//bi-directional many-to-one association to AdmCatalogo
 	@ManyToOne
@@ -47,11 +51,11 @@ public class AdmDetalleCatalogo implements Serializable {
 		this.descripcion = descripcion;
 	}
 
-	public Integer getIdDetalleCatalogoPadre() {
+	public AdmDetalleCatalogo getIdDetalleCatalogoPadre() {
 		return this.idDetalleCatalogoPadre;
 	}
 
-	public void setIdDetalleCatalogoPadre(Integer idDetalleCatalogoPadre) {
+	public void setIdDetalleCatalogoPadre(AdmDetalleCatalogo idDetalleCatalogoPadre) {
 		this.idDetalleCatalogoPadre = idDetalleCatalogoPadre;
 	}
 
