@@ -18,13 +18,13 @@ import com.bivi.servicio.*;
 
 @ManagedBean
 @ViewScoped
-public class AdmDetalleCatalogoBean implements  Serializable {
+public class AdmGestionCatalogoBean implements  Serializable {
 
 	private static final long serialVersionUID = 1L;
 	// Creo variables de los diferentes modelos que necesito para trabajar
 	private AdmDetalleCatalogo admdetallecatalogo;
 	private AdmCatalogo admcatalogo;
-	// creo listas que necesitre paa las consultas
+	// creo listas que necesitare para las consultas
 	private List<AdmCatalogo> listacatalogopadre;
 	private List<AdmDetalleCatalogo> listadetallecatalogopadre;
 	private List<AdmDetalleCatalogo> detallecatalogofiltro;
